@@ -15,6 +15,11 @@ $fake_register_globals = false;
 require_once("../../globals.php");
 require_once("$srcdir/formdata.inc.php");
 
+
+
+//  session_start(); 
+  //$_SESSION['myencpass'] = 8;
+
 $popup = empty($_REQUEST['popup']) ? 0 : 1;
 
 // Generate some code based on the list of columns.
@@ -164,7 +169,7 @@ $(document).ready(function() {
  //$('#pt_table tbody tr').live('click', function (e) {
   // ID of a row element is pid_{value}
   var newpid = this.id.substring(4);
-  var enc=$(this).find('td').eq(2).html();
+  var encounter=$(this).find('td').eq(2).html();
   //var encounter=enc.substring(4);
  //alert(enc);
   // If the pid is invalid, then don't attempt to set 
@@ -245,11 +250,10 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
  $(document).ready(function() {
     $('table#pt_table.display.datatable tr').live("click", function() {
 		var name=$(this).text();
-		var formname='';
+		var formname='admit';
 		top.restoreSession();
-		//var formname1=""
 		//alert(encounter);
-		document.location.href="../../patient_file/encounter/forms.php?set_pid="+ newpid+'&encounter='+enc;
+		document.location.href="../../patient_file/history/history.php?set_pid=" + newpid+'&encounter='+encounter;
 		/*if(name=="Transfer")
 		{
 		//alert(newpid);

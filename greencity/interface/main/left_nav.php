@@ -101,6 +101,8 @@ use ESign\Api;
  //
 
  $primary_docs = array(
+  'ddb' => array(xl('My Dashboard')  , 0, 'main/finder/testd.php?skip_timeout_reset=1'),
+  'ana' => array(xl('Ops Dashboard')  , 0, 'test2/phm/Healthcare/D3.js-Dash-master/index2.html'),
   'ros' => array(xl('Roster')    , 0, 'reports/players_report.php?embed=1'),
   'cal' => array(xl('Calendar')  , 0, 'main/main_info.php'),
   'app' => array(xl('Portal Activity')  , 0, '../myportal/index.php'),
@@ -1025,6 +1027,8 @@ $(document).ready(function(){
       $(this).toggleClass("expanded_lv2").toggleClass("collapsed_lv2").parent().find('> ul').slideToggle("medium");
     });
     $("#navigation-slide > li  > a#cal0").prepend('<img src="../../images/calendar.png" class="nav-menu-img" />');
+	$("#navigation-slide > li  > a#ddb0").prepend('<img src="../../images/Dashboard.png" class="nav-menu-img" />');
+	$("#navigation-slide > li  > a#ana0").prepend('<img src="../../images/ana.png" class="nav-menu-img" />');
     $("#navigation-slide > li  > a#msg0").prepend('<img src="../../images/messages.png" class="nav-menu-img" />');
     $("#navigation-slide > li  > a#patimg").prepend('<img src="../../images/patient.png" class="nav-menu-img" />');
 	$("#navigation-slide > li  > a#bedimg").prepend('<img src="../../images/bed.png" class="nav-menu-img" />');
@@ -1263,6 +1267,8 @@ if ($GLOBALS['athletic_team']) {
 
   <?php if (!$GLOBALS['disable_calendar'] && !$GLOBALS['ippf_specific']) genTreeLink('RTop','cal',xl('Calendar')); ?>
   <?php // genTreeLink('RBot','msg',xl('Messages')); ?> 
+   <?php genTreeLink('RTop','ddb',xl('Dashboard')); ?>
+   <?php genTreeLink('RTop','ana',xl('OPs Dashboard')); ?>
   <?php if ($GLOBALS['lab_exchange_enable']) genTreeLink('RTop', 'lab', xl('Check Lab Results'));?>
   <?php if($GLOBALS['portal_offsite_enable'] && $GLOBALS['portal_offsite_address'] && acl_check('patientportal','portal'))  genTreeLink('RTop','app',xl('Portal Activity')); ?>
   <?php
@@ -1396,10 +1402,11 @@ if (!empty($reg)) {
 	  <?php if (! $GLOBALS['simplified_demographics']) genTreeLink('RTop','bil',xl('Billing')); ?>
 	  <?php //genTreeLink('RTop','npa',xl('Batch Payments'),false,2);?>
       <?php //if ($GLOBALS['enable_edihistory_in_left_menu'] && acl_check('acct', 'eob')) genTreeLink('RTop','edi',xl('EDI History'),false,2);?>
-	  <?php //genMiscLink('RTop','rep','0',xl('Insurance Bill'),'reports/custom_report_ins.php'); ?>
+	  <?php genMiscLink('RTop','rep','0',xl('Insurance Bill'),'reports/custom_report_ins.php'); ?>
 	  <?php genMiscLink('RBot','rep','0',xl('Print Receipt'),'patient_file/receipt.php'); ?>
 	  <?php genMiscLink('RTop','rep','0',xl('Provisional Bill'),'reports/custom_report_range_test.php'); ?>
 	  <?php genMiscLink('RTop','rep','0',xl('Duplicate Bill'),'reports/finalbillcopy.php'); ?>
+	    <?php genMiscLink('RTop','rep','0',xl('Generate Bills'),'reports/custom_report_range_bill.php'); ?>
     </ul>
   </li>
   <?php } ?>
@@ -1453,8 +1460,10 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
 	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/ph_dynamic_finder.php'); ?>
 	  <?php genMiscLink('RBot','cod','2',xl('Add Medicines'),'patient_file/encounter/load_form.php?formname=fee_sheet_ph'); ?>
 	  <?php genMiscLink('RBot','pay','1',xl('Take Payment'),'patient_file/front_payment_pharmacy.php'); ?>
-	   <?php genMiscLink('RTop','rep','0',xl('Print Bill'),'reports/custom_report_ins.php'); ?>
+	   <?php genMiscLink('RTop','rep','0',xl('Print Bill'),'reports/custom_report_pharmacy.php'); ?>
 	  <?php genMiscLink('RTop','adm','0',xl('Stock Purchase'),'drugs/drug_inventory.php'); ?>
+	  <?php genMiscLink('RTop','rep','0',xl('Daily Reports'),'reports/inventory_transactions.php'); ?>
+	   <?php genMiscLink('RTop','rop','0',xl('Bill Cancel'), 'reports/bill_cancel_pharm.php'); ?>
       <?php // genMiscLink('RTop','adm','0',xl('Dispense Meds'),'patient_file/summary/rx_frameset.php'); ?>
 	 
       <?php //genPopLink(xl('Destroyed'),'destroyed_drugs_report.php'); ?>

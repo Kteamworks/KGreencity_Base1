@@ -69,7 +69,7 @@ function showLineItem($patient_id, $encounter_id, $memo, $transdate,
   if (! $rowmethod) $rowmethod = 'Unknown';
 
   $invnumber = $irnumber ? $irnumber : "$patient_id.$encounter_id";
-
+ 
   if ($paymethod != $rowmethod) {
     if ($paymethod) {
       // Print method total.
@@ -77,7 +77,10 @@ function showLineItem($patient_id, $encounter_id, $memo, $transdate,
 
  <tr bgcolor="#ddddff">
   <td class="detail" colspan="<?php echo $showing_ppd ? 8 : 5; ?>">
-   <?php echo xl('Total for ') . $paymethod ?>
+   <?php 
+  
+   //if ($paymethod='unknown'){$paymethod='Reverse Payment';}
+   echo xl('Total for ') . $paymethod ?>
   </td>
   <td align="right">
    <?php bucks($methodadjtotal) ?>
@@ -433,7 +436,7 @@ if ($_POST['form_refresh']) {
     //
     $query = "SELECT a.pid, a.encounter, a.post_time, a.pay_amount, " .
       "a.adj_amount, a.memo, a.session_id, a.code, a.payer_type, fe.id, fe.date, " .
-      "fe.invoice_refno, s.deposit_date, s.payer_id, s.reference, i.name " .
+      "fe.invoice_refno, s.payment_method,s.deposit_date, s.payer_id, s.reference, i.name " .
       "FROM ar_activity AS a " .
       "JOIN form_encounter AS fe ON fe.pid = a.pid AND fe.encounter = a.encounter " .
       "JOIN forms AS f ON f.pid = a.pid AND f.encounter = a.encounter AND f.formdir = 'newpatient' " .
@@ -458,9 +461,9 @@ if ($_POST['form_refresh']) {
     if ($form_facility) $query .= " AND fe.facility_id = '$form_facility'";
     //
     if ($form_use_edate) {
-      $query .= " ORDER BY s.reference, fe.date, a.pid, a.encounter, fe.id";
+      $query .= " ORDER BY s.payment_method , fe.date, a.pid, a.encounter, fe.id";
     } else {
-      $query .= " ORDER BY s.reference, s.deposit_date, a.post_time, a.pid, a.encounter, fe.id";
+      $query .= " ORDER BY s.payment_method , s.deposit_date, a.post_time, a.pid, a.encounter, fe.id";
     }
     //
     $res = sqlStatement($query);
@@ -485,7 +488,7 @@ if ($_POST['form_refresh']) {
         if (empty($row['session_id'])) {
           $rowmethod = trim($row['memo']);
         } else {
-          $rowmethod = trim($row['reference']);
+          $rowmethod = trim($row['payment_method']);
         }
         if ($form_report_by != '3') {
           // Extract only the first word as the payment method because any

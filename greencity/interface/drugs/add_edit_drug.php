@@ -145,6 +145,469 @@ input[type="number"] {
 <script language="JavaScript">
 
 
+$(document).ready(function()
+{
+$("#name1").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype1").html(html);
+} 
+});
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=manu",
+cache: false,
+success: function(html)
+{
+$("#manu1").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v1").html(html);
+} 
+});
+
+
+});
+
+$("#name2").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype2").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu2").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v2").html(html);
+} 
+});
+
+});
+$("#name3").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype3").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu3").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v3").html(html);
+} 
+});
+
+});
+$("#name4").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype4").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu4").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v4").html(html);
+} 
+});
+
+});
+
+$("#name5").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype5").html(html);
+} 
+});
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu5").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v5").html(html);
+} 
+});
+
+});
+$("#name6").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype6").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu6").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v6").html(html);
+} 
+});
+
+});
+
+
+
+$("#name7").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype7").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu7").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v7").html(html);
+} 
+});
+
+});
+
+$("#name8").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype8").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu8").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v8").html(html);
+} 
+});
+
+});
+$("#name9").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype9").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu9").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v9").html(html);
+} 
+});
+
+});
+
+
+$("#name10").change(function()
+{
+var id=$(this).val();
+var dataString = 'id='+ id;
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#mtype10").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#manu10").html(html);
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=vat",
+cache: false,
+success: function(html)
+{
+$("#v10").html(html);
+} 
+});
+
+});
+
+
+});
+
+
+
+
+
+//--------------disable enter button---------------//
+$(document).on('keypress', 'input', function(e) {
+
+  if(e.keyCode == 13 && e.target.type !== 'submit') {
+    e.preventDefault();
+    return $(e.target).blur().focus();
+  }
+
+});
+
+//------------------total sum-------------------------//
+
 $(document).on("focus", ".total", function() {
     var sum = 0;
     $(".sum").each(function(){
@@ -176,7 +639,7 @@ var nm = $("#nm1").val();
 		 $("#b1").prop('required',true);
 		 $("#p1").prop('required',true);
 		 $("#mrp1").prop('required',true);
-		 $("#m1").prop('required',true);
+		 
 		 $("#tp1").prop('required',true);
 		 $("#d1").prop('required',true);
 		 
@@ -205,7 +668,7 @@ var nm = $("#nm2").val();
 		 $("#b2").prop('required',true);
 		 $("#p2").prop('required',true);
 		 $("#mrp2").prop('required',true);
-		 $("#m2").prop('required',true);
+		
 		 $("#tp2").prop('required',true);
 		 $("#d2").prop('required',true);
 		 
@@ -233,7 +696,7 @@ var nm = $("#nm3").val();
 		 $("#b3").prop('required',true);
 		 $("#p3").prop('required',true);
 		 $("#mrp3").prop('required',true);
-		 $("#m3").prop('required',true);
+		 
 		 $("#tp3").prop('required',true);
 		 $("#d3").prop('required',true);
 		 
@@ -262,7 +725,7 @@ var nm = $("#nm4").val();
 		 $("#b4").prop('required',true);
 		 $("#p4").prop('required',true);
 		 $("#mrp4").prop('required',true);
-		 $("#m4").prop('required',true);
+		 
 		 $("#tp4").prop('required',true);
 		 $("#d4").prop('required',true);
 		 
@@ -290,7 +753,7 @@ var nm = $("#nm5").val();
 		 $("#b5").prop('required',true);
 		 $("#p5").prop('required',true);
 		 $("#mrp5").prop('required',true);
-		 $("#m5").prop('required',true);
+		
 		 $("#tp5").prop('required',true);
 		 $("#d5").prop('required',true);
 		 
@@ -316,7 +779,7 @@ var nm = $("#nm6").val();
 		 $("#b6").prop('required',true);
 		 $("#p6").prop('required',true);
 		 $("#mrp6").prop('required',true);
-		 $("#m6").prop('required',true);
+		
 		 $("#tp6").prop('required',true);
 		 $("#d6").prop('required',true);
 		 
@@ -343,7 +806,7 @@ var nm = $("#nm7").val();
 		 $("#b7").prop('required',true);
 		 $("#p7").prop('required',true);
 		 $("#mrp7").prop('required',true);
-		 $("#m7").prop('required',true);
+		 
 		 $("#tp7").prop('required',true);
 		 $("#d7").prop('required',true);
 		 
@@ -370,7 +833,7 @@ var nm = $("#nm8").val();
 		 $("#b8").prop('required',true);
 		 $("#p8").prop('required',true);
 		 $("#mrp8").prop('required',true);
-		 $("#m8").prop('required',true);
+		
 		 $("#tp8").prop('required',true);
 		 $("#d8").prop('required',true);
 		 
@@ -398,7 +861,7 @@ var nm = $("#nm9").val();
 		 $("#b9").prop('required',true);
 		 $("#p9").prop('required',true);
 		 $("#mrp9").prop('required',true);
-		 $("#m9").prop('required',true);
+		
 		 $("#tp9").prop('required',true);
 		 $("#d9").prop('required',true);
 		 
@@ -424,7 +887,7 @@ var nm = $("#nm10").val();
 		 $("#b10").prop('required',true);
 		 $("#p10").prop('required',true);
 		 $("#mrp10").prop('required',true);
-		 $("#m10").prop('required',true);
+		 
 		 $("#tp10").prop('required',true);
 		 $("#d10").prop('required',true);
 		 
@@ -452,7 +915,7 @@ var nm = $("#nm11").val();
 		 $("#b11").prop('required',true);
 		 $("#p11").prop('required',true);
 		 $("#mrp11").prop('required',true);
-		 $("#m11").prop('required',true);
+		 
 		 $("#tp11").prop('required',true);
 		 $("#d11").prop('required',true);
 		 
@@ -479,7 +942,7 @@ var nm = $("#nm12").val();
 		 $("#b12").prop('required',true);
 		 $("#p12").prop('required',true);
 		 $("#mrp12").prop('required',true);
-		 $("#m12").prop('required',true);
+		
 		 $("#tp12").prop('required',true);
 		 $("#d12").prop('required',true);
 		 
@@ -505,7 +968,7 @@ var nm = $("#nm13").val();
 		 $("#b13").prop('required',true);
 		 $("#p13").prop('required',true);
 		 $("#mrp13").prop('required',true);
-		 $("#m13").prop('required',true);
+		
 		 $("#tp13").prop('required',true);
 		 $("#d13").prop('required',true);
 		 
@@ -531,7 +994,7 @@ var nm = $("#nm14").val();
 		 $("#b14").prop('required',true);
 		 $("#p14").prop('required',true);
 		 $("#mrp14").prop('required',true);
-		 $("#m14").prop('required',true);
+		
 		 $("#tp14").prop('required',true);
 		 $("#d14").prop('required',true);
 		 
@@ -557,7 +1020,7 @@ var nm = $("#nm15").val();
 		 $("#b15").prop('required',true);
 		 $("#p15").prop('required',true);
 		 $("#mrp15").prop('required',true);
-		 $("#m15").prop('required',true);
+		
 		 $("#tp15").prop('required',true);
 		 $("#d15").prop('required',true);
 		 
@@ -583,7 +1046,7 @@ var name = $("#name16").val();
 		 $("#b16").prop('required',true);
 		 $("#p16").prop('required',true);
 		 $("#mrp16").prop('required',true);
-		 $("#m16").prop('required',true);
+		
 		 $("#tp16").prop('required',true);
 		 $("#d16").prop('required',true);
 		 
@@ -610,7 +1073,7 @@ var nm = $("#nm17").val();
 		 $("#b17").prop('required',true);
 		 $("#p17").prop('required',true);
 		 $("#mrp17").prop('required',true);
-		 $("#m17").prop('required',true);
+		 
 		 $("#tp17").prop('required',true);
 		 $("#d17").prop('required',true);
 		 
@@ -636,7 +1099,7 @@ var nm = $("#nm18").val();
 		 $("#b18").prop('required',true);
 		 $("#p18").prop('required',true);
 		 $("#mrp18").prop('required',true);
-		 $("#m18").prop('required',true);
+		
 		 $("#tp18").prop('required',true);
 		 $("#d18").prop('required',true);
 		 
@@ -663,7 +1126,7 @@ var nm = $("#nm19").val();
 		 $("#b19").prop('required',true);
 		 $("#p19").prop('required',true);
 		 $("#mrp19").prop('required',true);
-		 $("#m19").prop('required',true);
+		
 		 $("#tp19").prop('required',true);
 		 $("#d19").prop('required',true);
 		 
@@ -689,7 +1152,7 @@ var nm = $("#nm20").val();
 		 $("#b20").prop('required',true);
 		 $("#p20").prop('required',true);
 		 $("#mrp20").prop('required',true);
-		 $("#m20").prop('required',true);
+		
 		 $("#tp20").prop('required',true);
 		 $("#d20").prop('required',true);
 		 
@@ -707,21 +1170,27 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp1").val();
 	var q = $("#q1").val();
 	var v = $("#v1").val();
-	var m = $("#m1").val();
+	
+	var mrp = $("#mrp1").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t1").val(result);
+	
 });
+
 $(document).on("focus", ".sum", function() {
    // var d = 0;
     var d = $("#d2").val();
 	var t = $("#tp2").val();
 	var q = $("#q2").val();
 	var v = $("#v2").val();
-	var m = $("#m2").val();
+	var mrp = $("#mrp2").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
+	
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t2").val(result);
 });
@@ -731,9 +1200,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp3").val();
 	var q = $("#q3").val();
 	var v = $("#v3").val();
-	var m = $("#m3").val();
+	var mrp = $("#mrp3").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t3").val(result);
 });
@@ -744,9 +1214,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp4").val();
 	var q = $("#q4").val();
 	var v = $("#v4").val();
-	var m = $("#m4").val();
+    var mrp = $("#mrp4").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t4").val(result);
 });
@@ -756,9 +1227,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp5").val();
 	var q = $("#q5").val();
 	var v = $("#v5").val();
-	var m = $("#m5").val();
+	var mrp = $("#mrp5").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t5").val(result);
 });
@@ -768,9 +1240,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp6").val();
 	var q = $("#q6").val();
 	var v = $("#v6").val();
-	var m = $("#m6").val();
+	var mrp = $("#mrp6").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t6").val(result);
 });
@@ -780,9 +1253,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp7").val();
 	var q = $("#q7").val();
 	var v = $("#v7").val();
-	var m = $("#m7").val();
+	var mrp = $("#mrp7").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t7").val(result);
 });
@@ -792,9 +1266,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp8").val();
 	var q = $("#q8").val();
 	var v = $("#v8").val();
-	var m = $("#m8").val();
+	var mrp = $("#mrp8").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t8").val(result);
 });
@@ -805,9 +1280,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp9").val();
 	var q = $("#q9").val();
 	var v = $("#v9").val();
-	var m = $("#m9").val();
+	var mrp = $("#mrp9").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t9").val(result);
 });
@@ -817,9 +1293,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp10").val();
 	var q = $("#q10").val();
 	var v = $("#v10").val();
-	var m = $("#m10").val();
+	var mrp = $("#mrp10").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t10").val(result);
 });
@@ -830,9 +1307,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp11").val();
 	var q = $("#q11").val();
 	var v = $("#v11").val();
-	var m = $("#m11").val();
+	var mrp = $("#mrp11").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t11").val(result);
 });
@@ -842,9 +1320,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp12").val();
 	var q = $("#q12").val();
 	var v = $("#v12").val();
-	var m = $("#m12").val();
+	var mrp = $("#mrp12").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t12").val(result);
 });
@@ -854,9 +1333,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp13").val();
 	var q = $("#q13").val();
 	var v = $("#v13").val();
-	var m = $("#m13").val();
+	var mrp = $("#mrp13").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t13").val(result);
 });
@@ -866,9 +1346,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp14").val();
 	var q = $("#q14").val();
 	var v = $("#v14").val();
-	var m = $("#m14").val();
+    var mrp = $("#mrp1").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t14").val(result);
 });
@@ -879,9 +1360,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp15").val();
 	var q = $("#q15").val();
 	var v = $("#v15").val();
-	var m = $("#m15").val();
+	var mrp = $("#mrp15").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t15").val(result);
 });
@@ -894,9 +1376,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp16").val();
 	var q = $("#q16").val();
 	var v = $("#v16").val();
-	var m = $("#m16").val();
+	var mrp = $("#mrp16").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t16").val(result);
 });
@@ -906,9 +1389,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp17").val();
 	var q = $("#q17").val();
 	var v = $("#v17").val();
-	var m = $("#m17").val();
+	var mrp = $("#mrp17").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t17").val(result);
 });
@@ -918,9 +1402,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp18").val();
 	var q = $("#q18").val();
 	var v = $("#v18").val();
-	var m = $("#m18").val();
+	var mrp = $("#mrp18").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t18").val(result);
 });
@@ -930,9 +1415,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp19").val();
 	var q = $("#q19").val();
 	var v = $("#v19").val();
-	var m = $("#m19").val();
+	var mrp = $("#mrp19").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t19").val(result);
 });
@@ -942,9 +1428,10 @@ $(document).on("focus", ".sum", function() {
 	var t = $("#tp20").val();
 	var q = $("#q20").val();
 	var v = $("#v20").val();
-	var m = $("#m2").val();
+	var mrp = $("#mrp20").val();
+	var ma = [(+mrp)*100]/(100 + (+v));
 	var dv= [(+d) * (+t)]/100;
-	var vv= [(+v) * (+m)*(+q)]/100;
+	var vv= [(+v) * (+ma)*(+q)]/100;
 	var result = (+q)*[(+t) - (+dv) ]+ (+vv);
 	$("#t20").val(result);
 });
@@ -1008,17 +1495,19 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
   if ($drug_id) {
    if ($_POST['form_save']) { // updating an existing drug
     sqlStatement("UPDATE drugs SET " .
-     "name = '"           . escapedff('form_name')          . "', " .
-     "ndc_number = '"     . escapedff('mfr')    . "', " .
-     "on_order = '"       . escapedff('form_on_order')      . "', " .
-     "reorder_point = '"  . escapedff('form_reorder_point') . "', " .
-     "max_level = '"      . escapedff('form_max_level')     . "', " .
-     "form = '"           . escapedff('form_form')          . "', " .
-     "size = '"           . escapedff('form_size')          . "', " .
-     "unit = '"           . escapedff('form_unit')          . "', " .
-     "route = '"          . escapedff('form_route')         . "', " .
-     "cyp_factor = '"     . numericff('form_cyp_factor')    . "', " .
-     "related_code = '"   . escapedff('form_related_code')  . "', " .
+     "name = '"           . escapedff('name')          . "', " .
+     "mfr = '"     . escapedff('mfr')    . "', " .
+     "quantity = '"       . escapedff('qty')      . "', " .
+     "batch = '"  . escapedff('batch') . "', " .
+     "pack = '"      . escapedff('pack')     . "', " .
+     "expdate = '"           . escapedff('date')          . "', " .
+     "mrp = '"           . escapedff('mrp')          . "', " .
+     "tradePrice = '"           . escapedff('trade')          . "', " .
+     "discount = '"          . escapedff('discount')         . "', " .
+     "vat = '"     . numericff('vat')    . "', " .
+     "totalValue = '"   . escapedff('total')  . "', " .
+	  "free = '"   . escapedff('free')  . "', " .
+	   "instock = '"   . escapedff('instock')  . "', " .
      "allow_multiple = "  . (empty($_POST['form_allow_multiple' ]) ? 0 : 1) . ", " .
      "allow_combining = " . (empty($_POST['form_allow_combining']) ? 0 : 1) . ", " .
      "active = "          . (empty($_POST['form_active']) ? 0 : 1) . " " .
@@ -1031,7 +1520,9 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
      sqlStatement("DELETE FROM drug_templates WHERE drug_id = ?", array($drug_id));
      sqlStatement("DELETE FROM drugs WHERE drug_id = ?", array($drug_id));
      sqlStatement("DELETE FROM prices WHERE pr_id = ? AND pr_selector != ''", array($drug_id));
-    }
+	 sqlStatement("DELETE FROM product_warehouse WHERE pw_drug_id = ?", array($drug_id));
+	 sqlStatement("DELETE FROM drug_sales WHERE drug_id = ?", array($drug_id));
+    } 
    }
   }
   else if ($_POST['form_save']) { // saving a new drug
@@ -1055,15 +1546,23 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		}
 		
 		$batch= $_POST['batch'][$j];
-		$date= $_POST['date'][$j];
+		$medType= $_POST['medType'][$j];
+		//$date= $_POST['date'][$j];
+		$month= $_POST['month'][$j];
+		$year= $_POST['year'][$j];
+		$date= $year.'-'.$month.'-'.'01';
 		$qty= $_POST['qty'][$j];
 		$pack= $_POST['pack'][$j];
 		$mrp= $_POST['mrp'][$j];
+		$group= $_POST['group'][$j];
+		
 		$mfr= $_POST['mfr'][$j];
 		$instock= $_POST['instock'][$j];
 		$trade= $_POST['trade'][$j];
 		$discount= $_POST['discount'][$j];
 		$vat= $_POST['vat'][$j];
+	$mrpa = ($mrp * 100)/(100+$vat);
+	
 		$total= $_POST['total'][$j];
 		$type= $_POST['type'][$j];
 		$unitPrice= $mrp/$pack;
@@ -1103,7 +1602,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		
 		
 			 $drug_id = sqlInsert("INSERT INTO drugs ( " .
-    "name,mfr,inStock,supplier,batch,quantity,totalStock,free,pack,packType,expdate,mrp,PricePerUnit,tradePrice,discount,vat,totalValue,invoice,max_level, form, " .
+    "name,mfr,inStock,supplier,batch,medType,quantity,medGroup,totalStock,free,date,pack,packType,expdate,mrp,mrpa,PricePerUnit,tradePrice,discount,vat,totalValue,invoice,max_level, form, " .
     "size, unit, route, cyp_factor, related_code, " .
     "allow_multiple, allow_combining, active " .
     ") VALUES ( " .
@@ -1112,13 +1611,17 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
     "'" . $instock          . "', " .
 	 "'" .$sup. "', " .
     "'" . $batch    . "', " .
+	 "'" . $medType    . "', " .
     "'" . $qty      . "', " .
+	 "'" . $group      . "', " .
 	 "'" . $totalStock      . "', " .
 	 "'" . $free      . "', " .
+	 "'" . date('Y/m/d') . "', " .
 	"'" . $pack      . "', " .
 	"'" . $type     . "', " .
     "'" . $date . "', " .
 	 "'" . $mrp . "', " .
+	  "'" . $mrpa . "', " .
 	  "'" . $unitPrice . "', " .
 	  "'" . $trade . "', " .
 	   "'" . $discount . "', " .
@@ -1191,7 +1694,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
         "pw_drug_id, pw_warehouse, pw_min_level, pw_max_level ) VALUES ( " .
         "'" . add_escape_custom($drug_id) . "', "                            .
           "'onsite ', " .
-          "' 100', " .
+          "' 1', " .
          "' 10000' " .
          ")");	
 		 
@@ -1258,7 +1761,12 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		}
 		
 		$batch= $_POST['batch'][$j];
-		$date= $_POST['date'][$j];
+		$medType= $_POST['medType'][$j];
+	    $group= $_POST['group'][$j];
+		//$date= $_POST['date'][$j];
+		$month= $_POST['month'][$j];
+		$year= $_POST['year'][$j];
+		echo $date= $month.'-'.$year; exit;
 		$qty= $_POST['qty'][$j];
 		$pack= $_POST['pack'][$j];
 		$mrp= $_POST['mrp'][$j];
@@ -1267,6 +1775,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		$trade= $_POST['trade'][$j];
 		$discount= $_POST['discount'][$j];
 		$vat= $_POST['vat'][$j];
+		$mrpa = ($mrp * 100)/(100+$vat);
 		$total= $_POST['total'][$j];
 		$type= $_POST['type'][$j];
 		$unitPrice= $mrp/$pack;    
@@ -1302,7 +1811,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 
 	
     $drug_id = sqlInsert("INSERT INTO drugs ( " .
-    "name,mfr,inStock,supplier,batch,quantity,totalStock,free,pack,packType,expdate,mrp,PricePerUnit,tradePrice,discount,vat,totalValue,invoice,max_level, form, " .
+    "name,mfr,inStock,supplier,batch,medType,medGroup,quantity,totalStock,free,date,pack,packType,expdate,mrp,mrpa,PricePerUnit,tradePrice,discount,vat,totalValue,invoice,max_level, form, " .
     "size, unit, route, cyp_factor, related_code, " .
     "allow_multiple, allow_combining, active " .
     ") VALUES ( " .
@@ -1311,13 +1820,17 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 	"'" . $instock          . "', " .
 	 "'" .escapedff('form_supplier'). "', " .
     "'" . $batch    . "', " .
+	 "'" . $medType    . "', " .
+	  "'" . $group    . "', " .
     "'" . $qty      . "', " .
 	 "'" . $totalStock      . "', " .
 	"'" . $free      . "', " .
+	"'" . date('Y/m/d') . "', " .
 	 "'" . $pack      . "', " .
 	 "'" . $type      . "', " .
     "'" . $date . "', " .
 	 "'" . $mrp . "', " .
+	  "'" . $mrpa . "', " .
 	 "'" . $unitPrice . "', " .
 	  "'" . $trade . "', " .
 	   "'" . $discount . "', " .
@@ -1370,7 +1883,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
         "pw_drug_id, pw_warehouse, pw_min_level, pw_max_level ) VALUES ( " .
         "'" . add_escape_custom($drug_id) . "', "                            .
           "'onsite ', " .
-          "' 100', " .
+          "' 1', " .
          "' 10000' " .
          ")");	
 	
@@ -1585,7 +2098,7 @@ else {
 }
 ?>
 
-<form method="post" name="row" action="" >
+<!--form method="post" name="row" action="" >
 
 <center>
 <table  width='50%'  cellspacing="10" style="border: 1px solid black;">
@@ -1596,7 +2109,7 @@ else {
 </table>
 
 
-</form>
+</form-->
 
 
 
@@ -1611,7 +2124,7 @@ else {
  <td width="20%"  valign='top' nowrap><b><?php echo xlt('Select Supplier'); ?>:</b></td>
 	
 <td>
- <select style="width:100%;height:2em;"  name="supplier">
+ <select style="width:100%;height:2em;"  name="supplier" required>
     
        <option value="">Select</option>
     <?php
@@ -1632,12 +2145,12 @@ else {
 
  
  
-  <tr>
+ <!-- <tr>
   <td valign='top' width="20%" nowrap><b><?php echo xlt('Add Supplier'); ?>:</b></td>
   <td>
    <input type='text' size='10' name='form_supplier' value="<?php echo $supply;?>" maxlength='80' style='width:100%' placeholder="Enter Supplier if it is not in Dropdown List" />
   </td>
- </tr>
+ </tr> -->
  
  <tr>
   <td valign='top' width="20%" nowrap><b><?php echo xlt('Invoice Number'); ?>:</b></td>
@@ -1653,18 +2166,21 @@ else {
  <table border='0' width='100%'   id="dataTable" style=" border: 1px solid black;"> 
  <tr>
   <th nowrap>S.No.</th>
+  <th nowrap>Name</th>
    <th nowrap>Manufacturer</th>
-   <th nowrap>Name</th>
-   <th nowrap>New</br>Medicine</th>
+   
+   <th nowrap>Medicine Type</th>
+    <th nowrap>Group</th>
+   <!--<th nowrap>New</br>Medicine</th>-->
    <th nowrap>In </br>Stock</th>
    <th  nowrap>Batch </br>Number</th>
   <th  nowrap>Quantity</th>
   <th  nowrap>Free</th>
   <th  nowrap>Pack</th>
   <th  nowrap>Pack </br>Type</th>
-  <th  nowrap>Expiry </br>Date</th>
+  <th colspan='2' nowrap>Expiry Date</th>
    <th  nowrap>M.R.P.</th>
-    <th  nowrap>M.R.P.</br>Abated</th>
+    
    <th  nowrap>Trade</br>Price</th>
     <th  nowrap>Vat %</th>
 	 <th  nowrap>Discount</br>(%)</th>
@@ -1675,7 +2191,7 @@ else {
  
  <?php
  $i=1;
-  while($i<=$tableRow) 
+  while($i<=10) 
   {
   
      
@@ -1688,9 +2204,11 @@ else {
    <td>
    <?php echo $i ?>
   </td> 
-  <td>
-   <input type='text'  name='mfr[]' maxlength='80' value='' style='width:100%'  placeholder="Manufacturer" />
-  </td>
+  
+  
+ 
+  
+  
   
   
  <!-- <td>
@@ -1703,27 +2221,60 @@ else {
  <select style="width:100%;height:2em;"  name="form_name[]" id="<?php echo 'name'.$i?>">
     
        <option value="">Select</option>
-	   <option value="add">Add New</option>
+	   <!--<option value="add">Add New</option>-->
     <?php
-         $list1 = sqlStatement("SELECT  name FROM `drugs`");
+         $list1 = sqlStatement("SELECT  Medicine_Name FROM `medicine_master`");
  while($list2 = sqlFetchArray($list1)){
 
          
  
    
           ?> 
-            <option value="<?php echo $list2['name'];?>"> <?php echo $list2['name'];?></option>
+            <option value="<?php echo $list2['Medicine_Name'];?>"> <?php echo $list2['Medicine_Name'];?></option>
        <?php   }?>
  
     </select>
  
  </td>
  
+ <td>
+ <select style="width:100%;height:2em;"  name="mfr[]" id="<?php echo 'manu'.$i?>">
+    
+       
+	   
+ 
+    </select>
+ 
+ </td>
  
  <td>
-   <input type="text" name="form_name1[]" autocomplete="off" id="<?php echo 'nm'.$i?>" placeholder="Name">
-  </td>
+ <select style="width:100%;height:2em;"  name="medType[]" id="<?php echo 'mtype'.$i?>">
+    
+       
+	   
  
+    </select>
+ 
+ </td>
+ 
+ 
+<!-- <td>
+   <input type="text" name="form_name1[]" autocomplete="off" id="<?php echo 'nm'.$i?>" placeholder="Name">
+  </td>-->
+ 
+  <td>
+ 
+ <select name="group[]">
+  <option value="Medical">Medical</option>
+  <option value="Non-Medical">Non-Medical</option>
+  <option value="Cosmetics">Cosmetics</option>
+   <option value="Surgical">Surgical </option>
+  
+  
+</select> 
+ 
+  </td>
+
 
   <td>
    <input type='text' size="10" name='instock[]' maxlength='80' value='0' readonly class="rgt" style='width:100%' placeholder="interger" pattern="\d*"/>
@@ -1751,17 +2302,46 @@ else {
  </td>
   
   
+   <td colspan>
+ <select name="month[]" >
+  <option value="01">Jan</option>
+  <option value="02">Feb</option>
+  <option value="03">Mar</option>
+  <option value="04">Apr</option>
+  <option value="05">May</option>
+  <option value="06">June</option>
+  <option value="07">July</option>
+  <option value="08">Aug</option>
+  <option value="09">Sep</option>
+  <option value="10">Oct</option>
+  <option value="11">Nov</option>
+  <option value="12">Dec</option>
+ </td>
+ 
   <td>
+ <select name="year[]" >
+  <option value="2017">2017</option>
+  <option value="2018">2018</option>
+  <option value="2019">2019</option>
+  <option value="2020">2020</option>
+  <option value="2021">2021</option>
+  <option value="2022">2022</option>
+  <option value="2023">2023</option>
+  <option value="2024">2024</option>
+  <option value="2025">2025</option>
+	  
+  
+ </td>
+  
+ <!-- <td>
    <input type="text" size="10" name="date[]" value="" class="datepicker-example11" placeholder="MM-YYYY" id="<?php echo 'dt'.$i?>" />
-  </td>
+  </td-->
   
   <td>
   <input type='text' size="10" name='mrp[]' maxlength='80' value='' class="rgt" style='width:100%'  id="<?php echo 'mrp'.$i?>" placeholder="00.00"/>
   </td>
   
-  <td>
-  <input type='text' size="10" name='mrpAbated[]' maxlength='80' value='' class="rgt" style='width:100%' id="<?php echo 'm'.$i?>"  placeholder="00.00"/>
-  </td>
+  
   
   <td>
   <input type='text' size="10" name='trade[]' maxlength='80' value='' class="rgt" style='width:100%' id="<?php echo 'tp'.$i?>"  placeholder="00.00" />
@@ -1773,9 +2353,7 @@ else {
   <td>
  
  <select name="vat[]" id="<?php echo 'v'.$i?>">
-  <option value="0">0%</option>
-  <option value="5.50">5.50%</option>
-  <option value="14.50">14.50%</option>
+  
   
 </select> 
  
@@ -1802,7 +2380,7 @@ else {
 
 ?>
 
- <tr><th colspan="16" style="text-align:right">Total Amount: </th><th><input type="number" step="any" class="total" id="rgt" value="" /></th><tr> 
+ <tr><th colspan="17" style="text-align:right">Total Amount: </th><th><input type="number" step="any" class="total" id="rgt" value="" required /></th><tr> 
  
   
   

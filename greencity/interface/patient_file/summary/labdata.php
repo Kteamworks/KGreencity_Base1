@@ -53,7 +53,7 @@ include_once($GLOBALS["srcdir"] . "/api.inc");
 
 // Set the path to this script
 $path_to_this_script = $rootdir . "/patient_file/summary/labdata.php";
-
+$encounter=$GLOBALS['encounter'];
 
 // is this the printable HTML-option?
 $printable = $_POST['print'];
@@ -67,13 +67,13 @@ $frow = sqlQuery("SELECT * FROM facility " .
 			"FROM procedure_report " . 
 			"JOIN procedure_order ON  procedure_report.procedure_order_id = procedure_order.procedure_order_id " . 
 			"JOIN procedure_order_code ON procedure_order.procedure_order_id = procedure_order_code.procedure_order_id " . 
-			"WHERE procedure_order.patient_id = ? " . 
+			"WHERE procedure_order.patient_id = ?  AND procedure_order.encounter_id= ? " . 
 			"ORDER BY procedure_report.date_collected ";
-$result=sqlQuery($spell, array($pid) );
+$result=sqlQuery($spell, array($pid,$encounter) );
 
 // main db-spell
 //----------------------------------------
-$main_spell  = "SELECT procedure_result.procedure_result_id, procedure_result.result, procedure_result.result_text,  procedure_result.result_code, procedure_result.units, procedure_result.abnormal, procedure_result.range, ";
+$main_spell  = "SELECT procedure_result.procedure_result_id, procedure_result.result, procedure_result.result_text,  procedure_result.result_code, procedure_result.units, procedure_result.abnormal, procedure_result.range,procedure_result.comments, ";
 $main_spell .= "procedure_report.date_collected, procedure_report.review_status, ";
 $main_spell .= "procedure_order.encounter_id ";
 $main_spell .= "FROM procedure_result ";
@@ -82,10 +82,10 @@ $main_spell .= "	ON procedure_result.procedure_report_id = procedure_report.proc
 $main_spell .= "JOIN procedure_order ";
 $main_spell .= "	ON procedure_report.procedure_order_id = procedure_order.procedure_order_id ";
 $main_spell .= "WHERE procedure_result.result_code = ? "; // '?'
-$main_spell .= "AND procedure_order.patient_id = ? ";
+$main_spell .= "AND procedure_order.patient_id = ? AND procedure_order.encounter_id=?";
 $main_spell .= "AND procedure_result.result IS NOT NULL ";
 $main_spell .= "AND procedure_result.result != ''";
-$main_spell .= "ORDER BY procedure_result.result_code,procedure_report.date_collected DESC limit 1 ";
+$main_spell .= "ORDER BY procedure_result.seq,procedure_report.date_collected DESC limit 1 ";
 //----------------------------------------
 
 // some styles and javascripts
@@ -143,10 +143,12 @@ table {
 .left{
     float:left;
 }
-
+.white-space{
+    white-space:pre-wrap;
+}
 
 </style>
-<p style="margin-top:120px"></p>
+<p style="margin-top:150px"></p>
 <!--<img style="position:absolute;top:0;right:0;"src=" <?php echo $GLOBALS['webroot']?>/interface/pic/logo.png" />
 <h3><?php echo text($frow['name']) ?>
 <br><?php echo text($frow['street']) ?>
@@ -246,15 +248,16 @@ if(!$printable){
 	//$spell .= "JOIN procedure_order_code ";
 	//$spell .= "	ON procedure_order_code.procedure_order_id = procedure_report.procedure_order_id ";
 	//$spell .= "AND procedure_order_code.procedure_order_seq = procedure_report.procedure_order_seq ";
-	$spell .= "WHERE procedure_order.patient_id = ? ";
+	$spell .= "WHERE procedure_order.patient_id = ? AND procedure_order.encounter_id=? ";
 	$spell .= "AND procedure_result.result IS NOT NULL ";
 	$spell .= "AND procedure_result.result != ''";
-	$spell .= "ORDER BY procedure_report.procedure_report_id,procedure_result.result_code ASC ";
-	$query  = sqlStatement($spell,array($pid));
+	$spell .= "ORDER BY procedure_report.procedure_report_id,procedure_result.seq ASC ";
+	$query  = sqlStatement($spell,array($pid,$encounter));
 	
 
 	// Select which items to view...
 	$i = 0;
+	$id=0;
 		while($myrow = sqlFetchArray($query)){
 		
 		$rows[] = $myrow;
@@ -317,20 +320,20 @@ echo "<input type='checkbox' name='value_code[]' value=" . attr($rows[$i]['value
 	?><input type='checkbox' onclick="checkAll(this)" /> <?php echo xlt('Toggle All') . "<br/>";
 	echo "<table><tr>";
 	// Choose output mode [list vs. matrix]
-	echo "<td>" . xlt('Select output') . ":</td>";
+		echo "<td>" . xlt('Select output') . ":</td>";
 	echo "<td><input type='radio' name='mode' ";
 	$mode = $_POST['mode'];
-	if($mode == 'list'){ echo "checked='checked' ";}
+	if($mode != 'matrix'){ echo "checked='checked' ";}
 	echo " value='list'> " . xlt('List') . "<br>";
 	
-	echo "<input type='radio' name='mode' ";
-	if($mode != 'list'){ echo "checked='checked' ";}
-	echo " value='matrix'> " . xlt('Matrix') . "<br>";
+	//echo "<input type='radio' name='mode' ";
+	//if($mode == 'matrix'){ echo "checked='checked' ";}
+	//echo " value='matrix'> " . xlt('Matrix') . "<br>";
 
 	echo "<td></td></td>";
 	echo "</tr><tr>";
 	echo "<td>";
-
+	
     echo "<a href='../summary/demographics.php' ";
     if (!$GLOBALS['concurrent_layout']){ echo "target='Main'"; }
     echo " class='css_button' onclick='top.restoreSession()'>";
@@ -381,7 +384,7 @@ $i = 0;
 			$date_array  = array();//  reset local array
 			// get data from db
 			$spell  = $main_spell;
-			$query  = sqlStatement($spell,array($this_value,$pid));	
+			$query  = sqlStatement($spell,array($this_value,$pid,$encounter));	
 			while($myrow = sqlFetchArray($query)){
 			   
 				$r=sqlStatement("SELECT * from procedure_type where procedure_code='".$myrow['result_code']."'");
@@ -433,7 +436,14 @@ $i = 0;
 					echo"<td> </td>";
 				}else
 				{
-				echo "<td class='list_item' nowrap>&nbsp;&nbsp;(" . text($myrow['range'])." ". generate_display_field(array('data_type'=>'1','list_id'=>'proc_unit'),$myrow['units']) .")&nbsp;&nbsp;</td>";
+				echo "<td class='list_item' align='center' nowrap>&nbsp;&nbsp;(" . text($myrow['range'])." ". generate_display_field(array('data_type'=>'1','list_id'=>'proc_unit'),$myrow['units']) .")&nbsp;&nbsp;</td>";
+				}
+				if($myrow['comments']==null)
+				{
+					echo" ";
+				}else
+				{
+				echo "</tr><tr><td class='white-space' colspan='3' style='font-size: 17px'><i>&nbsp;&nbsp;<br/>" . text($myrow['comments']) ."&nbsp;&nbsp;</i></td><br/>";
 				}
 				/*echo "<td class='list_item'>" . generate_display_field(array('data_type'=>'1','list_id'=>'proc_unit'),$myrow['units']) . "</td>";
 				echo "<td class='list_log'>"  . text($myrow['date_collected']) . "</td>";
@@ -638,9 +648,9 @@ if(!$printable){
 
 } else {
 	echo "<p align=center><b>" . xlt('******END OF REPORT******') . "</p>";
-	echo "<br><br><br><h4><span class=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . xlt('Dr. H SRIDHAR(MBBS,MD)')."</span>";
+	echo "<br><br><br><h4><span class=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . xlt('')."</span>";
 	echo "<h4><span class=right>" . xlt('LAB TECHNOLOGIST')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
-	echo "<br><span class=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".xlt('PATHOLOGIST')."</span>";
+	echo "<br><span class=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".xlt('')."</span>";
     echo "<span class=right>".xlt('Checked By')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
 	}
 echo "</span>";

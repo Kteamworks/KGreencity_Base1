@@ -730,7 +730,7 @@ if (!$alertmsg && ($_POST['bn_save'] || $_POST['bn_save_close'])) {
         "pid = ? AND encounter = ? AND billed = 0", array($pid,$encounter));
       sqlStatement("UPDATE billing SET billed = 1, bill_date = NOW() WHERE " .
         "pid = ? AND encounter = ? AND billed = 0 AND " .
-        "activity = 1", array($pid,$encounter));
+        "activity = 1 AND code_type!='Pharmacy Charge'", array($pid,$encounter));
     }
     else {
       // Would be good to display an error message here... they clicked
@@ -1342,7 +1342,7 @@ while ($srow = sqlFetchArray($sres)) {
     $units = max(1, intval(trim($pline['units'])));
     $fee   = sprintf('%01.2f',(0 + trim($pline['price'])) * $units);
   }
-  echoProdLine($prod_lino, $drug_id, $del, $units, $fee, $sale_id, $billed);
+  //echoProdLine($prod_lino, $drug_id, $del, $units, $fee, $sale_id, $billed);
 }
 
 // Echo new product items from this form here, but omit any line
@@ -1355,7 +1355,7 @@ if ($_POST['prod']) {
     // $fee = 0 + trim($iter['fee']);
     $units = max(1, intval(trim($iter['units'])));
     $fee   = sprintf('%01.2f',(0 + trim($iter['price'])) * $units);
-    echoProdLine(++$prod_lino, $iter['drug_id'], FALSE, $units, $fee);
+    //echoProdLine(++$prod_lino, $iter['drug_id'], FALSE, $units, $fee);
   }
 }
 
@@ -1388,7 +1388,7 @@ if ($_POST['newcodes']) {
         "prices.pr_level = patient_data.pricelevel " .
         "LIMIT 1", array($pid,$newcode,$newsel) );
       $fee = empty($prrow) ? 0 : $prrow['pr_price'];
-      echoProdLine(++$prod_lino, $newcode, FALSE, $units, $fee);
+      //echoProdLine(++$prod_lino, $newcode, FALSE, $units, $fee);
     }
 	
 	

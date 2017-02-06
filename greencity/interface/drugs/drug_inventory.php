@@ -37,7 +37,7 @@ $form_orderby = $ORDERHASH[$_REQUEST['form_orderby']] ? $_REQUEST['form_orderby'
 $orderby = $ORDERHASH[$form_orderby];
 
  // get drugs
- $res = sqlStatement("SELECT d.*, " .
+ $res = sqlStatement("SELECT d.*,YEAR(d.expdate) AS 'year',MONTHNAME(d.expdate) AS 'month', " .
   "di.inventory_id, di.lot_number, di.expiration, di.manufacturer, " .
   "di.on_hand, lo.title " .
   "FROM drugs AS d " .
@@ -47,13 +47,17 @@ $orderby = $ORDERHASH[$form_orderby];
   "lo.option_id = di.warehouse_id " .
   "LEFT JOIN list_options AS lof ON lof.list_id = 'drug_form' AND " .
   "lof.option_id = d.form " .
-  "ORDER BY $orderby");
+  "ORDER BY drug_id desc");
+    
 ?>
 <html>
 
 <head>
 <?php html_header_show();?>
 
+<link rel="stylesheet" href="dataTableCSS/bootstrap.min.css">
+ <link rel="stylesheet" href="dataTableCSS/dataTables.bootstrap.min.css">
+ 
 <link rel="stylesheet" href='<?php  echo $css_header ?>' type='text/css'>
 <title><?php echo xlt('Drug Inventory'); ?></title>
 
@@ -64,6 +68,16 @@ a, a:visited, a:hover { color:#0000cc; }
 </style>
 
 <script type="text/javascript" src="../../library/dialog.js"></script>
+
+<script src="PluginsDataTable/jquery-1.12.4.js"></script>
+	<script src="PluginsDataTable/jquery.dataTables.min.js"></script>
+	<script src="PluginsDataTable/dataTables.bootstrap.min.js"></script>
+	
+	<script>
+	$(document).ready(function() {
+    $('#example').DataTable();
+     } );
+   </script>
 
 <script language="JavaScript">
 
@@ -103,7 +117,8 @@ function dosort(orderby) {
 <body class="body_top">
 <form method='post' action='drug_inventory.php'>
 
-<table width='100%' cellpadding='1' cellspacing='2'>
+<table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+ <thead>
  <tr class='head'>
   <th style="text-align:left" title='<?php echo xla('Click to edit'); ?>'>
    
@@ -117,6 +132,10 @@ function dosort(orderby) {
   
    <th style="text-align:left">
    <?php echo xlt('Supplier'); ?>
+  </th>
+  
+  <th style="text-align:left">
+   <?php echo xlt('Invoice'); ?>
   </th>
   <th style="text-align:left">
    <?php echo xlt('Batch Number'); ?>
@@ -138,12 +157,15 @@ function dosort(orderby) {
    <th style="text-align:right">
    <?php echo xlt('Pack'); ?>
   </th>
+   <th style="text-align:right">
+   <?php echo xlt('Pack Type'); ?>
+  </th>
   
   <th>
    <?php echo xlt('Expires'); ?>
   </th>
   <th style="text-align:right">
-   <?php echo xlt('MRP On Pack'); ?>
+   <?php echo xlt('MRP'); ?>
   </th>
    <th style="text-align:right">
    <?php echo xlt('Trade Price'); ?>
@@ -161,32 +183,56 @@ function dosort(orderby) {
    <?php echo xlt('Net Value'); ?>
   </th>
   
-  
-  
  
-
  </tr>
+  </thead>
+  <tbody>
 <?php 
  $lastid = "";
  $encount = 0;
  while ($row = sqlFetchArray($res)) {
   if ($lastid != $row['drug_id']) {
    ++$encount;
-   $bgcolor = "#" . (($encount & 1) ? "ddddff" : "ffdddd");
+   //$bgcolor = "#" . (($encount & 1) ? "ddddff" : "ffdddd");
+   $month = $row['month'];
+   $year = $row['year'];
+   $expdt = $row['month'].'-'.$row['year'];
+   if($expdt=='-0'){
+	   $expdt='Not Entered';
+   }
+     $e_date = $row['expdate'];
+	 $date1 = strtotime($e_date);
+	 $today=date('Y-m-d');
+	 $date2 = strtotime($today);
+	 
+	 $check = date($date1 - $date2)/86400; 
+	 
+	if($check < 30)
+	{
+		
+     $danger='danger';
+	}
+	else{
+		 $danger='active';
+	}
+   
+      
    $lastid = $row['drug_id'];
-   echo " <tr class='detail' bgcolor='$bgcolor'>\n";
-    echo "  <td style='text-align:left' onclick='dodclick1(".attr($lastid).")'>" .
+   echo " <tr class='$danger'>\n";
+   echo "  <td onclick='dodclick1(".attr($lastid).")'>" .
     "<a href='' onclick='return false'>" .
     text($row['name']) . "</a></td>\n";
 	echo "  <td align='left'>" . text($row['mfr']) . "</td>\n";
   echo "  <td align='left'>" . text($row['supplier']) . "</td>\n";
+  echo "  <td align='left'>" . text($row['invoice']) . "</td>\n";
    echo "  <td align='left'>" . text($row['batch']) . "</td>\n";
     echo "  <td align='right'>" . text($row['inStock']) . "</td>\n";
     echo "  <td align='right'>" . text($row['quantity']) . "</td>\n";
 	 echo "  <td align='right'>" . text($row['free']) . "</td>\n";
 	echo "  <td align='right'>" . text($row['pack']) . "</td>\n";
+	echo "  <td align='right'>" . text($row['packType']) . "</td>\n";
   
-   echo "  <td align='center'>" . text($row['expdate']) . "</td>\n";
+   echo "  <td align='center'>" . text($expdt) . "</td>\n";
     echo "  <td align='right'>" . text($row['mrp']) . "</td>\n";
 	echo "  <td align='right'>" . text($row['tradePrice']) . "</td>\n";
 	echo "  <td align='right'>" . text($row['discount']) . "</td>\n";
@@ -210,7 +256,14 @@ function dosort(orderby) {
   } */
   echo " </tr>\n";
  } // end while
+ 
+ 
+ 
 ?>
+
+
+</tbody>
+
 </table>
 
 <center><p>

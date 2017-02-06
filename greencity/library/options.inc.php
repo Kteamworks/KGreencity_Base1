@@ -230,7 +230,6 @@ function generate_form_field($frow, $currvalue) {
   // modified 6-2009 by BM to allow complete skipping of the 'empty' text title
   //  if make $frow['empty_title'] equal to 'SKIP'
   $showEmpty = true;
-  $frow['empty_title'] = "SKIP";
   if (isset($frow['empty_title'])) {
    if ($frow['empty_title'] == "SKIP") {
     //do not display an 'empty' choice
@@ -1087,7 +1086,6 @@ function generate_print_field($frow, $currvalue) {
   //  will default to 'Unassigned'.
   // If it is 'SKIP' then an empty text title is completely skipped.
   $showEmpty = true;
-  $frow['empty_title'] = "SKIP";
   if (isset($frow['empty_title'])) {
     if ($frow['empty_title'] == "SKIP") {
       //do not display an 'empty' choice
@@ -2426,7 +2424,7 @@ function display_layout_tabs_obs($formtype, $result1, $result2='') {
   global $item_count, $cell_count, $last_group, $CPR;
 
   $fres = sqlStatement("SELECT distinct group_name FROM layout_options " .
-    "WHERE form_id = ? AND uor > 0 and group_name in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History')" .
+    "WHERE form_id = ? AND uor > 0 and group_name in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History','CFirst Trimester')" .
     "ORDER BY group_name, seq", array($formtype) );
 
   $first = true;
@@ -2564,7 +2562,7 @@ function display_layout_tabs_obsdata($formtype, $result1, $result2='') {
   global $item_count, $cell_count, $last_group, $CPR;
 
   $fres = sqlStatement("SELECT distinct group_name FROM layout_options " .
-    "WHERE form_id = ? AND uor > 0  and group_name in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History') " .
+    "WHERE form_id = ? AND uor > 0  and group_name in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History','CFirst Trimester') " .
     "ORDER BY group_name, seq", array($formtype));
 
 	$first = true;
@@ -2792,7 +2790,7 @@ function display_layout_tabs_obsdata_editable($formtype, $result1, $result2='') 
   global $item_count, $cell_count, $last_group, $CPR;
 
   $fres = sqlStatement("SELECT distinct group_name FROM layout_options " .
-    "WHERE form_id = ? AND uor > 0  and group_name in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History') " .
+    "WHERE form_id = ? AND uor > 0  and group_name in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History','CFirst Trimester') " .
     "ORDER BY group_name, seq", array($formtype) );
 
 	$first = true;
@@ -3028,7 +3026,7 @@ function generate_layout_validation($form_id) {
       case 33:
       case 36:
         echo
-        " if (f.$fldname.selectedIndex = 0) {\n" .
+        " if (f.$fldname.selectedIndex <= 0) {\n" .
         "  if (f.$fldname.focus) f.$fldname.focus();\n" .
         "  		errMsgs[errMsgs.length] = '" . htmlspecialchars( (xl_layout_label($fldtitle)), ENT_QUOTES) . "'; \n" .
         " }\n";

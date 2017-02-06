@@ -956,12 +956,12 @@ $age_days=$patdata['age_days'];
             echo "<td class='bold' width='10%' align='right'>".xlt('Amount')."</td></b></tr>\n";
               if($form_towards==2){
 			  $inres = sqlStatement("SELECT dtime,amount1,amount2,receipt_id,method FROM payments WHERE " .
-          "pid = ? AND encounter = ? AND activity=1  " .
+          "pid = ? AND encounter = ? AND activity=1 AND stage!='pharm' " .
 			  "ORDER BY dtime", array($form_pid,$encounter) );
 			  }else
 			  {
 				  $inres = sqlStatement("SELECT dtime,amount1,amount2,receipt_id,method,source FROM payments WHERE " .
-          "pid = ? AND encounter = ? AND activity=1  " .
+          "pid = ? AND encounter = ? AND activity=1 AND stage!='pharm' " .
 			  "ORDER BY dtime desc limit 1", array($form_pid,$encounter) );
 			  }
     while ($inrow = sqlFetchArray($inres)) {
@@ -1612,7 +1612,7 @@ function make_insurance()
     "b.pid = ? AND b.activity = 1  AND " .//AND b.billed = 0
     "b.code_type != 'TAX' AND b.fee != 0 " .
     "AND fe.pid = b.pid AND fe.encounter = b.encounter " .
-	"where fe.pid = ? " .
+	"where b.code_type!='Pharmacy Charge' and fe.pid = ? " .
     "ORDER BY b.encounter";
   $bres = sqlStatement($query,array($pid,$pid));
   //
@@ -1650,7 +1650,7 @@ function make_insurance()
 
   // Do the same for unbilled product sales.
   //
-  $query = "SELECT fe.encounter, s.drug_id, s.fee, " .
+ /*  $query = "SELECT fe.encounter, s.drug_id, s.fee, " .
     "LEFT(fe.date, 10) AS encdate,fe.last_level_closed " .
     "FROM form_encounter AS fe left join drug_sales AS s " .
     "on s.pid = ? AND s.fee != 0 " .//AND s.billed = 0 
@@ -1675,7 +1675,7 @@ function make_insurance()
     $trow = sqlQuery("SELECT taxrates FROM drug_templates WHERE drug_id = ? " .
       "ORDER BY selector LIMIT 1", array($drow['drug_id']) );
     $encs[$key]['charges'] += calcTaxes($trow, $drow['fee']);
-  }
+  } */
 
   ksort($encs, SORT_NUMERIC);
   $gottoday = false;
@@ -1725,7 +1725,7 @@ $discount=0;
 //Patient Payment
 //---------------
 	$drow = sqlQuery("SELECT  SUM(pay_amount) AS payments, " .
-	  "SUM(adj_amount) AS adjustments  FROM ar_activity WHERE " .
+	  "SUM(adj_amount) AS adjustments  FROM ar_activity WHERE code_type!='Pharmacy Charge' and " .
       "pid = ? and encounter = ? and " .
       "payer_type = 0 and account_code!='PCP' ",
 			array($pid,$enc));
@@ -1742,12 +1742,12 @@ $discount=0;
 	$duept=0;
 	if((($NumberOfInsurance==0 || $value['last_level_closed']==4 || $NumberOfInsurance== $value['last_level_closed'])))
 	 {//Patient balance
-	  $brow = sqlQuery("SELECT SUM(fee) AS amount FROM billing WHERE " .
+	  $brow = sqlQuery("SELECT SUM(fee) AS amount FROM billing WHERE code_type!='Pharmacy Charge' and   " .
 	  "pid = ? and encounter = ? AND activity = 1",array($pid,$enc));
-	  $srow = sqlQuery("SELECT SUM(fee) AS amount FROM drug_sales WHERE " .
-	  "pid = ? and encounter = ? ",array($pid,$enc));
+	  /* $srow = sqlQuery("SELECT SUM(fee) AS amount FROM drug_sales WHERE " .
+	  "pid = ? and encounter = ? ",array($pid,$enc)); */
 	  $drow = sqlQuery("SELECT SUM(pay_amount) AS payments, " .
-	  "SUM(adj_amount) AS adjustments FROM ar_activity WHERE " .
+	  "SUM(adj_amount) AS adjustments FROM ar_activity WHERE code_type!='Pharmacy Charge' and " .
 	  "pid = ? and encounter = ? ",array($pid,$enc));
 	 $iamount = sqlQuery("SELECT sum(approved_amt) approved_amt  FROM billing_activity_final WHERE " .
 	  "pid = ? and encounter = ? ",array($pid,$enc));
@@ -1845,7 +1845,7 @@ $ins=sqlStatement("SELECT * from billing_activity_final where encounter='".$enco
 $ins1 = sqlFetchArray($ins);
 $FP=$sbd['PFYN_Flag'];
 
-if($FP==1 && $ins1==0)
+/*if($FP==1 && $ins1==0)
 	
 	{
 	
@@ -1853,7 +1853,7 @@ if($FP==1 && $ins1==0)
 		
 	}
 	else
-	{
+	{*/
 		
 	
 ?>  
@@ -1861,7 +1861,7 @@ if($FP==1 && $ins1==0)
 
 <input type='submit' name='form_save' value='<?php echo htmlspecialchars( xl('Generate Invoice'), ENT_QUOTES);?>' /> &nbsp;
 <input type='button' value='<?php echo xla('Cancel'); ?>' onclick='window.close()' />
-<?php  } ?>
+<?php /* }*/ ?>
 <input type="hidden" name="hidden_patient_code" id="hidden_patient_code" value="<?php echo attr($pid);?>"/>
 <input type='hidden' name='ajax_mode' id='ajax_mode' value='' />
 <input type='hidden' name='mode' id='mode' value='' />

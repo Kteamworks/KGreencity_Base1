@@ -205,9 +205,6 @@ body
 <div id="superbill_results">
 
 <?php
-$row32=sqlStatement("select * from insurance_data where pid='".$form_pid."'");
-$row3=sqlFetchArray($row32);
-$provider1=$row3['provider'];
 if( 1) {
     $sql = "select * from facility where billing_location = 1";
     $db = $GLOBALS['adodb']['db'];
@@ -283,6 +280,10 @@ $row1 = sqlStatement("SELECT * from users where id='".$provider."'");
 $row2=  sqlFetchArray($row1);
 $billing=sqlStatement("select * from billing  where encounter='".$encounter."'");
 $billid=sqlFetchArray($billing);
+
+$billingdate=sqlStatement("select max(date) as d from billing  where encounter='".$encounter."'");
+$billdate=sqlFetchArray($billingdate);
+
 $admit=sqlStatement("select * from t_form_admit  where encounter='".$encounter."'");
 $admit1=sqlFetchArray($admit);
 $row32=sqlStatement("select * from insurance_data where pid='".$form_pid."'");
@@ -290,24 +291,12 @@ $row3=sqlFetchArray($row32);
 $provider1=$row3['provider'];
 $insurance=sqlStatement("select * from insurance_companies where id='".$provider1."'");
 $insurance1=sqlFetchArray($insurance);
-
-
-
-
-$billingdate=sqlStatement("select max(date) as d from billing  where encounter='".$encounter."'");
-$billdate=sqlFetchArray($billingdate);
-
-
-
-$insurance2=sqlStatement("select * from billing_activity_final where encounter='".$encounter."'");
-$insurance2=sqlFetchArray($insurance2);
-$authno=$insurance2['auth_no'];
 $age=$patdata['age'];
 $age_months=$patdata['age_months'];
 $age_days=$patdata['age_days'];
 $rateplan=$patdata['rateplan'];
 
-    echo "<center><h4>".xlt("Pharmacy Bill")."</h4></center>";
+    echo "<center><h4>".xlt("Final Bill")."</h4></center>";
 	echo "<table border=1 rules=cols style='width:100%'>";
 	
 	echo "<tr><td  style='padding-right: 100px;' >" . xlt('Name') . ": <b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".text($patdata['title']) ."  ". text($patdata['fname']) . "  " . text($patdata['mname'])."  ".text($patdata['lname']) . "</b></td>";
@@ -341,12 +330,8 @@ $rateplan=$patdata['rateplan'];
 	if($rateplan=="TPAInsurance")
 	{
 	echo "<tr><td  style='padding-right: 100px;' >" . xlt('TPA Insurance') . ": ".$insurance1['name'] ."</td>";
-	echo "<td  style='padding-right: 10px;' >" . xlt('Pre-Auth No.') . ": " . text($authno) . "</td></tr>";
+	echo "<td  style='padding-right: 10px;' >" .xlt(''). "</td></tr>";
 	}
-	
-	
-	
-	
 	/* echo "<tr><td  style='padding-right: 10px;' >" . xlt('Date') . ":&nbsp&nbsp ". text(date('d/M/y',strtotime($patdata['date'])))."</td>";
 	echo "<td  style='padding-right: 10px;' >" . xlt('Bill Date') . ":&nbsp&nbsp ". text(date(' d/M/y'))."</td></tr>";
 	echo "<tr><td  style='padding-right: 10px;' >" . xlt('Name') . ": <b>&nbsp&nbsp" . text($patdata['fname']) . "  " . text($patdata['lname']) . "</b></td>";
@@ -371,19 +356,12 @@ $rateplan=$patdata['rateplan'];
             echo "<table width='100%' style='#000;'>";
             echo "<tr style='border-top: 1px solid #000;' >";
 			echo "<b>";
-            echo "<td class='bold' width='10%'>".xlt('Date')."</td>";
-            
-			echo "<td class='bold' width='10%'>".xlt('Description')."</td>";
-			echo "<td class='bold' width='10%'>".xlt('Batch')."</td>";
-			echo "<td class='bold' width='10%'>".xlt('Expiry Date')."</td>";
-			echo "<td class='bold' width='10%'>".xlt('MFR')."</td>";
-			//echo "<td class='bold' width='10%'>".xlt('UOM')."</td>";
+            echo "<td class='bold' width='20%'>".xlt('Date')."</td>";
+            echo "<td class='bold' width='20%'>".xlt('Head')."</td>";
+			echo "<td class='bold' width='30%'>".xlt('Description')."</td>";
 			echo "<td class='bold' width='10%' align='right'>".xlt('Rate')."</td>";
-			echo "<td class='bold' width='10%' align='right'>".xlt('Qty')."</td>";
-			echo "<td class='bold' width='10%' align='right'>".xlt('Tax Code')."</td>";
-			echo "<td class='bold' width='10%' align='right'>".xlt('Tax Amt')."</td>";
-			//echo "<td class='bold' width='10%' align='right'>".xlt('Payable Total Amt')."</td>";
-            echo "<td class='bold' width='10%' align='right'>".xlt('Amount')."</td></tr><tr style='border-bottom: 1px solid #000;'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+			echo "<td class='bold' width='10%' align='right'>".xlt('No. of Days')."</td>";
+            echo "<td class='bold' width='10%' align='right'>".xlt('Fee')."</td></tr><tr style='border-bottom: 1px solid #000;'><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
 			echo "</b>";
 			
             $total = 0.00;
@@ -412,12 +390,10 @@ $rateplan=$patdata['rateplan'];
                     $bdate = strtotime($b['date']);
 					$ct=$b['code_type'];
 					
-					$counta=sqlStatement("SELECT max(date) d,sum(fee) as st ,code_type,notecodes,count(code_type) as c from billing where activity='1' and encounter='".$encounter."' and code_text not in ('INSURANCE DIFFERENCE AMOUNT','REGISTRATION CHARGES','INSURANCE CO PAYMENT') and code_type='".$ct."'");
-					
-					//b['code_text']!=''
+					$counta=sqlStatement("SELECT max(date) d,sum(fee) as st ,code_type,notecodes,count(code_type) as c from billing where activity='1' and encounter='".$encounter."' and code_type='".$ct."'");
 					$cc=sqlFetchArray($counta);
 					
-					 if($item_code!=$b['code_type'] & $b['code_type']=='Pharmacy Charge'){
+					 if($item_code!=$b['code_type']){
 					
 					 $cct=1;
 					  $item_code=$b['code_type'];
@@ -430,41 +406,41 @@ $rateplan=$patdata['rateplan'];
 						$cct+=1;
 				    }	
 					
-					$drugid=$b['code_text'];
-					$drugdetails=sqlStatement("select * from drugs where name='".$drugid."'");
-					$d=sqlFetchArray($drugdetails);
 					$rate=$b['fee']/$b['units'];
-					$vatamount=($d['vat']*$d['mrp'])/100;
-					if($b['code_type']=='Pharmacy Charge'){
-                    echo "<tr>";
-                   
-					echo "<td class='text' style='font-size: 0.8em'>" . text(date('d/M/y',strtotime($cc['d']))) ."</td>";
 					
-                    //echo "<td class='text'>". text($b['code_type'])."</td>\n";
-					echo "<td class='text'>".text($d['name'].' '.$b['notecodes']) . "</td>";
-					echo "<td class='text'>".text($d['batch']) . "</td>";
-					echo "<td class='text'>".text($d['expdate']) . "</td>";
-					echo "<td class='text'>".text($d['mfr']) . "</td>";
+                    echo "<tr>";
+					//if($b['last_update_date']==null)
+					//{
+                    echo "<td class='text' style='font-size: 0.8em'>" . text(date('d/M/y',strtotime($cc['d']))) ."</td>";
+					//}else
+					//{
+						// echo "<td class='text' style='font-size: 0.8em'>" . text(date('d/M/y',strtotime($b['last_update_date']))) ."</td>";
+					//}
+                    echo "<td class='text'>". text($b['code_type'])."</td>\n";
+					echo "<td class='text'>".text($b['code_text'].' '.$b['notecodes']) . "</td>";
 					echo "<td class='text' align='right'>" .text(oeFormatMoney($rate)) . "</td>";
+					if($b['code_type']!="Doctor Charges")
+					{
 			        echo "<td class='text' align='right'>" .text($b['units']) . "</td>";
-					echo "<td class='text' align='right'>" .text($d['vat']) . "</td>";
-					echo "<td class='text' align='right'>" .text(oeFormatMoney($vatamount)) . "</td>";
+					}else
+					{
+						echo "<td class='text' align='right'>" .' '. "</td>";
+					}
                     echo "<td class='text' align='right'>";
                     echo oeFormatMoney($b['fee']);
                     echo "</td>";
 					
                     echo "</tr>";
-					$total += $b['fee'];
-					}
-			        if($cct==$cc['c'] & $b['code_type']=='Pharmacy Charge' )  
+					
+			        if($cct==$cc['c'] )  
 					{		
 						
-						echo "\n\n<tr style='border-top: 1px solid #000;'><td class='bold' colspan=5 style='text-align:right'>".xlt('')."</td><td class='text'>" . "</td><td class='text'>" . "</td><td class='text'>" . "</td><td class='text'>" . "</td><td class='text'>" . "</td></tr>";
-						echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>".xlt('Sub-Total:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($cc['st']) . "</td></tr>";
+						echo "\n\n<tr style='border-top: 1px solid #000;'><td class='bold' colspan=5 style='text-align:right'>".xlt('')."</td><td class='text'>" . "</td></tr>";
+						echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=5 style='text-align:right'>".xlt('Sub-Total:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($cc['st']) . "</td></tr>";
 						
 						//$cct=0;
 					}
-                  
+                    $total += $b['fee'];
 					
 					
                 }
@@ -472,18 +448,13 @@ $rateplan=$patdata['rateplan'];
             // Calculate the copay for the encounter
             $copays = getPatientCopay($pids[$iCounter],$ta[1]);
 
-			$re=sqlQuery("select approved_amt,rec_amt from billing_activity_final where encounter=?",array($encounter));
-			$approved_amt=$re['approved_amt'];
-			$ins_due=$approved_amt-$re['rec_amt'];
+
            
 //		   echo "<tr style='border-top: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
 	//	   echo "<tr style='border-bottom: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
 			echo "<tr style='border-top: 1px solid #000;'><td>&nbsp; </td></tr>";
-            echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>".xlt('Bill Amount:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($total + abs($copays)) . "</td></tr>";
-			//echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>".xlt('Primary Sponsor Amount:')."&nbsp&nbsp"."</td><td //class='text' align='right'>" . oeFormatMoney($approved_amt) . "</td></tr>";
-			
-			
-			//echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>".xlt('Pri Sponsor Due:')."&nbsp&nbsp"."</td><td class='text' //align='right'>" . oeFormatMoney($ins_due) . "</td></tr>";
+            echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=5 style='text-align:right'>".xlt('Bill Amount:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($total + abs($copays)) . "</td></tr>";
+
             //echo "<tr><td class='bold' colspan=5 style='text-align:right'>".xlt('Total:')."&nbsp&nbsp"."</td><td class='text'>" . oeFormatMoney($total) . "</td></tr>";
             echo "</table>";
             echo "<pre>";
@@ -492,24 +463,26 @@ $rateplan=$patdata['rateplan'];
 			 
             echo "<table style='border-top: 1px solid #000;' width='100%'>";
             echo "<b><tr style='border-bottom: 1px solid #000;'>";
-			/*
             echo "<td class='bold'  width='20%'>".xlt('Payments')."</td>";
             echo "<td class='bold' width='20%'>".xlt('Receipt No')."</td>";
 			echo "<td class='bold' width='20%'>".xlt('Mode')."</td>";
 			echo "<td class='bold' width='10%' nowrap>".xlt('Reference No.')."</td>";
 			echo "<td class='bold' width='10%'>".xlt('')."</td>";
             echo "<td class='bold' width='10%' align='right'>".xlt('Amount')."</td></b></tr>\n";
-             */
+             
 			  $inres = sqlStatement("SELECT user,dtime,amount1,amount2,receipt_id,method FROM payments WHERE " .
-          "pid = ? AND encounter = ?  AND activity=1  " .
+          "pid = ? AND encounter = ?  AND activity=1 AND stage!='pharm' " .
       "ORDER BY dtime", array($form_pid,$encounter) );
     while ($inrow = sqlFetchArray($inres)) {
       $payer = empty($inrow['payer_type']) ? 'Pt' : ('Ins' . $inrow['payer_type']);
       $charges -= sprintf('%01.2f', $inrow['amount1']);
 		 $amount = sprintf('%01.2f', 0 - $amount); // make it negative
      echo " <tr>\n\n\n";
-       echo "  <td style='font-size: 0.8em'>" .  text() . "</td>\n";
-     
+       echo "  <td style='font-size: 0.8em'>" .  text(date('d/M/y',strtotime($inrow['dtime']))) . "</td>\n";
+     echo "  <td class='text'>" .  text($inrow['receipt_id']) . "</td>\n";
+     echo "  <td class='text'>"  .text($inrow['method'])."</td>\n";
+     echo "  <td class='text'>".text($inrow['source'])."</td>\n";
+	 echo "<td class='text'>".xlt('')."</td>";
 	 if($inrow['amount1']==0)
 	 {
 		 $amt=$inrow['amount2'];
@@ -519,34 +492,20 @@ $rateplan=$patdata['rateplan'];
 		 $amt=$inrow['amount1'];
 	 }
 	 //$amt=$inrow['amount1'];
-   
+    echo "  <td class='text' align='right'>" . text(oeFormatMoney($amt)) . "</td>\n";
     echo " </tr>\n";
-	
 	 $nettotal += $amt;
 	
 
     }
-	
-	
-	
-
-//echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=5 style='text-align:right'>".xlt('Bill Amount:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($total + abs($copays)) . "</td></tr>";
 	// echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=6 style='text-align:right'>".xlt('Net Payments :')."&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"."</td><td class='text'>" . oeFormatMoney($nettotal) . "</td></tr>";
-	//echo "<tr style='border-top: 1px solid #000;' ><td class='bold' colspan=2 style='border-bottom: 1px solid #000;' align='right' nowrap>".xlt('Net Payments: ')." ".oeFormatMoney($nettotal) . "</td></tr>";
-   //echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 0px solid #000;'  style='text-align:right' nowrap>".xlt('Total Bill Amount')."</td><td class='text' style='border-bottom: 0px solid #000;' align='right'>" . oeFormatMoney($total) . "</td></tr>";
-   //echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right'>".xlt('Discount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($totaldis) . "</td></tr>";
-  // echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Net Amount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$totaldis) . "</td></tr>";
-    if($approved_amt!=0)
-	{
-	//echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 0px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Amount')."</td><td class='text' style='border-bottom: 0px solid #000;' align='right'>" . oeFormatMoney($approved_amt) . "</td></tr>";
-	//echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Pay')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($approved_paid) . "</td></tr>";
-	//echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Due')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($approved_amt-$approved_paid) . "</td></tr>";
-	}		
-  //echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;' style='text-align:right' nowrap>".xlt('Balance Due')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$nettotal-$totaldis-$approved_amt) . "</td></tr>";
-	echo "</table>"; 
-	
+	echo "<tr style='border-top: 1px solid #000;' ><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;' style='text-align:right' nowrap>".xlt('Net Payments')."</td><td class='text' style='border-bottom: 1px solid #000;'align='right' >" ."". oeFormatMoney($nettotal) . "</td></tr>";
+     echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 0px solid #000;'  style='text-align:right' nowrap>".xlt('Total Bill Amount')."</td><td class='text' style='border-bottom: 0px solid #000;' align='right'>" . oeFormatMoney($total) . "</td></tr>";
+     echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right'>".xlt('Discount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($totaldis) . "</td></tr>";
+    echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Net Amount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$totaldis) . "</td></tr>";
+    echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;' style='text-align:right' nowrap>".xlt('Balance Due')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$nettotal-$totaldis) . "</td></tr>";
+	echo "</table>";
 	   }
-	   
         echo "</div>";
 
         ++$iCounter;
@@ -557,9 +516,6 @@ $rateplan=$patdata['rateplan'];
          print "<br/><br/>". (text($auth))."&nbsp;&nbsp;&nbsp;<br/>";
 		echo "</div>";
     }
-}
-else{
-	echo "Patient is not an Insurance Patient";
 }
     ?>
 	
