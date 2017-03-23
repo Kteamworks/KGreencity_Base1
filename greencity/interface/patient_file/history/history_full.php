@@ -29,11 +29,17 @@ $fake_register_globals=false;
 
 require_once("../../globals.php");
 require_once("$srcdir/patient.inc");
+require_once("$srcdir/encounter.inc");
 require_once("history.inc.php");
 require_once("$srcdir/acl.inc");
 require_once("$srcdir/options.inc.php");
+$encounter=$_GET["encounter"] ? $_GET["encounter"] : $GLOBALS['encounter'];
+$e=$_GET["encounter"] ? $_GET["encounter"] : $GLOBALS['encounter'];
+setencounter($encounter);
+$returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_encounter.php';
+ include_once("$srcdir/pid.inc");
 $CPR = 4; // cells per row
-
+//echo $encounter=$_GET["encounter"] ;
 // Check authorization.
 if (acl_check('patients','med')) {
   $tmp = getPatientData($pid, "squad");
@@ -66,7 +72,59 @@ if ( !acl_check('patients','med','',array('write','addonly') ))
 <script type="text/javascript" src="../../../library/js/jquery.1.3.2.js"></script>
 <script type="text/javascript" src="../../../library/js/common.js"></script>
 <?php include_once("{$GLOBALS['srcdir']}/options.js.php"); ?>
+<script type="text/javascript">
+function setMyPatient() {
+<?php if ($GLOBALS['concurrent_layout']) { ?>
+ // Avoid race conditions with loading of the left_nav or Title frame.
+ if (!parent.allFramesLoaded()) {
+  setTimeout("setMyPatient()", 500);
+  return;
+ }
+<?php 
+ $result = getPatientData($pid, "*, DATE_FORMAT(DOB,'%Y-%m-%d') as DOB_YMD");
+ if (isset($_GET['set_pid'])) { ?>
+ parent.left_nav.setPatient(<?php echo "'" . htmlspecialchars(($result['fname']) . " " . ($result['lname']),ENT_QUOTES) .
+   "'," . htmlspecialchars($pid,ENT_QUOTES) . ",'" . htmlspecialchars(($result['genericname1']),ENT_QUOTES) .
+   "','', ' " . htmlspecialchars(xl('DOB') . ": " . oeFormatShortDate($result['DOB_YMD']) . " " . xl('Age') . ": " . getPatientAgeDisplay($result['DOB_YMD']), ENT_QUOTES) . "'"; ?>);
+ var EncounterDateArray = new Array;
+ var CalendarCategoryArray = new Array;
+ var EncounterIdArray = new Array;
+ var Count = 0;
+<?php
+  //Encounter details are stored to javacript as array.
+  $result4 = sqlStatement("SELECT fe.encounter,fe.encounter_ipop,fe.date,openemr_postcalendar_categories.pc_catname FROM form_encounter AS fe ".
+    " left join openemr_postcalendar_categories on fe.pc_catid=openemr_postcalendar_categories.pc_catid  WHERE fe.pid = ? order by fe.date desc", array($pid));
+  if(sqlNumRows($result4)>0) {
+    while($rowresult4 = sqlFetchArray($result4)) {
+?>
+ EncounterIdArray[Count] = '<?php echo htmlspecialchars($rowresult4['encounter'], ENT_QUOTES); ?>';
+ EncounterDateArray[Count] = '<?php echo htmlspecialchars(oeFormatShortDate(date("Y-m-d", strtotime($rowresult4['date']))), ENT_QUOTES); ?>';
+ CalendarCategoryArray[Count] = '<?php echo htmlspecialchars(xl_appt_category($rowresult4['pc_catname']), ENT_QUOTES); ?>';
+ Count++;
+<?php
+    }
+  }
+?>
 
+ parent.left_nav.setPatientEncounter(EncounterIdArray,EncounterDateArray,CalendarCategoryArray);
+  <?php
+  $test = sqlStatement("SELECT fe.encounter,fe.encounter_ipop,fe.date,openemr_postcalendar_categories.pc_catname FROM form_encounter AS fe ".
+    " left join openemr_postcalendar_categories on fe.pc_catid=openemr_postcalendar_categories.pc_catid  WHERE fe.pid = ? and  fe.encounter=? order by fe.date desc", array($pid,$e));
+	 $test1=sqlFetchArray($test);
+?>
+ EncounterIdArray1= '<?php echo htmlspecialchars($test1['encounter'], ENT_QUOTES); ?>';
+ EncounterDateArray1 = '<?php echo htmlspecialchars(oeFormatShortDate(date("Y-m-d", strtotime($test1['date']))), ENT_QUOTES); ?>';
+ CalendarCategoryArray1 = '<?php echo htmlspecialchars(xl_appt_category($test1['pc_catname']), ENT_QUOTES); ?>';
+ parent.left_nav.setEncounter(EncounterDateArray1,EncounterIdArray1,CalendarCategoryArray1);
+<?php } // end setting new pid ?>
+ parent.left_nav.setRadio(window.name, 'dem');
+ parent.left_nav.syncRadios();
+<?php } // end concurrent layout ?>
+}
+$(window).load(function() {
+ setMyPatient();
+});
+</script>
 <script LANGUAGE="JavaScript">
  //Added on 5-jun-2k14 (regarding 'Smoking Status - display SNOMED code description')
  var code_options_js = Array();
@@ -220,6 +278,9 @@ div.tab {
 	height: auto;
 	width: auto;
 }
+td{
+	font-size: 12;
+}
 </style>
 
 </head>
@@ -227,6 +288,8 @@ div.tab {
 
 <?php
 $result = getHistoryData($pid);
+ $details=getPatientData($pid);
+ $name=$details['fname'].' ' .$details['lname'];
 if (!is_array($result)) {
   newHistoryData($pid);
   $result = getHistoryData($pid);
@@ -237,15 +300,35 @@ $fres = sqlStatement("SELECT * FROM layout_options " .
   "ORDER BY group_name, seq");
 ?>
 
-<form action="history_save.php" name='history_form' method='post' onsubmit='return validate(this)' >
+<form action="history_save.php?encounter=<?php echo $encounter?>" name='history_form' method='post' onsubmit='return validate(this)' >
     <input type='hidden' name='mode' value='save'>
 
     <div>
-        <span class="title"><?php echo htmlspecialchars(xl('Patient History / Lifestyle'),ENT_NOQUOTES); ?></span>
+        <span class="title"><?php echo htmlspecialchars(xl('Patient History'),ENT_NOQUOTES); ?></span>
     </div>
     <div style='float:left;margin-right:10px'>
-  <?php echo htmlspecialchars(xl('for'),ENT_NOQUOTES);?>&nbsp;<span class="title"><a href="../summary/demographics.php" onclick='top.restoreSession()'><?php echo htmlspecialchars(getPatientName($pid),ENT_NOQUOTES); ?></a></span>
+  <?php echo htmlspecialchars(xl('for'),ENT_NOQUOTES);?><br><b><?php echo htmlspecialchars(xl('Name:'),ENT_NOQUOTES)?>&nbsp;&nbsp;<span class="title"><a href="../summary/demographics.php" onclick='top.restoreSession()'><?php echo htmlspecialchars($name,ENT_NOQUOTES); ?></a></span>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <?php
+  $details=getPatientData($pid);
+  $age=$details['age'];
+  $occupation=$details['occupation'];
+  $husband=$details['guardiansname'];
+  echo htmlspecialchars(xl('Occupation:') ,ENT_NOQUOTES);
+  ?></b>
+  &nbsp;&nbsp;
+  <?php echo htmlspecialchars($occupation,ENT_NOQUOTES);?>
+  <br>
+  <b><?php echo htmlspecialchars(xl('Age:') ,ENT_NOQUOTES);?></b>
+  &nbsp;&nbsp;
+  <?php echo htmlspecialchars($age,ENT_NOQUOTES);?>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b><?php echo htmlspecialchars(xl('Husbands Name:') ,ENT_NOQUOTES);?></b>
+  &nbsp;&nbsp;
+  <?php echo htmlspecialchars($husband,ENT_NOQUOTES);?>
     </div>
+	<br>
+	<br><br><br>
     <div>
         <a href="javascript:submit_history();" class='css_button'>
             <span><?php echo htmlspecialchars(xl('Save'),ENT_NOQUOTES); ?></span>
@@ -276,6 +359,28 @@ $fres = sqlStatement("SELECT * FROM layout_options " .
 
 <script language="JavaScript">
 <?php echo $date_init; // setup for popup calendars ?>
+$(document).ready(function () {
+	$('.tabNav').addClass('nav nav-tabs');
+  $('.tabContainer').addClass('tab-pane');
+     var ids = $(".nav-tabs").children().length; //think about it ;)
+  var id = ids + 1;
+     var tabId = 'iclick_' + id;
+     $('.tabNav').append('<li><a href="#iclick_' + id + '" id="newt">Obstretic Examination</a></li>');
+     $('.tabContainer').append('<div class="tab" id="' + tabId + '"><iframe src="<?php echo $GLOBALS['webroot'] ?>/interface/drugs/treatment.php" frameborder="0" width="2000" height="500" scrolling="auto" id="myFrame"></iframe></div>');
+
+     // add this
+
+  // $('.tabNav li:nth-child(' + id + ')').click.addClass('current').siblings().removeClass('current');
+
+   $("#newt").click(function(){
+	  $('.tabNav li:nth-child(' + id + ')').addClass('current').siblings().removeClass('current');
+	   $("#"+tabId).addClass('current').siblings().removeClass('current');
+	   });
+	   
+	   
+     
+	   
+});
 </script>
 
 </html>

@@ -1060,9 +1060,31 @@ if ($GLOBALS['sell_non_drug_products']) {
     echo " </tr>\n";
     $i = 0;
   }  
-  
+//Scans
+    ++$i;
+  echo ($i <= 1) ? " <tr>\n" : "";
+  echo "  <td width='50%' align='center' nowrap>\n";
+  echo "   <select name='Scans' style='width:96%' onchange='codeselect(this)'>\n";
+  echo "    <option value=''> " . xlt('Scans') . "\n";
+  $tres = sqlStatement("SELECT c.Service_Id,c.code,c.code_text,c.code_type " .
+    "FROM codes AS c WHERE " .
+    " c.active = 1 AND c.code_type=14  " .
+    "ORDER BY c.code");
+  while ($trow = sqlFetchArray($tres)) {
+    echo "    <option value='Scans|" . attr($trow['code']) . '|' . attr($trow['code_text']) . "'>" .
+      text($trow['code_text']);
+    //if ($trow['name'] !== $trow['selector']) echo ' ' . text($trow['name']);
+    echo "</option>\n";
+  }
+  echo "   </select>\n";
+  echo "  </td>\n";
+  if ($i >= $FEE_SHEET_COLUMNS) {
+    echo " </tr>\n";
+    $i = 0;
+  }  
   
   //Pharmacy
+  /*
   ++$i;
   echo ($i <= 1) ? " <tr>\n" : "";
   echo "  <td width='50%' align='center' nowrap>\n";
@@ -1082,7 +1104,7 @@ if ($GLOBALS['sell_non_drug_products']) {
     $i = 0;
   }  
   
-  
+  */
   
   /*
   

@@ -872,7 +872,7 @@ $age_days=$patdata['age_days'];
             //foreach ($patient as $be) {
 
 
-                $billing = getPatientBillingEncounter($form_pid,$encounter);
+                $billing = getPatientBillingEncounterPharm($form_pid,$encounter);
 
                 $billings[] = $billing;
 				
@@ -921,7 +921,7 @@ $age_days=$patdata['age_days'];
                     //echo "<td class='text'>". text($b['code_type'])."</td>\n";
 					echo "<td class='text'>".text($d['name'].' '.$b['notecodes']) . "</td>";
 					echo "<td class='text'>".text($d['batch']) . "</td>";
-					echo "<td class='text'>".text($d['expdate']) . "</td>";
+				    echo "<td class='text'>".text(date('d/M/y',strtotime($d['expdate']))). "</td>";
 					echo "<td class='text'>".text($d['mfr']) . "</td>";
 					echo "<td class='text' align='right'>" .text(oeFormatMoney($rate)) . "</td>";
 			        echo "<td class='text' align='right'>" .text($b['units']) . "</td>";

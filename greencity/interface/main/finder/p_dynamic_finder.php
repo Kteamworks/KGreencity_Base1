@@ -9,6 +9,10 @@
 
 // Sanitize escapes and stop fake register globals.
 //
+
+$page = $_SERVER['PHP_SELF'];
+$sec = "120";
+
 $sanitize_all_escapes = true;
 $fake_register_globals = false;
 
@@ -45,6 +49,7 @@ while ($row = sqlFetchArray($res)) {
 ?>
 <html>
 <head>
+<meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
 <?php html_header_show(); ?>
 
 <link rel="stylesheet" href="<?php echo $css_header; ?>" type="text/css">
@@ -108,7 +113,7 @@ $(document).ready(function() {
   // http://datatables.net/release-datatables/extras/ColReorder/server_side.html
   "aoColumns": [ <?php echo $coljson; ?> ],
   "aLengthMenu": [ 10, 25, 50, 100 ],
-  "iDisplayLength": <?php echo empty($GLOBALS['gbl_pt_list_page_size']) ? '25' : '25'; ?>,
+  "iDisplayLength": <?php echo empty($GLOBALS['gbl_pt_list_page_size']) ? '50' : '50'; ?>,
   // language strings are included so we can translate them$GLOBALS
   "oLanguage": {
    "sSearch"      : "<?php echo xla('Search all columns'); ?>:",
@@ -253,7 +258,14 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
 		var formname='admit';
 		top.restoreSession();
 		//alert(encounter);
-		document.location.href="../../patient_file/history/history.php?set_pid=" + newpid+'&encounter='+encounter;
+		<?php 
+		$specialty=sqlQuery("select newcrop_user_role,specialty from users where username='".$_SESSION['authUser']."'");
+		if($specialty['specialty']=='Peadeatrics'){
+		?>
+		document.location.href="../../patient_file/summary/demographics_new.php?set_pid=" + newpid+'&encounter='+encounter;
+	<?php } else { ?>
+		document.location.href="../../patient_file/history/history_full.php?set_pid=" + newpid+'&encounter='+encounter;
+	<?php } ?>
 		/*if(name=="Transfer")
 		{
 		//alert(newpid);

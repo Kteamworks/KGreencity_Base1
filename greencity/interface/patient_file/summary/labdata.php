@@ -251,7 +251,8 @@ if(!$printable){
 	$spell .= "WHERE procedure_order.patient_id = ? AND procedure_order.encounter_id=? ";
 	$spell .= "AND procedure_result.result IS NOT NULL ";
 	$spell .= "AND procedure_result.result != ''";
-	$spell .= "ORDER BY procedure_report.procedure_report_id,procedure_result.seq ASC ";
+	$spell .= "ORDER BY procedure_report.procedure_report_id,procedure_result.seq,procedure_result.result_code ASC ";
+	//$spell .= "ORDER BY procedure_result.result_code,procedure_report.procedure_report_id,procedure_result.seq ASC ";
 	$query  = sqlStatement($spell,array($pid,$encounter));
 	
 
@@ -436,7 +437,7 @@ $i = 0;
 					echo"<td> </td>";
 				}else
 				{
-				echo "<td class='list_item' align='center' nowrap>&nbsp;&nbsp;(" . text($myrow['range'])." ". generate_display_field(array('data_type'=>'1','list_id'=>'proc_unit'),$myrow['units']) .")&nbsp;&nbsp;</td>";
+				echo "<td class='list_item' style='white-space:pre-wrap ; word-wrap:break-word' align='center' nowrap>&nbsp;&nbsp;(" . text($myrow['range'])." ". generate_display_field(array('data_type'=>'1','list_id'=>'proc_unit'),$myrow['units']) .")&nbsp;&nbsp;</td>";
 				}
 				if($myrow['comments']==null)
 				{

@@ -13,7 +13,6 @@ $fake_register_globals=false;
  include_once("history.inc.php");
  include_once("$srcdir/acl.inc");
  include_once("$srcdir/options.inc.php");
-
  // Check authorization.
  if (acl_check('patients','med')) {
   $tmp = getPatientData($pid, "squad");
@@ -39,6 +38,8 @@ while ($frow = sqlFetchArray($fres)) {
   $field_id  = $frow['field_id'];
   $newdata[$field_id] = get_layout_form_value($frow);
 }
+$field_id='encounter';
+$newdata[$field_id]=$encounter;
 updateHistoryData($pid, $newdata);
 
 if ($GLOBALS['concurrent_layout']) {

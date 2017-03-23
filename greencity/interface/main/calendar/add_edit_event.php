@@ -51,7 +51,7 @@ require_once($GLOBALS['srcdir'].'/acl.inc');
  $eid           = $_GET['eid'];         // only for existing events
  $date          = $_GET['date'];        // this and below only for new events
  $userid        = $_GET['userid'];
- $default_catid = $_GET['catid'] ? $_GET['catid'] : '5';
+ $default_catid = $_GET['catid'] ? $_GET['catid'] : '22';
  //
  if ($date)
   $date = substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6);

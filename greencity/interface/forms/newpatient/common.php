@@ -334,6 +334,31 @@ function getRatePlan(plan)
 ?>
      </td>
     </tr>
+	
+		<tr>
+     <td class='bold' nowrap><?php echo xlt('Type:'); ?></td>
+     <!-- <td class='text'>
+  
+<?php
+  $ures = sqlStatement("SELECT * FROM list_options WHERE " .
+  "list_id='type' ORDER BY seq");
+    echo "<select name='type' style='width:100%' />  <option value='0'></option>";
+    while ($urow = sqlFetchArray($ures)) {
+      echo "    <option value='" . attr($urow['option_id']) . "'";
+     if ($urow['option_id'] == $defaultProvider);
+      echo ">" . text($urow['title']);
+    
+      echo "</option>\n";
+    }
+    echo "</select>";
+?>
+     </td> -->
+	   <td class='text'>
+<?php
+  echo generate_select_list('type', 'type', $viewmode ? $result['type'] : '', '');
+?>
+     </td>
+    </tr>
 
     <tr>
      <td class='bold' nowrap><?php echo xlt('Facility:'); ?></td>
@@ -419,7 +444,7 @@ if ($fres) {
      <td class='bold' nowrap><?php echo xlt('Date of Service:'); ?></td>
      <td class='text' nowrap>
       <input type='text' size='10' name='form_date' id='form_date' <?php echo $disabled ?>
-       value='<?php echo $viewmode ? substr($result['date'], 0, 10) : date('Y-m-d'); ?>'
+       value='<?php echo $viewmode ? substr($result['date'], 0, 10) : date('Y-m-d H:i:s'); ?>'
        title='<?php echo xla('yyyy-mm-dd Date of service'); ?>'
        onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' />
         <img src='../../pic/show_calendar.gif' align='absbottom' width='24' height='22'
@@ -516,7 +541,7 @@ while ($irow = sqlFetchArray($ires)) {
 
 <script language="javascript">
 /* required for popup calendar */
-Calendar.setup({inputField:"form_date", ifFormat:"%Y-%m-%d", button:"img_form_date"});
+Calendar.setup({inputField:"form_date", ifFormat:"%Y-%m-%d %H:%M:%S", button:"img_form_date", showsTime:true});
 Calendar.setup({inputField:"form_onset_date", ifFormat:"%Y-%m-%d", button:"img_form_onset_date"});
 <?php
 if (!$viewmode) { ?>

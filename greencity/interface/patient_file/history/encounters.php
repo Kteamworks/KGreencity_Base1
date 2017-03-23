@@ -64,7 +64,7 @@ $issue = empty($_GET['issue']) ? 0 : 0 + $_GET['issue'];
 
  if (!($auth_notes_a || $auth_notes || $auth_coding_a || $auth_coding || $auth_med || $auth_relaxed)) {
   echo "<body>\n<html>\n";
-  echo "<p>(".htmlspecialchars( xl('Visits not authorized'), ENT_NOQUOTES).")</p>\n";
+  echo "<p>(".htmlspecialchars( xl('Encounters not authorized'), ENT_NOQUOTES).")</p>\n";
   echo "</body>\n</html>\n";
   exit();
  }
@@ -73,7 +73,7 @@ $issue = empty($_GET['issue']) ? 0 : 0 + $_GET['issue'];
 //
 $tmp = sqlQuery("select authorized from users " .
   "where id = ?", array($_SESSION['authUserID']) );
-$billing_view = ($tmp['authorized'] || $GLOBALS['athletic_team']) ? 0 : 1;
+$billing_view = ($tmp['authorized'] || $GLOBALS['athletic_team']) ? 1 : 0;
 if (isset($_GET['billing']))
   $billing_view = empty($_GET['billing']) ? 0 : 1;
 

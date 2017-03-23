@@ -241,7 +241,7 @@ function generate_form_field($frow, $currvalue) {
    }
   }
   else {
-   $empty_title = "Unassigned";   
+   $empty_title = " ";   
   }
 
   $disabled = strpos($frow['edit_options'], '0') === FALSE ? '' : 'disabled';
@@ -2401,7 +2401,7 @@ function display_layout_tabs($formtype, $result1, $result2='') {
   global $item_count, $cell_count, $last_group, $CPR;
 
   $fres = sqlStatement("SELECT distinct group_name FROM layout_options " .
-    "WHERE form_id = ? AND uor > 0 and group_name not in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History') " .
+    "WHERE form_id = ? AND uor > 0 and group_name not in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History','1Gynic History') " .
     "ORDER BY group_name, seq", array($formtype) );
 
   $first = true;
@@ -2418,7 +2418,26 @@ function display_layout_tabs($formtype, $result1, $result2='') {
   }
 }
 
+function display_layout_tabs_gynic($formtype, $result1, $result2='') {
+  global $item_count, $cell_count, $last_group, $CPR;
 
+  $fres = sqlStatement("SELECT distinct group_name FROM layout_options " .
+    "WHERE form_id = ? AND uor > 0 and group_name not in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History','1OBSTETRIC HISTORY') " .
+    "ORDER BY group_name, seq", array($formtype) );
+
+  $first = true;
+  while ($frow = sqlFetchArray($fres)) {
+	  $this_group = $frow['group_name'];
+      $group_name = substr($this_group, 1);
+      ?>
+		<li <?php echo $first ? 'class="current"' : '' ?>>
+			<a href="/play/javascript-tabbed-navigation/" id="header_tab_<?php echo ".htmlspecialchars($group_name,ENT_QUOTES)."?>">
+                        <?php echo htmlspecialchars(xl_layout_label($group_name),ENT_NOQUOTES); ?></a>
+		</li>
+	  <?php
+	  $first = false;
+  }
+}
 
 function display_layout_tabs_obs($formtype, $result1, $result2='') {
   global $item_count, $cell_count, $last_group, $CPR;
@@ -2676,7 +2695,7 @@ function display_layout_tabs_data_editable($formtype, $result1, $result2='') {
   global $item_count, $cell_count, $last_group, $CPR;
 
   $fres = sqlStatement("SELECT distinct group_name FROM layout_options " .
-    "WHERE form_id = ? AND uor > 0  and group_name not in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History') " .
+    "WHERE form_id = ? AND uor > 0  and group_name not in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History','1Gynic History') " .
     "ORDER BY group_name, seq", array($formtype) );
 
 	$first = true;
@@ -2785,6 +2804,122 @@ function display_layout_tabs_data_editable($formtype, $result1, $result2='') {
 
 	}
 }
+
+
+function display_layout_tabs_data_editable_gynic($formtype, $result1, $result2='') {
+  global $item_count, $cell_count, $last_group, $CPR;
+
+  $fres = sqlStatement("SELECT distinct group_name FROM layout_options " .
+    "WHERE form_id = ? AND uor > 0  and group_name not in ('1OBS','2Complications','3Surgical History','4Gynecological Exams','5Obstetric Tests' ,'6Case Posting','CMenstrual History','1OBSTETRIC HISTORY') " .
+    "ORDER BY group_name, seq", array($formtype) );
+
+	$first = true;
+	while ($frow = sqlFetchArray($fres)) {
+		$this_group = $frow['group_name'];
+		$group_name = substr($this_group, 1);
+	        $group_name_esc = htmlspecialchars( $group_name, ENT_QUOTES);
+		$titlecols  = $frow['titlecols'];
+		$datacols   = $frow['datacols'];
+		$data_type  = $frow['data_type'];
+		$field_id   = $frow['field_id'];
+		$list_id    = $frow['list_id'];
+		$currvalue  = '';
+
+		$group_fields_query = sqlStatement("SELECT * FROM layout_options " .
+		"WHERE form_id = ? AND uor > 0 AND group_name = ? " .
+		"ORDER BY seq", array($formtype,$this_group) );
+	?>
+
+		<div class="tab <?php echo $first ? 'current' : '' ?>" id="tab_<?php echo $group_name_esc?>" >
+			<table border='0' cellpadding='0'>
+
+			<?php
+				while ($group_fields = sqlFetchArray($group_fields_query)) {
+
+					$titlecols  = $group_fields['titlecols'];
+					$datacols   = $group_fields['datacols'];
+					$data_type  = $group_fields['data_type'];
+					$field_id   = $group_fields['field_id'];
+					$list_id    = $group_fields['list_id'];
+					$backup_list = $group_fields['list_backup_id'];
+					$currvalue  = '';
+
+					if ($formtype == 'DEM') {
+					  if ($GLOBALS['athletic_team']) {
+						// Skip fitness level and return-to-play date because those appear
+						// in a special display/update form on this page.
+						if ($field_id === 'fitness' || $field_id === 'userdate1') continue;
+					  }
+					  if (strpos($field_id, 'em_') === 0) {
+					// Skip employer related fields, if it's disabled.
+						if ($GLOBALS['omit_employers']) continue;
+						$tmp = substr($field_id, 3);
+						if (isset($result2[$tmp])) $currvalue = $result2[$tmp];
+					  }
+					  else {
+						if (isset($result1[$field_id])) $currvalue = $result1[$field_id];
+					  }
+					}
+					else {
+					  if (isset($result1[$field_id])) $currvalue = $result1[$field_id];
+					}
+
+					// Handle a data category (group) change.
+					if (strcmp($this_group, $last_group) != 0) {
+					  $group_name = substr($this_group, 1);
+					  // totally skip generating the employer category, if it's disabled.
+					  if ($group_name === 'Employer' && $GLOBALS['omit_employers']) continue;
+					  $last_group = $this_group;
+					}
+
+					// Handle starting of a new row.
+					if (($titlecols > 0 && $cell_count >= $CPR) || $cell_count == 0) {
+					  disp_end_row();
+					  echo "<tr>";
+					}
+
+					if ($item_count == 0 && $titlecols == 0) {
+						$titlecols = 1;
+					}
+
+					// Handle starting of a new label cell.
+					if ($titlecols > 0) {
+					  disp_end_cell();
+					  $titlecols_esc = htmlspecialchars( $titlecols, ENT_QUOTES);
+					  echo "<td class='label' colspan='$titlecols_esc' ";
+					  echo ">";
+					  $cell_count += $titlecols;
+					}
+					++$item_count;
+
+					// Added 5-09 by BM - Translate label if applicable
+					if ($group_fields['title']) echo (htmlspecialchars( xl_layout_label($group_fields['title']), ENT_NOQUOTES).":"); else echo "&nbsp;";
+
+					// Handle starting of a new data cell.
+					if ($datacols > 0) {
+					  disp_end_cell();
+					  $datacols_esc = htmlspecialchars( $datacols, ENT_QUOTES);
+					  echo "<td class='text data' colspan='$datacols_esc'";
+					  echo ">";
+					  $cell_count += $datacols;
+					}
+
+					++$item_count;
+					
+					echo generate_form_field($group_fields, $currvalue);
+				  }
+			?>
+
+			</table>
+		</div>
+
+ 	 <?php
+
+	$first = false;
+
+	}
+}
+
 
 function display_layout_tabs_obsdata_editable($formtype, $result1, $result2='') {
   global $item_count, $cell_count, $last_group, $CPR;
