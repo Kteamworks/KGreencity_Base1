@@ -8,6 +8,8 @@ use ESign\Api;
  * of the License, or (at your option) any later version.
  */
 
+ 
+ // adding a new line
  // This provides the left navigation frame when $GLOBALS['concurrent_layout']
  // is true.  Following are notes as to what else was changed for this feature:
  //
