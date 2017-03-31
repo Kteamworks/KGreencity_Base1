@@ -1303,6 +1303,7 @@ if ($GLOBALS['athletic_team']) {
 	  <?php genMiscLink('RTop','fin','0',xl('My Patients'),'main/finder/p_dynamic_finder.php'); ?>
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor' ||$_SESSION['authUser']=='DR. NIRMALA.B.M') {?>
 	  <?php genMiscLink('RTop','fin','0',xl('InPatients'),'main/finder/p_dynamic_finder_ip.php'); ?>
+	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_dynamic_finder_tdap.php'); ?>
 	   <?php }?>
       <?php genTreeLink('RTop','new',($GLOBALS['full_new_patient_form'] ? xl('New/Search') : xl('New'))); ?>
       <?php genTreeLink('RTop','dem',xl('Summary')); ?>
