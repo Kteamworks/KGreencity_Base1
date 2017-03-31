@@ -1292,6 +1292,9 @@ if ($GLOBALS['athletic_team']) {
     
 <?php
 
+
+
+
  $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
 ?>
   <li><a class="collapsed" id="patimg" ><span><?php xl('Patient','e') ?></span></a>
@@ -1306,6 +1309,12 @@ if ($GLOBALS['athletic_team']) {
 	  <?php genMiscLink('RTop','fin','0',xl('Out Patients'),'main/finder/p_dynamic_finder_op.php'); ?>
 	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_dynamic_finder_tdap.php'); ?>
 	   <?php }?>
+	   
+	   <!--Create a role New Ecrop Manager for Receptionists to view this page -->
+	   <?php if($newcrop_user_role['newcrop_user_role']=='erxmanager') {?>
+	   
+	  <?php  genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_tp_dynamic_finder.php'); ?>
+	  <?php }?>
       <?php genTreeLink('RTop','new',($GLOBALS['full_new_patient_form'] ? xl('New/Search') : xl('New'))); ?>
       <?php genTreeLink('RTop','dem',xl('Summary')); ?>
 	  <?php genTreeLink('RTop','op',xl('OPD Card')); ?>
