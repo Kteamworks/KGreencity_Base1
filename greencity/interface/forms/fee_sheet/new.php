@@ -777,8 +777,18 @@ $billresult = getBillingByEncounter($pid, $encounter, "*");
 <style>
 .billcell { font-family: sans-serif; font-size: 10pt }
 </style>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
 <script language="JavaScript">
-
+$(document).ready(function(){
+$("tr td:nth-child(8)").css("display","none");
+$("tr td:nth-child(7)").css("display","none");
+$("tr td:nth-child(3)").css("display","none");
+$("tr td:nth-child(6)").css("display","none");
+$("tr td:nth-child(9)").css("display","none");
+});
 var diags = new Array();
 
 <?php
@@ -1043,7 +1053,7 @@ if ($GLOBALS['sell_non_drug_products']) {
   echo ($i <= 1) ? " <tr>\n" : "";
   echo "  <td width='50%' align='center' nowrap>\n";
   echo "   <select name='Doctor Charges' style='width:96%' onchange='codeselect(this)'>\n";
-  echo "    <option value=''> " . xlt('Doctor Charges') . "\n";
+  echo "    <option value=''> " . xlt('Consultation Charges') . "\n";
   $tres = sqlStatement("SELECT c.Service_Id,c.code,c.code_text,c.code_type " .
     "FROM codes AS c WHERE " .
     " c.active = 1 AND c.code_type=8  " .

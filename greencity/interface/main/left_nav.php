@@ -156,7 +156,7 @@ use ESign\Api;
   'vocedit' => array(xl('Voucher Edit') , 0, 'reports/editvoucjers.php'),
   'acc' => array(xl('Account'),0,'patient_file/summary/account.php'),
   'voc' => array(xl('Payment Voucher'),0,'reports/payment_voucher.php'),
-  'genvoc' => array(xl('General Voucher'),0,'reports/General_Voucher.php'),
+  'genvoc' => array(xl('Expenditure Voucher'),0,'reports/General_Voucher.php'),
   'dld' => array(xl('Display Documents'), 0, 'main/display_documents.php')
  );
  $primary_docs['npa']=array(xl('Batch Payments')   , 0, 'billing/new_payment.php');
@@ -1394,6 +1394,19 @@ if (!empty($reg)) {
 		  <?php //genTreeLink('RTop','rop',xl('Manage Vouchers'));  ?>
         </ul>    
     </li>
+	
+	<li><a class="collapsed" id="manageimg" ><span><?php xl('Statistics','e') ?></span></a>
+        <ul>
+		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
+		
+		
+		  
+        </ul>    
+    </li>
+	
+	
+	
+	
   <?php } ?>
 	  </li>
 	  
@@ -1406,7 +1419,7 @@ if (!empty($reg)) {
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
 	  <?php genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher.php?framed=1'); ?> 
 	  <?php // genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher1.php?framed=1'); ?> 
-	  <?php genMiscLink('RTop','voc','0',xl('General Voucher'),'reports/General_Voucher.php?framed=1'); ?> 
+	  <?php genMiscLink('RTop','voc','0',xl('Expenditure Voucher'),'reports/General_Voucher.php?framed=1'); ?> 
       <?php genMiscLink('RBot','pay','2',xl('Payment'),'patient_file/front_payment.php'); ?>
 	  <?php genMiscLink('RBot','pay','2',xl('Payment IP'),'patient_file/front_payment_test.php'); ?>
       <?php genMiscLink('RBot','bil','2',xl('Discount'),'patient_file/pos_checkout.php?framed=1'); ?> 
@@ -1503,7 +1516,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
 	  <?php if (acl_check('admin', 'super')){?>
       <?php genTreeLink('RTop','ort',xl('Configuration')); ?>
 	  <?php }?>
-      <?php genTreeLink('RTop','orc',xl('Load Compendium')); ?>
+<!--<?php genTreeLink('RTop','orc',xl('Load Compendium')); ?> -->
       <?php genTreeLink('RTop','orp',xl('Pending Review')); ?>
       <?php genTreeLink('RTop','orr',xl('Patient Results')); ?>
       <?php genTreeLink('RTop','lda',xl('Reports')); ?>

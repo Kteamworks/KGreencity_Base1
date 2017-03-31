@@ -54,7 +54,8 @@ else
   $normalurl = "$rootdir/patient_file/encounter/patient_encounter.php";
 if($pc_catid==10)
 {
-	$normalurl = "patient_file/front_payment.php";
+	//$normalurl = "patient_file/front_payment.php";
+	$normalurl = "forms/fee_sheet/new.php";
 }
 if($pc_catid==16)
 {
