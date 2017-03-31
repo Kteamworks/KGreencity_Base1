@@ -109,7 +109,7 @@ foreach ($aColumns as $colname) {
 
   $sellist .= ", ";
   if ($colname == 'name') {
-    $sellist .= "lname, fname, mname";
+    $sellist .= "lname, fname, mname,visit_status";
   }
   else
   {
@@ -181,7 +181,12 @@ $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
   
   // Each <tr> will have an ID identifying the patient.
+  if($row['visit_status'] == 0) {
+	    $arow = array('DT_RowId' => 'pid_' . $row['pid'],'DT_RowClass' => 'PT_INACTIVE');
+  }
+  else {
   $arow = array('DT_RowId' => 'pid_' . $row['pid']);
+  }
   foreach ($aColumns as $colname) {
     if ($colname == 'name') {
       $name = $row['fname'];
