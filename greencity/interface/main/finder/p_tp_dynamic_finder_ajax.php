@@ -43,14 +43,13 @@ if (isset($_GET['iSortCol_0'])) {
 		if ($_GET["bSortable_$iSortCol"] == "true" ) {
       $sSortDir = escape_sort_order($_GET["sSortDir_$i"]); // ASC or DESC
       // We are to sort on column # $iSortCol in direction $sSortDir.
-      $orderby .= $orderby ? ', ' : 'ORDER BY ';
+      $orderby .= $orderby ? ', ' : ' ';
       //
       if ($aColumns[$iSortCol] == 'name') {
-        $orderby .= "fname $sSortDir, lname $sSortDir, mname $sSortDir";
-		//$orderby.="genericname1 desc";
+        $orderby .= "lname $sSortDir, fname $sSortDir, mname $sSortDir";
       }
       else {
-        $orderby .= "`" . escape_sql_column_name($aColumns[$iSortCol],array('patient_data','form_encounter','billing','openemr_postcalendar_categories','payments','ar_activity')) . "` $sSortDir";
+        $orderby .= "`" . escape_sql_column_name($aColumns[$iSortCol],array('patient_data','form_encounter','users')) . "` $sSortDir";
       }
 		}
 	}
@@ -65,12 +64,12 @@ if (isset($_GET['sSearch']) && $_GET['sSearch'] !== "") {
     $where .= $where ? "OR " : "WHERE ( ";
     if ($colname == 'name') {
       $where .=
-        "fname LIKE '$sSearch%' OR " .
         "lname LIKE '$sSearch%' OR " .
+        "fname LIKE '$sSearch%' OR " .
         "mname LIKE '$sSearch%' ";
     }
     else {
-      $where .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','billing','openemr_postcalendar_categories','payments','ar_activity')) . "` LIKE '$sSearch%' ";
+      $where .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','users')) . "` LIKE '$sSearch%' ";
     }
   }
   if ($where) $where .= ")";
@@ -85,12 +84,12 @@ for ($i = 0; $i < count($aColumns); ++$i) {
     $sSearch = add_escape_custom($_GET["sSearch_$i"]);
     if ($colname == 'name') {
       $where .= " ( " .
-        "fname LIKE '$sSearch%' OR " .
         "lname LIKE '$sSearch%' OR " .
+        "fname LIKE '$sSearch%' OR " .
         "mname LIKE '$sSearch%' )";
     }
     else {
-      $where .= " `" . escape_sql_column_name($colname,array('patient_data','form_encounter','billing','openemr_postcalendar_categories','payments','ar_activity')) . "` LIKE '$sSearch%'";
+      $where .= " `" . escape_sql_column_name($colname,array('patient_data','form_encounter','users')) . "` LIKE '$sSearch%'";
     }
   }
 }
@@ -98,22 +97,21 @@ for ($i = 0; $i < count($aColumns); ++$i) {
 // Compute list of column names for SELECT clause.
 // Always includes pid because we need it for row identification.
 //
-$sellist = 'a.pid,a.date,a.pc_catid,a.encounter,sum(fee) fees';
+$sellist = 'a.pid,b.id';
 foreach ($aColumns as $colname) {
   if ($colname == 'pid') continue;
-   if ($colname == 'date') continue;
-   if ($colname == 'encounter') continue;
-   if ($colname == 'pc_catid') continue;
-    if ($colname == 'fees') continue;
-  //if ($colname == 'id') continue;
+  if ($colname == 'id') continue;
 
   $sellist .= ", ";
   if ($colname == 'name') {
     $sellist .= "lname, fname, mname";
   }
-  else
+  else if($colname== 'provider'){
+    $sellist .="provider_id,out_time,out_to";
+	
+  }else
   {
-    $sellist .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','billing','openemr_postcalendar_categories','payments','ar_activity')) . "`";
+    $sellist .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','users')) . "`";
   }
 }
 
@@ -147,11 +145,11 @@ $get_provider_name=$provider_name_1['username'];
 //
 if($row2["newcrop_user_role"]=="erxnurse")
 {
-$row = sqlQuery("SELECT COUNT(a.id) AS count FROM form_encounter a,patient_data b,billing d,openemr_postcalendar_categories c where  a.pc_catid=c.pc_catid and a.pid=d.pid and a.encounter=d.encounter and a.pid=b.pid and a.provider_id IN ($X) and a.date='".$today."' and a.pc_catid!=12");
+$row = sqlQuery("SELECT COUNT(b.id) AS count FROM form_encounter a,patient_data b where a.pid=b.pid and a.provider_id IN ($X) and a.date='".$today."'");
 }
 else
 {
-$row = sqlQuery("SELECT COUNT(distinct a.encounter) AS count FROM form_encounter a,patient_data b ,billing d,openemr_postcalendar_categories c,ar_activity e where a.encounter=e.encounter and a.pc_catid=c.pc_catid and a.pid=d.pid and a.encounter=d.encounter and   a.pid=b.pid  and a.provider_id='".$providerid."' and a.pc_catid!=12 and activity=1  ");
+$row = sqlQuery("SELECT COUNT(b.id) AS count FROM form_encounter a,patient_data b where a.pid=b.pid  and a.date='".$today."'");
 }
 
 $iTotal = $row['count'];
@@ -171,58 +169,14 @@ $out = array(
 );
 if($row2["newcrop_user_role"]=="erxnurse")
 {
-/* $query ="SELECT $sellist FROM form_encounter a,patient_data b ,billing d,openemr_postcalendar_categories c where a.pc_catid=c.pc_catid and   a.pid=d.pid and a.encounter=d.encounter and   a.pid=b.pid and a.provider_id='".$providerid."' and a.date='".$today."' and a.pc_catid!=12 order by encounter desc  $limit"; */
+$query ="SELECT $sellist FROM form_encounter a,patient_data b where a.pid=b.pid and a.date='".$today."' order by encounter desc  $limit";
 }
 else 
 {
-$query="SELECT ab.pid as pid,ab.fname,ab.genericname1,ab.fees as fee,ab.encounter as encounter,coalesce(e.pay_amount,0)pay_amount,coalesce(e.adj_amount,0) adj_amount,
-(coalesce(ab.fees,0)-coalesce(e.pay_amount,0))unpaid_amount
-from
-(SELECT d.pid,b.genericname1,fname,sum(fee)fees,d.encounter
-   FROM form_encounter a,
-    patient_data b  ,billing d,openemr_postcalendar_categories c
-where a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter 
-and    a.pid=b.pid   and a.provider_id='".$providerid."' and a.date>='".$today."' and a.pc_catid!=12 
-and activity=1 
-group by d.encounter 
-order by d.encounter
-) ab left join 
-(SELECT encounter,sum(pay_amount)pay_amount,sum(adj_amount)adj_amount from 
-ar_activity
-where post_time>='".$today."'
-group by encounter) e
-on  ab.encounter=e.encounter 
-group by ab.encounter
-order by ab.encounter";
-
-/* $query = "SELECT  $sellist,(SELECT sum(amount1+amount2) as pay FROM payments a  where activity=1 ) payments FROM form_encounter a,patient_data b  ,billing d,openemr_postcalendar_categories c,ar_activity e where e.encounter=a.encounter and a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter and    a.pid=b.pid   and a.provider_id='".$providerid."' and a.pc_catid!=12 and activity=1 group by d.encounter order by d.encounter asc  $limit";
- */}
-
-/*
-SELECT $sellist,coalesce(e.pay_amount,0)pay_amount,coalesce(e.adj_amount,0) adj_amount,
-(coalesce(ab.fees,0)-coalesce(e.pay_amount,0))unpaid_amount
-from
-(SELECT d.pid,b.genericname1,fname,sum(fee)fees,d.encounter
-   FROM form_encounter a,
-    patient_data b  ,billing d,openemr_postcalendar_categories c
-where a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter 
-and    a.pid=b.pid   and a.provider_id='".$providerid."' and a.date>='".$today."' and a.pc_catid!=12 
-and activity=1 
-group by d.encounter 
-order by d.encounter
-) ab left join 
-(SELECT encounter,sum(pay_amount)pay_amount,sum(adj_amount)adj_amount from 
-ar_activity
-where post_time>='".$today."'
-group by encounter) e
-on  ab.encounter=e.encounter 
-group by ab.encounter
-order by ab.encounter;
-*/
+$query = "SELECT $sellist FROM patient_data a,form_encounter b where a.pid=b.pid and b.date='".$today."' order by encounter desc  $limit";
+}
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
-  
-  
   
   // Each <tr> will have an ID identifying the patient.
   $arow = array('DT_RowId' => 'pid_' . $row['pid']);
@@ -234,19 +188,25 @@ while ($row = sqlFetchArray($res)) {
       if ($row['mname']) $name .= ' ' . $row['mname'];
       $arow[] = $name;
     }
-	
+	else if($colname=='provider'){
+	$providerid=$row['provider_id'];
+	$rsq=sqlStatement("select username from users where id='".$providerid."'");
+	  $prname=sqlFetchArray($rsq);
+	  $prname=$row['out_to'].' '. $prname['username'];
+	    
+		$provider=$prname;
+     
+	  if ($provider && $row['out_time']) $provider .= '@';
+      if ($row['out_time']) $provider .= $row['out_time'];
+	  
+	$arow[] = $provider;
+	}
     else if ($colname == 'DOB' || $colname == 'regdate' || $colname == 'ad_reviewed' || $colname == 'userdate1') {
       $arow[] = oeFormatShortDate($row[$colname]);
-    }else if($colname=='date')
-	{
-		 $arow[] =  date( "d-M-y g:i a", strtotime( $row['date'] ) );
-	}
+    }
     else {
       $arow[] = $row[$colname];
     }
-	
-	
-	
   }
   $out['aaData'][] = $arow;
 }

@@ -33,7 +33,7 @@ $header0 = "";
 $header  = "";
 $coljson = "";
 $res = sqlStatement("SELECT option_id, title FROM list_options WHERE " .
-  "list_id = 'DoctorsAllToday' ORDER BY seq, title");
+  "list_id = 'ReceptionSpecific' ORDER BY seq, title");
 while ($row = sqlFetchArray($res)) {
   $colname = $row['option_id'];
   $title = xl_list_label($row['title']);
@@ -105,7 +105,7 @@ $(document).ready(function() {
   "bProcessing": true,
   // next 2 lines invoke server side processing
   "bServerSide": true,
-  "sAjaxSource": "p_dynamic_finder_tdap_ajax.php",
+  "sAjaxSource": "ph_dynamic_finder_ajax.php",
   // sDom invokes ColReorderWithResize and allows inclusion of a custom div
   "sDom"       : 'Rlfrt<"mytopdiv">ip',
   // These column names come over as $_GET['sColumns'], a comma-separated list of the names.
@@ -296,9 +296,6 @@ function openNewTopWindow(pid) {
  document.fnew.submit();
 }
 
-
-
-
 </script>
 
 </head>
@@ -318,8 +315,6 @@ function openNewTopWindow(pid) {
  </thead>
  <tbody>
   <tr>
-  
-  
    <!-- Class "dataTables_empty" is defined in jquery.dataTables.css -->
    <td colspan="<?php echo $colcount; ?>" class="dataTables_empty">...</td>
   </tr>
