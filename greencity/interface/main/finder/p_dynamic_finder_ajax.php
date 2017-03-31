@@ -78,7 +78,7 @@ if (isset($_GET['sSearch']) && $_GET['sSearch'] !== "") {
 
 // Column-specific filtering.
 //
-for ($i = 0; $i < count($aColumns); ++$i) {
+for ($i = 1; $i < count($aColumns); ++$i) {
   $colname = $aColumns[$i];
   if (isset($_GET["bSearchable_$i"]) && $_GET["bSearchable_$i"] == "true" && $_GET["sSearch_$i"] != '') {
     $where .= $where ? ' AND' : 'WHERE';

@@ -140,6 +140,7 @@ while ($row = sqlFetchArray($res)) {
   $arow = array('DT_RowId' => 'pid_' . $row['pid']);
  // }
   foreach ($aColumns as $colname) {
+
     if ($colname == 'name') {
       $name = $row['fname'];
       if ($name && $row['lname']) $name .= ' ';
