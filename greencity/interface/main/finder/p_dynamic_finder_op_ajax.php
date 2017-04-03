@@ -47,12 +47,12 @@ if (isset($_GET['iSortCol_0'])) {
       //
 	 
       if ($aColumns[$iSortCol] == 'name') {
-	   $orderby .= "status,genericname1";
+	   $orderby .= "genericname1";
 	  
        
       }
       else {
-        $orderby .= "`" . escape_sql_column_name($aColumns[$iSortCol],array('patient_data','form_encounter','t_form_admit','billing')) . "` $sSortDir";
+        $orderby .= "`" . escape_sql_column_name($aColumns[$iSortCol],array('patient_data','form_encounter')) . "` $sSortDir";
       }
 		}
 	}
@@ -73,7 +73,7 @@ if (isset($_GET['sSearch']) && $_GET['sSearch'] !== "") {
         "lname LIKE '$sSearch%' ";
     }
     else {
-      $where .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','t_form_admit','billing')) . "` LIKE '$sSearch%' ";
+      $where .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter')) . "` LIKE '$sSearch%' ";
     }
   }
   if ($where) $where .= ")";
@@ -95,7 +95,7 @@ for ($i = 0; $i < count($aColumns); ++$i) {
     }
 	
     else {
-      $where .= " `" . escape_sql_column_name($colname,array('patient_data','form_encounter','t_form_admit','billing')) . "` LIKE '$sSearch%'";
+      $where .= " `" . escape_sql_column_name($colname,array('patient_data','form_encounter')) . "` LIKE '$sSearch%'";
     }
   }
 }
@@ -108,25 +108,19 @@ $sellist = 'a.pid,a.encounter,c.status,b.rateplan';
 foreach ($aColumns as $colname) {
   if ($colname == 'pid') continue;
   if($colname=='encounter') continue;
-  if($colname=='rateplan') continue;
-  if($colname=='status') continue;
   $sellist .= ", ";
   if ($colname == 'name') {
     $sellist .= "fname, mname, lname";
   }
  
-  else if($colname== 'admit'){
-    $sellist .="admit_to_ward,admit_to_bed";
-	
-  }
   else {
-    $sellist .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','t_form_admit','billing')) . "`";
+    $sellist .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter')) . "`";
   }
 }
 // Get total number of rows in the table.
 //
 
-$row = sqlQuery("SELECT COUNT(distinct(a.encounter)) AS count FROM form_encounter a,patient_data b,t_form_admit c where a.pid=b.pid and a.encounter=c.encounter and a.pc_catid=12 and c.status='admit' ");
+$row = sqlQuery("SELECT COUNT(distinct(a.encounter)) AS count FROM form_encounter a,patient_data b,t_form_admit c where a.pid=b.pid and a.encounter=c.encounter and a.pc_catid=12 and c.status!='admit' ");
 
 $iTotal = $row['count'];
 
@@ -134,7 +128,7 @@ $iTotal = $row['count'];
 //
 
 
-$row = sqlQuery("SELECT COUNT(distinct(a.encounter)) AS count FROM form_encounter a,patient_data b,t_form_admit c where a.pid=b.pid and a.encounter=c.encounter and a.pc_catid=12 and c.status='admit'");
+$row = sqlQuery("SELECT COUNT(distinct(a.encounter)) AS count FROM form_encounter a,patient_data b,t_form_admit c where a.pid=b.pid and a.encounter=c.encounter and a.pc_catid=12 and c.status!='admit'");
 
 
 $iFilteredTotal = $row['count'];
