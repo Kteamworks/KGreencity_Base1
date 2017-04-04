@@ -38,10 +38,21 @@ if ($_GET['set_pid'] && $form_review) {
   $result = getPatientData($pid, "*, DATE_FORMAT(DOB,'%Y-%m-%d') as DOB_YMD");
   $encounter=$result['ecounter'];
   ?>
+  <style>
+  	tr.detail td:nth-child(5) {
+    display: none;
+}
+  </style>
   <script language='JavaScript'>
     parent.left_nav.setPatient(<?php echo "'" . addslashes($result['fname']) . " " . addslashes($result['lname']) . "',$pid,'" . addslashes($result['pubpid']) . "','', ' " . xl('DOB') . ": " . oeFormatShortDate($result['DOB_YMD']) . " " . xl('Age') . ": " . getPatientAge($result['DOB_YMD']) . "'"; ?>);
     parent.left_nav.setRadio(window.name, 'orp');
   </script>
+  
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script language="JavaScript">
+
+</script>
+  
   <?php
 }
 
@@ -809,7 +820,16 @@ for (var lino = 0; f['form_line['+lino+']']; ++lino) {
    button:'q_date_collected['+lino+']', showsTime:true});
  }
 }
+$(document).ready(function(){
 
+//$("tr.detail td:nth-child(5)").css("display","none");
+
+
+//$("tr td:nth-child(7)").css("display","none");
+//$("tr td:nth-child(3)").css("display","none");
+//$("tr td:nth-child(6)").css("display","none");
+//$("tr td:nth-child(9)").css("display","none");
+});
 </script>
 
 </form>

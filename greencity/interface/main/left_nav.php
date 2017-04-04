@@ -1398,7 +1398,7 @@ if (!empty($reg)) {
 		<?php genMiscLink('RTop','rop','0',xl('Manage Vouchers'), 'reports/editvoucjers.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Receipts'), 'reports/editreceipts.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Discharge Clearance '), 'reports/discharge_clearence_copy.php'); ?>
-		<?php genMiscLink('RTop','rop','0',xl('Manage Voucher Copy '), 'reports/voucher_copy.php'); ?>
+		<!--<?php genMiscLink('RTop','rop','0',xl('Manage Voucher Copy '), 'reports/voucher_copy.php'); ?>-->
 		<?php genMiscLink('RTop','rop','0',xl('Change Bill Date '), 'reports/bill_date_change.php'); ?>
 	     <?php genMiscLink('RTop','rop','0',xl('Bill Cancel'), 'reports/bill_cancel.php'); ?>
 		
@@ -1637,7 +1637,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
 					}
         echo "</ul>";
       } ?>
-      <li><a class="collapsed_lv2"><span><?php xl('Clients','e') ?></span></a>
+     <!-- <li><a class="collapsed_lv2"><span><?php xl('Clients','e') ?></span></a>
         <ul>
 	  <?php genMiscLink('RTop','rep','0',xl('List'),'reports/patient_list.php'); ?>
           <?php if (acl_check('patients', 'med') && !$GLOBALS['disable_prescriptions']) genMiscLink('RTop','rep','0',xl('Rx'),'reports/prescriptions_report.php'); ?>
@@ -1645,8 +1645,8 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
 	  <?php genMiscLink('RTop','rep','0',xl('Referrals'),'reports/referrals_report.php'); ?>
 	  <?php genMiscLink('RTop','rep','0',xl('Immunization Registry'),'reports/immunization_report.php'); ?>
         </ul>
-      </li>
-      <li><a class="collapsed_lv2"><span><?php xl('Clinic','e') ?></span></a>
+      </li> -->
+      <!--<li><a class="collapsed_lv2"><span><?php xl('Clinic','e') ?></span></a>
         <ul>
           <?php if ($GLOBALS['enable_cdr'] || $GLOBALS['enable_cqm']  || $GLOBALS['enable_amc']) genMiscLink('RTop','rep','0',xl('Report Results'),'reports/report_results.php'); ?>
           <?php if ($GLOBALS['enable_cdr']) genMiscLink('RTop','rep','0',xl('Standard Measures'),'reports/cqm.php?type=standard'); ?>
@@ -1654,8 +1654,8 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
           <?php if ($GLOBALS['enable_amc']) genMiscLink('RTop','rep','0',xl('Automated Measures (AMC)'),'reports/cqm.php?type=amc'); ?>
           <?php if ($GLOBALS['enable_amc_tracking']) genMiscLink('RTop','rep','0',xl('AMC Tracking'),'reports/amc_tracking.php'); ?>
         </ul>
-      </li>
-      <li><a class="collapsed_lv2"><span><?php xl('Visits','e') ?></span></a>
+      </li> -->
+     <!-- <li><a class="collapsed_lv2"><span><?php xl('Visits','e') ?></span></a>
         <ul>
           <?php if (!$GLOBALS['disable_calendar']) genMiscLink('RTop','rep','0',xl('Appointments'),'reports/appointments_report.php'); ?>
           <?php  genMiscLink('RTop','rep','0',xl('Encounters'),'reports/encounters_report.php'); ?>
@@ -1674,7 +1674,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
           <?php genMiscLink('RTop','rep','0',xl('Syndromic Surveillance'),'reports/non_reported.php'); ?>
 		   <?php genMiscLink('RTop','rep','0',xl('Bed Occupancy'), 'reports/bed_managment_report.php'); ?>
         </ul>
-      </li>
+      </li> -->
 <?php 
   $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
   
@@ -1687,13 +1687,13 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
 		   <?php genMiscLink('RTop','rep','0',xl('Main Report'),'reports/briefreport.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Revenue'),'reports/revenue.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Cash Rec'), 'billing/sl_receipts_report.php'); ?>
-          <?php genMiscLink('RTop','rep','0',xl('Front Rec'), 'reports/front_receipts_report.php'); ?>
+          <!--<?php genMiscLink('RTop','rep','0',xl('Front Rec'), 'reports/front_receipts_report.php'); ?>-->
 		   <?php genMiscLink('RTop','rep','0',xl('Voucher Rec'), 'reports/voucher_receipts_report.php'); ?>
-		   <?php genMiscLink('RTop','rep','0',xl('Heads Vouc'), 'reports/doctors_voucher_reports.php'); ?>
-          <?php genMiscLink('RTop','rep','0',xl('Pmt Method'), 'reports/receipts_by_method_report.php'); ?>
+		  <!-- <?php genMiscLink('RTop','rep','0',xl('Heads Vouc'), 'reports/doctors_voucher_reports.php'); ?>-->
+          <!--<?php genMiscLink('RTop','rep','0',xl('Pmt Method'), 'reports/receipts_by_method_report.php'); ?>-->
           <?php genMiscLink('RTop','rep','0',xl('Collections'), 'reports/collections_report.php'); ?>
 	 	  <!--<?php genMiscLink('RTop','rep','0',xl('Collections Report'), 'reports/collections_report _new.php'); ?> -->
-          <?php genMiscLink('RTop','rep','0',xl('Financial Summary by Service Code'),'reports/svc_code_financial_report.php'); ?>
+         <!-- <?php genMiscLink('RTop','rep','0',xl('Financial Summary by Service Code'),'reports/svc_code_financial_report.php'); ?>-->
         </ul>
       </li>
 <?php } ?>
