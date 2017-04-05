@@ -8,7 +8,7 @@
 // of the License, or (at your option) any later version.
 
 // Sanitize escapes and stop fake register globals.
-//
+
 
 $page = $_SERVER['PHP_SELF'];
 $sec = "120";
