@@ -1409,7 +1409,7 @@ if (!empty($reg)) {
 	<li><a class="collapsed" id="manageimg" ><span><?php xl('Statistics','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
-		
+			  <?php genMiscLink('RTop','fin','0',xl('Out Patients'),'main/finder/p_dynamic_finder_op.php'); ?>
 		
 		  
         </ul>    
@@ -1529,7 +1529,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
       <!--<!--?php genTreeLink('RTop','ort',xl('Configuration')); ?>-->
 	  <?php }?>
 <!--<!--?php genTreeLink('RTop','orc',xl('Load Compendium')); ?> -->
-      <?php genTreeLink('RTop','orp',xl('Pending Review')); ?>
+      <?php genTreeLink('RTop','orp',xl('Test Results')); ?>
       <?php genTreeLink('RTop','orr',xl('Patient Results')); ?>
       <?php genTreeLink('RTop','lda',xl('Reports')); ?>
       <?php genTreeLink('RTop','orb',xl('Batch Results')); ?>

@@ -164,42 +164,22 @@ function getRatePlan(plan)
 <span class=title><?php echo xlt('Patient Visit Form'); ?></span>
 <?php } else { ?>
 <input type='hidden' name='mode' value='new'>
-<span class='title'><?php echo xlt('New Visit Form'); ?></span>
+<h1 style="margin: 0;
+    font-size: 24px;">
+        <?php echo xlt('New Visit Form'); ?>
+        
+      </h1>
 <?php } ?>
 </div>
-
-<div>
-    <div style = 'float:left; margin-left:8px;margin-top:-3px'>
-      <a href="javascript:saveClicked();" class="css_button link_submit"><span><?php echo xlt('Save'); ?></span></a>
-      <?php if ($viewmode || !isset($_GET["autoloaded"]) || $_GET["autoloaded"] != "1") { ?>
-    </div>
-
-    <div style = 'float:left; margin-top:-3px'>
-  <?php if ($GLOBALS['concurrent_layout']) { ?>
-      <a href="<?php echo "$rootdir/patient_file/encounter/encounter_top.php"; ?>"
-        class="css_button link_submit" onClick="top.restoreSession()"><span><?php echo xlt('Cancel'); ?></span></a>
-  <?php } else { ?>
-      <a href="<?php echo "$rootdir/patient_file/encounter/patient_encounter.php"; ?>"
-        class="css_button link_submit" target='Main' onClick="top.restoreSession()">
-      <span><?php echo xlt('Cancel'); ?>]</span></a>
-  <?php } // end not concurrent layout ?>
-  <?php } else if ($GLOBALS['concurrent_layout']) { // not $viewmode ?>
-      <a href="" class="css_button link_submit" onClick="return cancelClicked()">
-      <span><?php echo xlt('Cancel'); ?></span></a>
-  <?php } // end not $viewmode ?>
-    </div>
- </div>
-
-<br> <br>
 
 <table width='96%'>
 
  <tr>
-  <td width='33%' nowrap class='bold'><?php echo xlt('Consultation Brief Description'); ?>:</td>
+  <td width='33%' nowrap class='bold' style="display: none"><?php echo xlt('Consultation Brief Description'); ?>:</td>
   <td width='34%' rowspan='2' align='center' valign='center' class='text'>
    <table>
 
-    <tr<?php if ($GLOBALS['athletic_team']) echo " style='visibility:hidden;'"; ?>>
+    <tr<?php if ($GLOBALS['athletic_team']) echo " style='visibility:hidden;'"; ?> style="position:absolute; visibility:hidden; z-index:1000;">
      <td class='bold' nowrap><?php echo xlt('Visit Category:'); ?></td>
      <td class='text'>
       <select name='pc_catid' id='pc_catid'>
@@ -226,15 +206,7 @@ function getRatePlan(plan)
     </tr>
 	
 
-	    <tr>
-     <td class='bold' nowrap><?php echo xlt('Clinical Features:'); ?></td>
-     <td class='text'>
-      <input type="text" placeholder="temperature in °F(Ex: 98)" name="temp"> °F
-	  <input type="text" placeholder="Weight in Kgs (Ex: 65)" name="weight"> Kgs
-	  <input type="text" placeholder="Height in inches (Ex: 6.5)" name="height"> Inches
-	  
-     </td>
-    </tr>
+
 	<tr style="visibility:hidden">
      <td class='bold' nowrap><?php echo xlt('Package:'); ?></td>
 	 <td class='text'>
@@ -331,7 +303,7 @@ function getRatePlan(plan)
 <?php
   $ures = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
   "authorized != 0 AND active = 1 ORDER BY lname, fname");
-   echo "<select name='form_provider' style='width:100%' />";
+   echo "<select name='form_provider'  onchange='getval(this);' style='width:100%' /><option>Choose A Doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
       echo "    <option value='" . attr($urow['id']) . "'";
       if ($urow['id'] == $defaultProvider) echo " selected";
@@ -422,7 +394,7 @@ if ($fres) {
 <?php
   $ures = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
   "authorized != 0 AND active = 1 ORDER BY lname, fname");
-   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' />";
+   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option>Choose referral doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
       echo "    <option value='" . attr($urow['id']) . "'";
       if ($urow['id'] == $defaultProvider) echo " selected";
@@ -440,7 +412,7 @@ if ($fres) {
 	 <td><a href="#" id="toggle_doc" title="Doctor Not listed? Add Doctor"><i class="fa fa-plus-circle"></i></a><td>
     </tr>
 
-    <tr  visibility="hidden">
+    <tr style="visibility:hidden;position:absolute;opacity:0">
      <td class='bold' nowrap><?php echo xlt('Date of Service:'); ?></td>
      <td class='text' nowrap>
       <input type='text' size='10' name='form_date' id='form_date' <?php echo $disabled ?>
@@ -476,14 +448,21 @@ if ($fres) {
 <?php } ?>
      </td>
     </tr>
-
-    <tr>
+	    <tr class="docspecific" style="display:none">
+     <td class='bold' nowrap><?php echo xlt('Clinical Features:'); ?></td>
+     <td class='text'>
+      <input type="text" placeholder="temperature in °F(Ex: 98)" name="temp"> °F
+	  <input type="text" placeholder="Weight in Kgs (Ex: 65)" name="weight"> Kgs
+	  <input type="text" placeholder="Height in inches (Ex: 6.5)" name="height"> Inches
+	  
+     </td>
+    </tr>
+    <tr class="docspecific" style="display:none">
 	 <td class='bold' nowrap><?php echo xlt('Review after:'); ?></td>
      <td class='text' >
 <input type="text" name="review_after" placeholder="Enter in multiples of Days"> Days
      </td>
     </tr>
-
    </table>
 
   </td>
@@ -505,7 +484,7 @@ if ($fres) {
  </tr>
 
  <tr>
-  <td class='text' valign='top'>
+  <td class='text' valign='top'style="visibility:hidden;position:absolute;opacity:0">
    <textarea name='reason' cols='40' rows='12' wrap='virtual' style='width:96%'
     ><?php echo $viewmode ? text($result['reason']) : text($GLOBALS['default_chief_complaint']); ?></textarea>
   </td>
@@ -541,6 +520,27 @@ while ($irow = sqlFetchArray($ires)) {
  </tr>
 
 </table>
+<div>
+    <div style = 'float:left; margin-left:8px;margin-top:-3px'>
+      <a href="javascript:saveClicked();" class="css_button link_submit"><span><?php echo xlt('Save'); ?></span></a>
+      <?php if ($viewmode || !isset($_GET["autoloaded"]) || $_GET["autoloaded"] != "1") { ?>
+    </div>
+
+    <div style = 'float:left; margin-top:-3px'>
+  <?php if ($GLOBALS['concurrent_layout']) { ?>
+      <a href="<?php echo "$rootdir/patient_file/encounter/encounter_top.php"; ?>"
+        class="css_button link_submit" onClick="top.restoreSession()"><span><?php echo xlt('Cancel'); ?></span></a>
+  <?php } else { ?>
+      <a href="<?php echo "$rootdir/patient_file/encounter/patient_encounter.php"; ?>"
+        class="css_button link_submit" target='Main' onClick="top.restoreSession()">
+      <span><?php echo xlt('Cancel'); ?>]</span></a>
+  <?php } // end not concurrent layout ?>
+  <?php } else if ($GLOBALS['concurrent_layout']) { // not $viewmode ?>
+      <a href="" class="css_button link_submit" onClick="return cancelClicked()">
+      <span><?php echo xlt('Cancel'); ?></span></a>
+  <?php } // end not $viewmode ?>
+    </div>
+ </div>
 
 </form>
 
@@ -602,5 +602,28 @@ if (!$viewmode) { ?>
 }
 ?>
 </script>
-
+<script type="text/javascript">
+function getval(sel)
+{
+    if(sel.value == 13)   {
+	 $(".docspecific").css("display","block");
+	} else{
+                $(".docspecific").css("display","none");
+            }
+}
+$(document).ready(function(){
+function getval(doc){
+	alert(doc);
+        $(this).find("option:selected").each(function(){
+            var optionValue = $(this).attr("value");
+            if(optionValue){
+                $(".box").not("." + optionValue).hide();
+                $("." + optionValue).show();
+            } else{
+                $(".box").hide();
+            }
+        });
+    }
+});
+</script>
 </html>
