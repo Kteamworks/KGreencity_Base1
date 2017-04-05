@@ -411,17 +411,17 @@ if ($form_batch) {
  <tr class='head'>
   <td><?php echo $form_batch ? xl('Name') : xl('Date'); ?></td>
   <td><?php echo $form_batch ? xl('ID') : xl('Procedure Name'); ?></td>
-  <td><?php xl('Reported','e'); ?></td>
+  <td><?php xl('','e'); ?></td>
   <td><?php xl('Ext Time Collected','e'); ?></td>
-  <td><?php xl('Specimen','e'); ?></td>
+  <td><?php xl('','e'); ?></td>
   <td><?php xl('Status','e'); ?></td>
   <td><?php xl('Code','e'); ?></td>
   <td><?php xl('Name','e'); ?></td>
-  <td><?php xl('Abn','e'); ?></td>
+  <td><?php xl('','e'); ?></td>
   <td><?php xl('Value','e'); ?></td>
   <td><?php xl('Units', 'e'); ?></td>
   <td><?php xl('Range','e'); ?></td>
-  <td><?php xl('?','e'); ?></td>
+  <td><?php xl('','e'); ?></td>
  </tr>
 
 <?php 
@@ -616,14 +616,14 @@ while ($row = sqlFetchArray($res)) {
     //
     if ($report_id != $lastprid) {
       echo "  <td nowrap>";
-      echo "<input type='text' size='8' name='form_date_report[$lino]'" .
+     /* echo "<input type='text' size='8' name='form_date_report[$lino]'" .
         " id='form_date_report[$lino]' class='celltextfw' value='" . attr($date_report) . "' " .
         " title='" . xl('Date of this report') . "'" .
         " onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)'" .
         " />";
       echo "<span class='bold' id='q_date_report[$lino]' style='cursor:pointer' " .
-        "title='" . xl('Click here to choose a date') . "' />?</span>";
-      echo "</td>\n";
+        "title='" . xl('Click here to choose a date') . "' />?</span>"; */
+      echo "</td>\n"; 
 
       echo "  <td nowrap>";
       echo "<input type='text' size='13' name='form_date_collected[$lino]'" .
@@ -636,12 +636,12 @@ while ($row = sqlFetchArray($res)) {
         "title='" . xl('Click here to choose a date and time') . "' />?</span>";
       echo "</td>\n";
 
-      echo "  <td>";
-      echo "<input type='text' size='8' name='form_specimen_num[$lino]'" .
+         echo "  <td>";
+     /* echo "<input type='text' size='8' name='form_specimen_num[$lino]'" .
         " class='celltext' value='" . attr($specimen_num) . "' " .
         " title='" . xl('Specimen number/identifier') . "'" .
-        " />";
-      echo "</td>\n";
+        " />"; */
+      echo "</td>\n"; 
 
       echo "  <td>";
       echo generate_select_list("form_report_status[$lino]", 'proc_rep_status',
@@ -667,8 +667,8 @@ while ($row = sqlFetchArray($res)) {
       "</td>\n";
 
     echo "  <td>";
-    echo generate_select_list("form_result_abnormal[$lino]", 'proc_res_abnormal',
-      $result_abnormal, xl('Indicates abnormality'), ' ', 'cellselect');
+   /* echo generate_select_list("form_result_abnormal[$lino]", 'proc_res_abnormal',
+      $result_abnormal, xl('Indicates abnormality'), ' ', 'cellselect'); */
     echo "</td>\n";
 
     echo "  <td>";
@@ -699,10 +699,10 @@ while ($row = sqlFetchArray($res)) {
       "value='$order_id:$order_seq:$report_id:$result_id' />";
     echo "</td>\n";
 
-    echo "  <td class='bold' style='cursor:pointer' " .
+   /* echo "  <td class='bold' style='cursor:pointer' " .
       "onclick='extShow($lino, this)' align='center' " .
       "title='" . xl('Click here to view/edit more details') . "'>";
-    echo "&nbsp;?&nbsp;";
+    echo "&nbsp;?&nbsp;"; */
     echo "</td>\n";
 
     echo " </tr>\n";
