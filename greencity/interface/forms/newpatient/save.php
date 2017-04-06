@@ -47,7 +47,10 @@ $weight          = (isset($_POST['weight'])) ? $_POST['weight'] : '';
 $height          = (isset($_POST['height'])) ? $_POST['height'] : '';
 $tod          = (isset($_POST['tod'])) ? $_POST['tod'] : '';
 $review_after          = (isset($_POST['review_after'])) ? $_POST['review_after'] : '';
-
+$referal_check =  sqlQuery("select doctor_name FROM referral_doctor WHERE doctor_name = ?", array($referral_source));
+if(!$referal_check) {
+	sqlQuery("INSERT INTO referral_doctor (doctor_name) VALUES ('" . add_escape_custom($referral_source) . "')");
+}
 $facilityresult = sqlQuery("select name FROM facility WHERE id = ?", array($facility_id));
 $facility = $facilityresult['name'];
 

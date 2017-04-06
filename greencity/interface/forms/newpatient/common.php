@@ -179,7 +179,7 @@ function getRatePlan(plan)
   <td width='34%' rowspan='2' align='center' valign='center' class='text'>
    <table>
 
-    <tr<?php if ($GLOBALS['athletic_team']) echo " style='visibility:hidden;'"; ?> style="position:absolute; visibility:hidden; z-index:1000;">
+    <tr<?php if ($GLOBALS['athletic_team']) echo " style='visibility:hidden;'"; ?>>
      <td class='bold' nowrap><?php echo xlt('Visit Category:'); ?></td>
      <td class='text'>
       <select name='pc_catid' id='pc_catid'>
@@ -392,14 +392,12 @@ if ($fres) {
      <td class='text' id="select_dr">
 
 <?php
-  $ures = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
-  "authorized != 0 AND active = 1 ORDER BY lname, fname");
+  $ures = sqlStatement("SELECT id,doctor_name FROM referral_doctor");
    echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option>Choose referral doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
-      echo "    <option value='" . attr($urow['id']) . "'";
+      echo "    <option value='" . text($urow['doctor_name']) . "'";
       if ($urow['id'] == $defaultProvider) echo " selected";
-      echo ">" . "Dr. ".text($urow['fname']);
-      if ($urow['lname']) echo " " . text($urow['lname']);
+      echo ">".text($urow['doctor_name']);
       echo "</option>\n";
     }
     echo "</select>";

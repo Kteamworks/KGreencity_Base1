@@ -231,6 +231,22 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 <input type='hidden' name='form_refresh' id='form_refresh' value=''/>
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
 <table>
+    <tbody>
+        <tr>
+           <td>01</td><td>02</td><td>03</td><td>04</td> 
+        </tr> 
+        <tr>
+           <td>05</td><td>06</td><td>07</td><td>08</td>
+        </tr>
+         <tr>
+           <td>09</td><td>10</td><td>11</td><td>12</td>
+        </tr>  
+        <tr>
+            <td>13</td><td>14</td><td>15</td><td>16</td>
+        </tr>
+    </tbody>
+</table>
+<table>
  <tr>
   <td width='630px'>
 	<div style='float:left'>
@@ -512,6 +528,36 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 <script language="Javascript">
  Calendar.setup({inputField:"form_from_date", ifFormat:"%Y-%m-%d", button:"img_from_date"});
  Calendar.setup({inputField:"form_to_date", ifFormat:"%Y-%m-%d", button:"img_to_date"});
+ $(document).ready(function() {
+ function swap( cells, x, y ){
+   if( x != y ){     
+ 
+   var $cell1 = cells[y][x];
+   var $cell2 = cells[x][y];
+   $cell1.replaceWith( $cell2.clone() );
+   $cell2.replaceWith( $cell1.clone() );
+    }
+}
+function tableswap() {
+var cells = [];
+$('table').find('tr').each(function(){
+    var row = [];
+    $(this).find('td').each(function(){
+       row.push( $(this) );    
+    });
+    cells.push( row );
+});
+
+for( var y = 0; y <= cells.length/2; y++ ){
+    for( var x = 0; x < cells[y].length; x++ ){
+        swap( cells, x, y );
+    }   
+}
+
+}
+ setTimeout(tableswap, 1000)
+ });
+
 </script>
 
 </html>
