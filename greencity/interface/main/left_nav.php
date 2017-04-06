@@ -1409,7 +1409,8 @@ if (!empty($reg)) {
 	<li><a class="collapsed" id="manageimg" ><span><?php xl('Statistics','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
-			  <?php genMiscLink('RTop','fin','0',xl('Out Patients'),'main/finder/p_dynamic_finder_op.php'); ?>
+	   <?php genMiscLink('RTop','fin','0',xl('Out Patients'),'main/finder/p_dynamic_finder_op.php'); ?>
+		<?php genMiscLink('RTop','fin','0',xl('Lab Statstics'),'reports/LabStatistics.php'); ?>
 		
 		  
         </ul>    
