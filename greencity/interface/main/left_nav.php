@@ -1682,9 +1682,11 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
   if (acl_check('acct', 'rep_a')||$_SESSION['authUser']=='DR. NIRMALA.B.M') { ?>
       <li><a class="collapsed_lv2"><span><?php xl('Financial','e') ?></span></a>
         <ul>
+		 <?php genMiscLink('RTop','rep','0',xl('Doctors By IP/OP'),'reports/salesdocipop.php'); ?>
+		  <?php genMiscLink('RTop','rep','0',xl('Lab Report'),'reports/LabStatistics.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Sales'),'reports/sales_by_item.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Sales By Category'),'reports/sales_by_category.php'); ?>
-		  <?php genMiscLink('RTop','rep','0',xl('Doctors By IP/OP'),'reports/salesdocipop.php'); ?>
+		 
 		   <?php genMiscLink('RTop','rep','0',xl('Main Report'),'reports/briefreport.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Revenue'),'reports/revenue.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Cash Rec'), 'billing/sl_receipts_report.php'); ?>

@@ -271,7 +271,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?>>
+			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?> checked>
 			   <?php  xl('Details','e'); ?>
 			</td>
 		</tr>
@@ -291,15 +291,15 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 					</span>
 					</a>
 
-					<?php if ($_POST['form_refresh'] || $_POST['form_csvexport']) { ?>
+					<!--<?php if ($_POST['form_refresh'] || $_POST['form_csvexport']) { ?>
 					<a href='#' class='css_button' onclick='window.print()'>
 						<span>
-							<?php xl('Print','e'); ?>
+							<!--<?php xl('Print','e'); ?>-->
 						</span>
 					</a>
-					<a href='#' class='css_button' onclick='$("#form_refresh").attr("value",""); $("#form_csvexport").attr("value","true"); $("#theform").submit();'>
+					<!--<a href='#' class='css_button' onclick='$("#form_refresh").attr("value",""); $("#form_csvexport").attr("value","true"); $("#theform").submit();'>
 						<span>
-							<?php xl('CSV Export','e'); ?>
+							<?php xl('CSV Export','e'); ?>-->
 						</span>
 					</a>
 					<?php } ?>
@@ -323,18 +323,18 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
  
  
  <th align="left">
-   <?php xl('Lab Test','e'); ?>
+   <?php xl('Patient Name','e'); ?>
   </th>
  
   <th align="left">
-   <?php xl('Date','e'); ?>
+   <?php xl('','e'); ?>
   </th>
 
   <th>
-   <?php xl('Name','e'); ?>
+   <?php xl('Lab Test','e'); ?>
   </th>
-  <th align="center">
-   <?php xl(' ','e'); ?>
+  <th align="left">
+   <?php xl('Date ','e'); ?>
   </th>
  
  
@@ -449,7 +449,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     else {
 ?>
 
- <tr bgcolor="#ddddff">
+ <tr bgcolor="">
   <td class="detail">
    <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
   </td>
@@ -487,7 +487,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <!--<?php echo $grandqty; ?>-->
   </td>
   <td align="right">
-   <!--<?php bucks($grandtotal); ?>-->
+   <?php bucks($grandtotal); ?>
   </td>
  </tr>
 
