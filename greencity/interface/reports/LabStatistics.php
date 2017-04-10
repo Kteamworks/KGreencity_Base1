@@ -58,13 +58,13 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
   </td>
   <td class="detail" colspan="3">
-   <?php if ($_POST['form_details']) echo xl('Total') . ' '; ?>
+ 
   </td>
   <td align="right">
-  <!-- <?php echo $productqty; ?>-->
+  
   </td>
   <td align="right">
-   <?php bucks($producttotal); ?>
+  
   </td>
  </tr>
 <?php
@@ -87,13 +87,13 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    &nbsp;
   </td>
   <td class="detail" colspan="3">
-   <?php echo xl('Total') . ' ';?>
+  <!-- <?php echo xl('Total for category') . ' '; ?> -->
   </td>
   <td align="right">
-  <!-- <?php echo $catqty; ?>-->
+   <!--<?php ?>-->
   </td>
   <td align="right">
-  <!-- <?php bucks($cattotal); ?>-->
+   <!--<?php bucks($cattotal); ?>-->
   </td>
  </tr>
 <?php
@@ -118,15 +118,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 ?>
 
  <tr>
-  <td class="detail">
-   <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
-  </td>
-  <td class="detail" >
-   <?php echo display_desc($productleft); $productleft = "&nbsp;"; ?>
-  </td>
-  <td>
-   <?php echo oeFormatShortDate($transdate); ?>
-  </td>
+ 
   <td class="detail">
   
   <?php  $tmp = sqlQuery("SELECT fname,lname FROM patient_data WHERE " .
@@ -136,8 +128,20 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <a href='../patient_file/pos_checkout.php?ptid=<?php echo $patient_id; ?>&enc=<?php echo $encounter_id; ?>'>
    <?php echo $name ?></a>
   </td>
+ 
+ 
+  <td class="detail">
+   <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
+  </td>
+  <td class="detail" >
+   <?php echo display_desc($productleft); $productleft = "&nbsp;"; ?>
+  </td>
+  <td>
+   <?php echo oeFormatShortDate($transdate); ?>
+  </td>
+ 
   <td align="right">
-   <!--<?php echo $qty; ?>-->
+  <!-- <?php echo $qty; ?>-->
   </td>
   <td align="right">
    <?php bucks($rowamount); ?>
@@ -178,14 +182,14 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       echo '"Item",';
       echo '"Date",';
       echo '"Bill No.",';
-     // echo '"Qty",';
+      //echo '"Qty",';
       echo '"Amount"' . "\n";
     }
     else {
       echo '"Category",';
       echo '"Item",';
       //echo '"Qty",';
-      echo '"Total"' . "\n";
+     // echo '"Total"' . "\n";
     }
   } // end export
   else {
@@ -223,7 +227,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 
 <body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' class="body_top">
 
-<span class='title'><?php xl('Report','e'); ?> - <?php xl('Lab Statistics','e'); ?></span>
+<span class='title'><?php xl('','e'); ?>  <?php xl('Lab Statistics','e'); ?></span></br>
 
 <form method='post' action='LabStatistics.php' id='theform'>
 
@@ -267,7 +271,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?> checked>
+			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?>>
 			   <?php  xl('Details','e'); ?>
 			</td>
 		</tr>
@@ -315,19 +319,26 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 <div id="report_results">
 <table >
  <thead>
-  <th>
-   <?php xl('','e'); ?>
-  </th>
-  <th align="left">
-   <?php xl('Lab Test ','e'); ?>
-  </th>
+ 
+ 
  
  <th align="left">
+   <?php xl('Lab Test','e'); ?>
+  </th>
+ 
+  <th align="left">
    <?php xl('Date','e'); ?>
   </th>
-   <th align="left">
-   <?php xl('Patient Name','e'); ?>
+
+  <th>
+   <?php xl('Name','e'); ?>
   </th>
+  <th align="center">
+   <?php xl(' ','e'); ?>
+  </th>
+ 
+ 
+  
   <th align="right">
    <?php xl('','e'); ?>
   </th>
@@ -354,7 +365,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     $grandqty = 0;
 
     if ($INTEGRATED_AR) {
-      $query = "SELECT b.date,b.fee, b.pid, b.encounter, b.code_type, " .
+      $query = "SELECT b.date,b.fee, b.pid, b.encounter, b.code_type, b.units, " .
         "b.code_text, fe.date, fe.facility_id, fe.invoice_refno " .
         "FROM billing AS b " .
         "JOIN code_types AS ct ON ct.ct_key = b.code_type " .
@@ -367,7 +378,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       if ($form_facility) {
         $query .= " AND fe.facility_id = '$form_facility'";
       }
-      $query .= " ORDER BY b.code_type";
+      $query .= " ORDER BY b.pid ";
       //
       $res = sqlStatement($query);
       while ($row = sqlFetchArray($res)) {
@@ -405,7 +416,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     }
     else {
       $query = "SELECT ar.invnumber, ar.transdate, " .
-        "invoice.description, invoice.qty, invoice.sellprice " .
+        "invoice.description, invoice.sellprice " .
         "FROM ar, invoice WHERE " .
         "ar.transdate >= '$from_date' AND ar.transdate <= '$to_date' " .
         "AND invoice.trans_id = ar.id " .
@@ -443,13 +454,13 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
   </td>
   <td class="detail" colspan="3">
-   <?php if ($_POST['form_details']) echo xl('Total') . ' ';?>
+  <!-- <?php if ($_POST['form_details']) echo xl('Total for') . ' '; ?> -->
   </td>
   <td align="right">
-   <!--<?php echo $productqty; ?>-->
+  
   </td>
   <td align="right">
-   <?php bucks($producttotal); ?>
+  
   </td>
  </tr>
 
@@ -458,7 +469,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    &nbsp;
   </td>
   <td class="detail" colspan="3">
-   <?php echo xl('') . ' ';  ?>
+  <!-- <?php echo xl('Total for category') . ' '; ?> -->
   </td>
   <td align="right">
    <!--<?php echo $catqty; ?>-->
@@ -468,7 +479,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   </td>
  </tr>
 
- <tr bgcolor="#ffdddd">
+ <tr>
   <td class="detail" colspan="4">
    <?php xl('Grand Total','e'); ?>
   </td>
@@ -476,7 +487,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <!--<?php echo $grandqty; ?>-->
   </td>
   <td align="right">
-   <?php bucks($grandtotal); ?>
+   <!--<?php bucks($grandtotal); ?>-->
   </td>
  </tr>
 

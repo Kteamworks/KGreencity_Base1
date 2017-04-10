@@ -169,11 +169,11 @@ while ($row = sqlFetchArray($res)) {
 	  $admit=$row['admit_to_ward'].' , '.$row['admit_to_bed'];
 	    $arow[] = $admit;
 	}
-	else if($colname == 'amount1') {
+	/*else if($colname == 'amount1') {
 		$advance = $row['amount1'];
 		$arow[] = $advance;
 	}
-	
+	*/
     else if ($colname == 'DOB' || $colname == 'regdate' || $colname == 'ad_reviewed' || $colname == 'userdate1') {
       $arow[] = oeFormatShortDate($row[$colname]);
     }else if($colname=='admit_date')
