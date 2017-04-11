@@ -1276,7 +1276,7 @@ if ($GLOBALS['athletic_team']) {
 <?php 
  $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");?>
   <?php if (!$GLOBALS['disable_calendar'] && !$GLOBALS['ippf_specific']) genTreeLink('RTop','cal',xl('Calendar')); ?>
-  <?php // genTreeLink('RBot','msg',xl('Messages')); ?> 
+  <?php  genTreeLink('RBot','msg',xl('Messages')); ?> 
  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor'||$_SESSION['authUser']=='DR. NIRMALA.B.M') { ?>
    <?php genTreeLink('RTop','ddb',xl('Dashboard')); ?>
    <?php //genTreeLink('RTop','ana',xl('OPs Dashboard')); ?>
@@ -1690,7 +1690,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
 		   <?php genMiscLink('RTop','rep','0',xl('Main Report'),'reports/briefreport.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Revenue'),'reports/revenue.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Cash Rec'), 'billing/sl_receipts_report.php'); ?>
-          <!--<?php genMiscLink('RTop','rep','0',xl('Front Rec'), 'reports/front_receipts_report.php'); ?>-->
+          <?php genMiscLink('RTop','rep','0',xl('Front Rec'), 'reports/front_receipts_report.php'); ?>
 		   <?php genMiscLink('RTop','rep','0',xl('Voucher Rec'), 'reports/voucher_receipts_report.php'); ?>
 		  <!-- <?php genMiscLink('RTop','rep','0',xl('Heads Vouc'), 'reports/doctors_voucher_reports.php'); ?>-->
           <!--<?php genMiscLink('RTop','rep','0',xl('Pmt Method'), 'reports/receipts_by_method_report.php'); ?>-->
