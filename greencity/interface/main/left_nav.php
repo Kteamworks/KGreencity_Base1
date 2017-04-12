@@ -1278,7 +1278,7 @@ if ($GLOBALS['athletic_team']) {
   <?php if (!$GLOBALS['disable_calendar'] && !$GLOBALS['ippf_specific']) genTreeLink('RTop','cal',xl('Calendar')); ?>
   <?php  genTreeLink('RBot','msg',xl('Messages')); ?> 
  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor'||$_SESSION['authUser']=='DR. NIRMALA.B.M') { ?>
-   <?php genTreeLink('RTop','ddb',xl('Dashboard')); ?>
+   <!--<?php genTreeLink('RTop','ddb',xl('Dashboard')); ?>-->
    <?php //genTreeLink('RTop','ana',xl('OPs Dashboard')); ?>
    <?php } ?>
   <?php if ($GLOBALS['lab_exchange_enable']) genTreeLink('RTop', 'lab', xl('Check Lab Results'));?>
@@ -1304,16 +1304,12 @@ if ($GLOBALS['athletic_team']) {
 	  <!--<?php genMiscLink('RTop','fin','0',xl('Camp Patients'),'main/finder/dynamic_finder_camp.php'); ?>-->
 	  <?php } ?>
 	  <?php genMiscLink('RTop','fin','0',xl('My Patients'),'main/finder/p_dynamic_finder.php'); ?>
-	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor' ||$_SESSION['authUser']=='DR. NIRMALA.B.M') {?>
+	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
 	  <?php genMiscLink('RTop','fin','0',xl('In Patients'),'main/finder/p_dynamic_finder_ip.php'); ?>
-	  <?php genMiscLink('RTop','fin','0',xl('Out Patients'),'main/finder/p_dynamic_finder_op.php'); ?>
-	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_dynamic_finder_tdap.php'); ?>
-	   <?php }?>
-	   
-	   <!--Create a role New Ecrop Manager for Receptionists to view this page -->
-	   <?php if($newcrop_user_role['newcrop_user_role']=='erxmanager') {?>
-	   
-	  <?php  genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_tp_dynamic_finder.php'); ?>
+	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_tp_dynamic_finder.php'); ?>
+	   <?php } elseif($newcrop_user_role['newcrop_user_role']=='erxdoctor') { ?>
+	  
+	  <?php  genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_dynamic_finder_tdap.php'); ?>
 	  <?php }?>
       <?php genTreeLink('RTop','new',($GLOBALS['full_new_patient_form'] ? xl('New/Search') : xl('New'))); ?>
       <?php genTreeLink('RTop','dem',xl('Summary')); ?>
@@ -1410,7 +1406,7 @@ if (!empty($reg)) {
 	<li><a class="collapsed" id="manageimg" ><span><?php xl('Statistics','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
-	   <?php genMiscLink('RTop','fin','0',xl('Out Patients'),'main/finder/p_dynamic_finder_op.php'); ?>
+
 		<?php genMiscLink('RTop','fin','0',xl('Lab Statstics'),'reports/LabStatistics.php'); ?>
 		
 		  
