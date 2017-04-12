@@ -10,8 +10,8 @@
 // Sanitize escapes and stop fake register globals.
 
 
-$page = $_SERVER['PHP_SELF'];
-$sec = "120";
+//$page = $_SERVER['PHP_SELF'];
+//$sec = "120";
 
 $sanitize_all_escapes = true;
 $fake_register_globals = false;
