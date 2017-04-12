@@ -335,7 +335,7 @@ $("#pt_table tbody tr").each(function(i){
     $(this).prepend("<td style='text-align: center'>" + con + "</td>")
 });
 $("#pt_table thead tr:nth-child(2)").each(function(i){
-        $(this).prepend("<th>sr No</th>")
+        $(this).prepend("<th>Sr No</th>")
 });
 }
 setTimeout(explode, 2000);
