@@ -230,22 +230,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 <div id="report_parameters">
 <input type='hidden' name='form_refresh' id='form_refresh' value=''/>
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
-<table>
-    <tbody>
-        <tr>
-           <td>01</td><td>02</td><td>03</td><td>04</td> 
-        </tr> 
-        <tr>
-           <td>05</td><td>06</td><td>07</td><td>08</td>
-        </tr>
-         <tr>
-           <td>09</td><td>10</td><td>11</td><td>12</td>
-        </tr>  
-        <tr>
-            <td>13</td><td>14</td><td>15</td><td>16</td>
-        </tr>
-    </tbody>
-</table>
+
 <table>
  <tr>
   <td width='630px'>

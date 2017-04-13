@@ -960,6 +960,8 @@ td { font-size:0.8em; }
  // Do whatever is needed when a new event category is selected.
  // For now this means changing the event title and duration.
  function set_category() {
+	var sel = $('#aioConceptName').val();
+	 getselval(sel);
   var f = document.forms[0];
   var s = f.form_category;
   if (s.selectedIndex >= 0) {
@@ -969,7 +971,14 @@ td { font-size:0.8em; }
    set_display();
   }
  }
-
+function getselval(sel)
+{
+    if(sel == 23)   {
+	 $(".hidescan").css("display","block");
+	} else{
+                $(".hidescan").css("display","table-row");
+            }
+}
  // Modify some visual attributes when the all-day or timed-event
  // radio buttons are clicked.
  function set_allday() {
@@ -1158,7 +1167,7 @@ $classpati='';
    <b><?php echo ($GLOBALS['athletic_team'] ? xlt('Team/Squad') : xlt('Category')); ?>:</b>
   </td>
   <td nowrap>
-   <select name='form_category' onchange='set_category()' style='width:100%'>
+   <select name='form_category' onchange='set_category()'  id="aioConceptName" style='width:100%'>
 <?php echo $catoptions ?>
    </select>
   </td>
@@ -1171,7 +1180,19 @@ $classpati='';
    <?php echo xlt('All day event'); ?>
   </td>
  </tr>
-
+ <?php $qscan = "SELECT * from codes WHERE code_type=14"; $resscn = sqlStatement($qscan); ?>
+<tr class="hidescan" style="display:none">
+<td width='1%' nowrap>
+   <b><?php echo ($GLOBALS['athletic_team'] ? xlt('Team/Squad') : xlt('Scans List')); ?>:</b>
+  </td>
+  <td nowrap>
+   <select name='scan_selected' style='width:100%'>
+<?php while($scans = sqlFetchArray($resscn)) { ?>
+<option value="<?php echo $scans[id] ?>"><?php echo $scans['code_text']; ?></option>
+<?php } ?>
+   </select>
+  </td>
+</tr>
  <tr>
   <td nowrap>
    <b><?php echo xlt('Date'); ?>:</b>
