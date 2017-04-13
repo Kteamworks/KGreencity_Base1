@@ -902,6 +902,7 @@ td { font-size:0.8em; }
    }
    $prefcat_options .= ">" . text(xl_appt_category($crow['pc_catname'])) . "</option>\n";
   }
+ 
 
   if ($crow['pc_cattype'] != $cattype) continue;
 
@@ -1000,7 +1001,7 @@ function set_scans() {
   if (s.selectedIndex >= 0) {
    var scanid = s.options[s.selectedIndex].value;
    f.form_title.value = s.options[s.selectedIndex].text;
-   f.form_duration.value = durations[scanid];
+   f.form_duration.value = durations[catid];
    set_display();
   }
  }
