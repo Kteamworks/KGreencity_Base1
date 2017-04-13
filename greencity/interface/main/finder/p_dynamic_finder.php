@@ -338,7 +338,7 @@ $("#pt_table thead tr:nth-child(2)").each(function(i){
         $(this).prepend("<th>Sr No</th>")
 });
 }
-//setTimeout(explode, 2000);
+setTimeout(explode, 2000);
 
     });
 </script>

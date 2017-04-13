@@ -242,6 +242,7 @@ if ( $eid ) {
 //=============================================================================================================================
 if ($_POST['form_action'] == "duplicate" || $_POST['form_action'] == "save") 
  {
+
     // the starting date of the event, pay attention with this value
     // when editing recurring events -- JRM Oct-08
     $event_date = fixDate($_POST['form_date']);
@@ -476,6 +477,7 @@ if ($_POST['form_action'] == "save") {
                 // after the two diffs above, we must update for remaining providers
                 // those who are intersected in $providers_current and $providers_new
                 foreach ($_POST['form_provider'] as $provider) {
+					
                     sqlStatement("UPDATE openemr_postcalendar_events SET " .
                         "pc_catid = '" . add_escape_custom($_POST['form_category']) . "', " .
                         "pc_pid = '" . add_escape_custom($_POST['form_pid']) . "', " .
@@ -834,7 +836,7 @@ if ($_POST['form_action'] == "save") {
 
  // Get the providers list.
  $ures = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
-  "authorized != 0 AND active = 1 ORDER BY fname, lname");
+  "authorized != 0 AND active = 1 and specialty='Gyneacology' ORDER BY fname, lname");
 
  // Get event categories.
  $cres = sqlStatement("SELECT pc_catid, pc_catname, pc_recurrtype, pc_duration, pc_end_all_day " .
@@ -961,24 +963,52 @@ td { font-size:0.8em; }
  // For now this means changing the event title and duration.
  function set_category() {
 	var sel = $('#aioConceptName').val();
-	 getselval(sel);
+	
+	getselval(sel);
   var f = document.forms[0];
   var s = f.form_category;
   if (s.selectedIndex >= 0) {
    var catid = s.options[s.selectedIndex].value;
+     //if(catid==23)
    f.form_title.value = s.options[s.selectedIndex].text;
+  
    f.form_duration.value = durations[catid];
    set_display();
   }
  }
+ 
+ 
 function getselval(sel)
 {
     if(sel == 23)   {
-	 $(".hidescan").css("display","block");
+	 	
+	 $(".hidescan").css("display","table-row");
 	} else{
-                $(".hidescan").css("display","table-row");
+                $(".hidescan").css("display","none");
             }
 }
+
+function set_scans() {
+	
+	//var sel = $('#aioConceptName').val();
+	
+	//getselval(sel);
+  var f = document.forms[0];
+  
+  var s = f.scan_selected;
+ 
+  if (s.selectedIndex >= 0) {
+   var scanid = s.options[s.selectedIndex].value;
+   f.form_title.value = s.options[s.selectedIndex].text;
+   f.form_duration.value = durations[scanid];
+   set_display();
+  }
+ }
+
+
+
+
+
  // Modify some visual attributes when the all-day or timed-event
  // radio buttons are clicked.
  function set_allday() {
@@ -1018,7 +1048,7 @@ function getselval(sel)
   f.form_repeat_type.disabled = isdisabled;
   f.form_repeat_freq.disabled = isdisabled;
   f.form_enddate.disabled = isdisabled;
-  document.getElementById('tdrepeat1').style.color = mycolor;
+  document.getElementById('tdrepeat1+').style.color = mycolor;
   document.getElementById('tdrepeat2').style.color = mycolor;
   document.getElementById('img_enddate').style.visibility = myvisibility;
  }
@@ -1186,8 +1216,10 @@ $classpati='';
    <b><?php echo ($GLOBALS['athletic_team'] ? xlt('Team/Squad') : xlt('Scans List')); ?>:</b>
   </td>
   <td nowrap>
-   <select name='scan_selected' style='width:100%'>
-<?php while($scans = sqlFetchArray($resscn)) { ?>
+   <select name='scan_selected' onchange='set_scans()' style='width:100%'>
+   <option value="">Select Scan</option>
+<?php while($scans = sqlFetchArray($resscn)) { ?>      
+
 <option value="<?php echo $scans[id] ?>"><?php echo $scans['code_text']; ?></option>
 <?php } ?>
    </select>
@@ -1230,6 +1262,7 @@ $classpati='';
    <b><?php echo ($GLOBALS['athletic_team'] ? xlt('Team/Squad') : xlt('Title')); ?>:</b>
   </td>
   <td nowrap>
+  
    <input type='text' size='10' name='form_title' value='<?php echo attr($row['pc_title']); ?>'
     style='width:100%'
     title='<?php echo xla('Event title'); ?>' />
