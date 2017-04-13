@@ -9,8 +9,12 @@ div.tiny {
   cursor: default; }
   
 .PT_INACTIVE {
-    opacity: 0.4;
-    text-decoration: line-through;
+/*    opacity: 0.4;
+    text-decoration: line-through; */
+	color:	#5cb85c;
+}
+.PT_UNBILLED {
+color:	#d9534f;
 }
 #printview, #dayview, #weekview, #monthview {
   cursor: hand; }
