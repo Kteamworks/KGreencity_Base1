@@ -96,8 +96,13 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
 
 <?php if (!$GLOBALS['athletic_team']) { ?>
   var category = document.forms[0].pc_catid.value;
+  var form_provider=document.forms[0].form_provider.value;
   if ( category == '_blank' ) {
    alert("<?php echo xls('You must select a visit category'); ?>");
+   return;
+  }
+   if ( form_provider == '_blank' ) {
+   alert("<?php echo xls('Please enter the doctor name'); ?>");
    return;
   }
 <?php } ?>
@@ -186,7 +191,7 @@ function getRatePlan(plan)
 	<option value='_blank'>-- <?php echo xlt('Select One'); ?> --</option>
 <?php
  $cres = sqlStatement("SELECT pc_catid, pc_catname " .
-  "FROM openemr_postcalendar_categories ORDER BY pc_catname");
+  "FROM openemr_postcalendar_categories where active=1 ORDER BY pc_catname");
  while ($crow = sqlFetchArray($cres)) {
   $catid = $crow['pc_catid'];
   if ($catid < 9 && $catid != 5) continue;
@@ -303,7 +308,7 @@ function getRatePlan(plan)
 <?php
   $ures = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
   "authorized != 0 AND active = 1 ORDER BY lname, fname");
-   echo "<select name='form_provider'  onchange='getval(this);' style='width:100%' /><option>Choose A Doctor</option>";
+   echo "<select name='form_provider'  onchange='getval(this);' style='width:100%' /><option value='_blank'>Choose A Doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
       echo "    <option value='" . attr($urow['id']) . "'";
       if ($urow['id'] == $defaultProvider) echo " selected";
@@ -393,7 +398,7 @@ if ($fres) {
 
 <?php
   $ures = sqlStatement("SELECT id,doctor_name FROM referral_doctor");
-   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option>Choose referral doctor</option>";
+   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option value=''>Choose referral doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
       echo "    <option value='" . text($urow['doctor_name']) . "'";
       if ($urow['id'] == $defaultProvider) echo " selected";
@@ -410,11 +415,11 @@ if ($fres) {
 	 <td><a href="#" id="toggle_doc" title="Doctor Not listed? Add Doctor"><i class="fa fa-plus-circle"></i></a><td>
     </tr>
 
-    <tr style="visibility:hidden;position:absolute;opacity:0">
+    <tr>
      <td class='bold' nowrap><?php echo xlt('Date of Service:'); ?></td>
      <td class='text' nowrap>
       <input type='text' size='10' name='form_date' id='form_date' <?php echo $disabled ?>
-       value='<?php echo $viewmode ? substr($result['date'], 0, 10) : date('Y-m-d'); ?>'
+       value='<?php echo $viewmode ? substr($result['date'], 0, 10) : date('Y-m-d H:i:s'); ?>'
        title='<?php echo xla('yyyy-mm-dd Date of service'); ?>'
        onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' />
         <img src='../../pic/show_calendar.gif' align='absbottom' width='24' height='22'
@@ -556,7 +561,7 @@ $('#toggle_doc').on('click', function() {
 </script>
 <script language="javascript">
 /* required for popup calendar */
-Calendar.setup({inputField:"form_date", ifFormat:"%Y-%m-%d", button:"img_form_date"});
+Calendar.setup({inputField:"form_date", ifFormat:"%Y-%m-%d %H:%M:%S", button:"img_form_date", showsTime:true});
 Calendar.setup({inputField:"form_onset_date", ifFormat:"%Y-%m-%d", button:"img_form_onset_date"});
 <?php
 if (!$viewmode) { ?>

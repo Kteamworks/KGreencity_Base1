@@ -59,6 +59,14 @@ if ($GLOBALS['concurrent_layout'])
   $normalurl = "patient_file/encounter/encounter_top.php";
 else
   $normalurl = "$rootdir/patient_file/encounter/patient_encounter.php";
+
+
+if($_SESSION['authUser']!='Receptionist'){
+	$normalurl = "forms/fee_sheet/new.php";
+}
+else{
+
+
 if($pc_catid==10)
 {
 	//$normalurl = "patient_file/front_payment.php";
@@ -75,7 +83,7 @@ if($pc_catid==12)
 	
 	$normalurl = "patient_file/encounter/load_form.php?formname=admit";
 
-}
+}}
 $nexturl = $normalurl;
 
 if ($mode == 'new')

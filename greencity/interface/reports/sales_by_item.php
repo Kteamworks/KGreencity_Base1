@@ -230,22 +230,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 <div id="report_parameters">
 <input type='hidden' name='form_refresh' id='form_refresh' value=''/>
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
-<table>
-    <tbody>
-        <tr>
-           <td>01</td><td>02</td><td>03</td><td>04</td> 
-        </tr> 
-        <tr>
-           <td>05</td><td>06</td><td>07</td><td>08</td>
-        </tr>
-         <tr>
-           <td>09</td><td>10</td><td>11</td><td>12</td>
-        </tr>  
-        <tr>
-            <td>13</td><td>14</td><td>15</td><td>16</td>
-        </tr>
-    </tbody>
-</table>
+
 <table>
  <tr>
   <td width='630px'>
@@ -377,7 +362,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
         "JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter " .
         //"LEFT JOIN codes AS c ON c.code_type = ct.ct_id AND c.code = b.code AND c.modifier = b.modifier " .
         //"LEFT JOIN list_options AS lo ON lo.list_id = 'superbill' AND lo.option_id = c.superbill " .
-        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.billed=1 and b.activity = 1 AND b.fee != 0 AND " .
+        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.activity = 1 AND b.fee != 0 AND " .
         "b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
       // If a facility was specified.
       if ($form_facility) {

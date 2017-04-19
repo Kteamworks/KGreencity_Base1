@@ -177,9 +177,18 @@ $query = "SELECT $sellist FROM patient_data a,form_encounter b where a.pid=b.pid
 }
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
-  
+  $bill_qry = "SELECT * from billing_main_copy WHERE pid=? AND encounter=?";
+ $billed = sqlStatement($bill_qry, array($row['pid'],$row['encounter']));
   // Each <tr> will have an ID identifying the patient.
+//  $arow = array('DT_RowId' => 'pid_' . $row['pid']);
+while($data = sqlFetchArray($billed)) {
+    if($data['PFYN_Flag'] == 0) {
+     $arow = array('DT_RowId' => 'pid_' . $row['pid'],'DT_RowClass' => 'PT_UNBIILLED');
+  }
+  else {
   $arow = array('DT_RowId' => 'pid_' . $row['pid']);
+  }
+}
   foreach ($aColumns as $colname) {
     if ($colname == 'name') {
       $name = $row['fname'];
