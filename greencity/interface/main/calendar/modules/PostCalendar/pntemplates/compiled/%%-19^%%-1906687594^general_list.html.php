@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.2, created on 2016-07-15 12:11:53
+<?php /* Smarty version 2.6.2, created on 2017-04-21 01:07:15
          compiled from C:/xampp/htdocs/greencity/templates/insurance_companies/general_list.html */ ?>
 <?php require_once(SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xampp/htdocs/greencity/templates/insurance_companies/general_list.html', 2, false),array('modifier', 'upper', 'C:/xampp/htdocs/greencity/templates/insurance_companies/general_list.html', 13, false),)), $this); ?>
@@ -36,4 +36,4 @@ action=edit&id=<?php echo $this->_tpl_vars['insurancecompany']->id; ?>
 </td>
 	</tr>
 	<?php endif; ?>
-</table>
+</table>

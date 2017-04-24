@@ -152,18 +152,18 @@ table{
     font-size: 0.8em; }
 </style>
 
-<title><?php echo xlt('Bill Change') ?></title>
+<title><?php echo xlt('Voucher Change') ?></title>
 </head>
 <body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' class="body_top">
 
 
-<form method='post' action='bill_date_change.php' id='theform'>
+<form method='post' action='voucher_date_change.php' id='theform'>
 <div id="report_parameters">
 <div id="hideonprint">
 <input type='hidden' name='form_refresh' id='form_refresh' value=''/>
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
 <input type='hidden' name='form_save' id='form_save' value=''/>
-Enter the Bill Number to Change: <input type='text' name='bill_change' id='bill_change' value=''/><br/>
+Enter the Voucher Number to Change: <input type='text' name='voucher_change' id='voucher_change' value=''/><br/>
  Enter the date to Change:  <input type='text' name='form_from_date' id="form_from_date" size='10' value='<?php echo attr($form_from_date) ?>'
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
@@ -187,24 +187,24 @@ Enter the changed date:	   <input type='text' name='form_to_date' id="form_to_da
 if($_POST['submit'])
 {
 
-$bill_change=$_POST['bill_change'];
+$voucher_change=$_POST['voucher_change'];
 $date=$_POST['form_from_date'];
 $datechange=$_POST['form_to_date'];
-$billing="SELECT * from billing where bill_id='$bill_change' and activity='1' and DATE(date)='$date'";
-	  $bills=sqlStatement($billing);
-	  $bill=sqlFetchArray($bills);
+$voucher="SELECT * from vouchers where voucher_no='$voucher_change'  and DATE(posted_date)='$date'";
+	  $vouchers=sqlStatement($voucher);
+	  $vouch=sqlFetchArray($vouchers);
 	  $authuser=$_SESSION["authUser"];
 //$qry="UPDATE vouchers set voureverseYN='1'  where voucher_no='$voucher_no'";
 		
 	//$r1=sqlStatement($qry);	  
-$id="SELECT * from billing where bill_id='$bill_change'";
+$id="SELECT * from vouchers where voucher_no='$voucher_change'";
 	  $id1=sqlStatement($id);
 	  $id2=sqlFetchArray($id1);
-	  if($id2['bill_id']==null)
+	  if($id2['voucher_no']==null)
        {
-	         echo( "Please Enter the Proper Bill Number!" );
+	         echo( "Please Enter the Proper Voucher Number!" );
           }else{	
-			sqlStatement("update billing set date='$datechange', user='".$_SESSION['authUserID']."' where DATE(date)='$date' and bill_id='$bill_change' and encounter='".$bill['encounter']."' and activity=1");
+			sqlStatement("update vouchers set posted_date='$datechange', changed_by='".$_SESSION['authUser']."' where DATE(posted_date)='$date' and voucher_no='$voucher_change'");
 			/* while($billed= sqlFetchArray($bills))
 
 			{

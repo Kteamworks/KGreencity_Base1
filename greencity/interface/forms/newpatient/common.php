@@ -92,6 +92,16 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
  }
 
  function saveClicked() {
+	 	$.ajax({
+				type: "POST",
+				url: "post_inactive.php",
+				success: function(response){			
+				},
+				error:function(){
+					console.log(error);
+					alert('ajax error');
+				}	
+			});
   var f = document.forms[0];
 
 <?php if (!$GLOBALS['athletic_team']) { ?>
@@ -419,7 +429,7 @@ if ($fres) {
      <td class='bold' nowrap><?php echo xlt('Date of Service:'); ?></td>
      <td class='text' nowrap>
       <input type='text' size='10' name='form_date' id='form_date' <?php echo $disabled ?>
-       value='<?php echo $viewmode ? substr($result['date'], 0, 10) : date('Y-m-d H:i:s'); ?>'
+       value='<?php echo $viewmode ? attr($result['date']) : date('Y-m-d H:i:s'); ?>'
        title='<?php echo xla('yyyy-mm-dd Date of service'); ?>'
        onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' />
         <img src='../../pic/show_calendar.gif' align='absbottom' width='24' height='22'

@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.2, created on 2016-07-15 12:11:56
+<?php /* Smarty version 2.6.2, created on 2017-04-21 01:07:11
          compiled from C:/xampp/htdocs/greencity/templates/documents/general_queue.html */ ?>
 <?php require_once(SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xampp/htdocs/greencity/templates/documents/general_queue.html', 14, false),array('modifier', 'escape', 'C:/xampp/htdocs/greencity/templates/documents/general_queue.html', 38, false),)), $this); ?>
@@ -85,4 +85,4 @@ $this->_foreach['queue_list']['iteration'] = 0;
 
 </table><br><br>
 
-</form>
+</form>

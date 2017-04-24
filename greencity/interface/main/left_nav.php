@@ -1395,9 +1395,10 @@ if (!empty($reg)) {
 		<?php genMiscLink('RTop','rop','0',xl('Manage Vouchers'), 'reports/editvoucjers.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Receipts'), 'reports/editreceipts.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Discharge Clearance '), 'reports/discharge_clearence_copy.php'); ?>
-		<!--<?php genMiscLink('RTop','rop','0',xl('Manage Voucher Copy '), 'reports/voucher_copy.php'); ?>-->
+		<?php genMiscLink('RTop','rop','0',xl('Manage Voucher Copy '), 'reports/voucher_copy.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Change Bill Date '), 'reports/bill_date_change.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Change Receipt Date '), 'reports/receipt_date_change.php'); ?>
+		<?php genMiscLink('RTop','rop','0',xl('Change Voucher Date'), 'reports/voucher_date_change.php'); ?>
 	     <?php genMiscLink('RTop','rop','0',xl('Bill Cancel'), 'reports/bill_cancel.php'); ?>
 		
 		  <?php //genTreeLink('RTop','rop',xl('Manage Vouchers'));  ?>

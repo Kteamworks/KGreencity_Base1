@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.2, created on 2016-07-15 12:11:50
+<?php /* Smarty version 2.6.2, created on 2017-04-21 01:07:01
          compiled from C:/xampp/htdocs/greencity/templates/practice_settings/general_list.html */ ?>
 <?php require_once(SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xampp/htdocs/greencity/templates/practice_settings/general_list.html', 13, false),)), $this); ?>
@@ -54,4 +54,4 @@ hl7&action=default"><?php echo smarty_function_xl(array('t' => 'HL7 Viewer'), $t
     </div>
 </div>
 </body>
-</html>
+</html>

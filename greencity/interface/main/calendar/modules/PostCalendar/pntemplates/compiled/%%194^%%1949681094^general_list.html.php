@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.2, created on 2016-07-15 12:11:54
+<?php /* Smarty version 2.6.2, created on 2017-04-21 01:07:08
          compiled from C:/xampp/htdocs/greencity/templates/insurance_numbers/general_list.html */ ?>
 <?php require_once(SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xampp/htdocs/greencity/templates/insurance_numbers/general_list.html', 3, false),)), $this); ?>
@@ -38,3 +38,4 @@ action=edit&id=default&provider_id=<?php echo $this->_tpl_vars['provider']->id; 
         </tr>
         <?php endif; ?>
 </table>
+

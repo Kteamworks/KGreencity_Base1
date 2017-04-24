@@ -44,13 +44,7 @@ if (isset($_GET['iSortCol_0'])) {
       $sSortDir = escape_sort_order($_GET["sSortDir_$i"]); // ASC or DESC
       // We are to sort on column # $iSortCol in direction $sSortDir.
       $orderby .= $orderby ? ', ' : ' ';
-	  
       //
-	  if ($aColumns[$iSortCol] == 'provider') {
-        $orderby .= "provider_id";
-      }
-      else 
-
       if ($aColumns[$iSortCol] == 'name') {
         $orderby .= "lname $sSortDir, fname $sSortDir, mname $sSortDir";
       }
@@ -103,17 +97,18 @@ for ($i = 0; $i < count($aColumns); ++$i) {
 // Compute list of column names for SELECT clause.
 // Always includes pid because we need it for row identification.
 //
-$sellist = 'a.pid,b.id';
+$sellist = 'a.pid,b.id,a.provider_id';
 foreach ($aColumns as $colname) {
   if ($colname == 'pid') continue;
   if ($colname == 'id') continue;
 
   $sellist .= ", ";
-  if($colname== 'provider'){
-    $sellist .="provider_id";
-	
-  }else if ($colname == 'name') {
+  if ($colname == 'name') {
     $sellist .= "lname, fname, mname";
+  }
+  else if($colname== 'provider'){
+    $sellist .="provider_id,out_time,out_to";
+	
   }else
   {
     $sellist .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','users')) . "`";
@@ -174,49 +169,28 @@ $out = array(
 );
 if($row2["newcrop_user_role"]=="erxnurse")
 {
-$query ="SELECT $sellist FROM form_encounter a,patient_data b where a.pid=b.pid and a.date='".$today."' order by provider_id  $limit";
+$query ="SELECT $sellist FROM form_encounter a,patient_data b where a.pid=b.pid and a.date='".$today."' order by encounter desc  $limit";
 }
 else 
 {
-$query = "SELECT $sellist FROM patient_data a,form_encounter b where a.pid=b.pid and date(b.date)='".$today."' order by provider_id  $limit";
+$query = "SELECT $sellist FROM patient_data b,form_encounter a where a.pid=b.pid and date(a.date)='".$today."' order by encounter desc  $limit";
 }
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
-	$pid = $row['pid'];
-	$encounter = $row['encounter'];
-  //$bill_qry = "SELECT * from billing WHERE pid=? AND encounter=?";
-  //$billed_amount="select sum(fee) from billing where activity=1 and encounter=? and pid=?";
-  $paid1 ="Select coalesce(sum(fee),0) fee,(select coalesce(sum(amount1+amount2),0) paid from payments where encounter=b.encounter and activity=1)paid
-from billing b
-where b.encounter=? and b.pid=?
- and b.activity=1";
-  
- $billed = sqlStatement($paid1, array($encounter,$pid));
+ // $bill_qry = "SELECT * from billing WHERE pid=? AND encounter=?";
+ //$billed = sqlStatement($bill_qry, array($row['pid'],$row['encounter']));
   // Each <tr> will have an ID identifying the patient.
 //  $arow = array('DT_RowId' => 'pid_' . $row['pid']);
-while($data = sqlFetchArray($billed)) {
-    if($data['paid'] == 0 && $data['fee'] > 0) {
+/*while($data = sqlFetchArray($billed)) {
+    if($data['billed'] == 0) {
      $arow = array('DT_RowId' => 'pid_' . $row['pid'],'DT_RowClass' => 'PT_UNBIILLED');
   }
- 
-    else {
+  else {
   $arow = array('DT_RowId' => 'pid_' . $row['pid']);
   }
-}
+}*/
+ $arow = array('DT_RowId' => 'pid_' . $row['pid']);
   foreach ($aColumns as $colname) {
-	   if($colname=='provider'){
-	$providerid=$row['provider_id'];
-	$rsq=sqlStatement("select username from users where id='".$providerid."'");
-	  $prname=sqlFetchArray($rsq);
-	  $prname=$prname['username'];
-	    
-		$provider=$prname;
-     
-	  //if ($provider && $row['out_time']) $provider .= '@';
-      //if ($row['out_time']) $provider .= $row['out_time'];
-	  
-	$arow[] = $provider;
-	}else
     if ($colname == 'name') {
       $name = $row['fname'];
       if ($name && $row['lname']) $name .= '  ';
@@ -224,7 +198,18 @@ while($data = sqlFetchArray($billed)) {
       if ($row['mname']) $name .= ' ' . $row['mname'];
       $arow[] = $name;
     }
-	
+	else if($colname=='provider'){
+	$providerid=$row['provider_id'];
+	$rsq=sqlStatement("select username from users where id='".$providerid."'");  $prname=sqlFetchArray($rsq);
+	  $prname=$row['out_to'].' '. $prname['username'];
+	    
+		$provider=$prname;
+     
+	  if ($provider && $row['out_time']) $provider .= '@';
+      if ($row['out_time']) $provider .= $row['out_time'];
+	  
+	$arow[] = $provider;
+	}
     else if ($colname == 'DOB' || $colname == 'regdate' || $colname == 'ad_reviewed' || $colname == 'userdate1') {
       $arow[] = oeFormatShortDate($row[$colname]);
     }

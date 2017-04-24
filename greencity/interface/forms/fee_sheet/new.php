@@ -518,6 +518,12 @@ $bilgrpval=$_POST[''];
 
 }
 if (!$alertmsg && ($_POST['bn_save'] || $_POST['bn_save_close'])) {
+	$newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
+ if($newcrop_user_role['newcrop_user_role']!='erxdoctor') { 
+	$doctor = $_SESSION['authUserID'];
+ $qry = "UPDATE patient_data SET visit_status='1', doctor='$doctor' WHERE pid='$pid'";
+ $res = sqlStatement($qry);
+ }
   $main_provid = 0 + $_POST['ProviderID'];
   $main_supid  = 0 + $_POST['SupervisorID'];
   if ($main_supid == $main_provid) $main_supid = 0;
@@ -1573,20 +1579,6 @@ if ($alertmsg) {
   echo "alert('" . addslashes($alertmsg) . "');\n";
 }
 ?>
-function setEnc() {
-	$.ajax({
-				type: "POST",
-				url: "post_inactive.php",
-				success: function(response){			
-				},
-				error:function(){
-					console.log(error);
-					alert('ajax error');
-				}	
-			});
-	
-}
-
 </script>
 </body>
 </html>

@@ -80,12 +80,12 @@ function showUser(str) {
 
 <select name="abc" onchange="showUser(this.value)">
 	<option value="">Choose:</option>
-    <option value="Deluxe">Deluxe</option>
+    <!--<option value="Deluxe">Deluxe</option>-->
 	<option value="General">General</option>
 	<option value="Private">Private</option>
-	<option value="ICU">ICU</option>
+	<!--<option value="ICU">ICU</option>
 	<option value="Labour">Labour</option>
-	<option value="NICU">NICU</option>
+	<option value="NICU">NICU</option>-->
 	<option value="SemiPrivate">SemiPrivate</option>
 	
 	

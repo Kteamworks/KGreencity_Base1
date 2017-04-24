@@ -1,4 +1,5 @@
 <?php
+
 // Copyright (C) 2012 Rod Roark <rod@sunsetsystems.com>
 // Sponsored by David Eschelbacher, MD
 //
@@ -8,10 +9,10 @@
 // of the License, or (at your option) any later version.
 
 // Sanitize escapes and stop fake register globals.
+//
 
-
-//$page = $_SERVER['PHP_SELF'];
-//$sec = "120";
+$page = $_SERVER['PHP_SELF'];
+$sec = "120";
 
 $sanitize_all_escapes = true;
 $fake_register_globals = false;
@@ -33,7 +34,7 @@ $header0 = "";
 $header  = "";
 $coljson = "";
 $res = sqlStatement("SELECT option_id, title FROM list_options WHERE " .
-  "list_id = 'DoctorSpecific' ORDER BY seq, title");
+  "list_id = 'ReceptionSpecific' ORDER BY seq, title");
 while ($row = sqlFetchArray($res)) {
   $colname = $row['option_id'];
   $title = xl_list_label($row['title']);
@@ -105,7 +106,7 @@ $(document).ready(function() {
   "bProcessing": true,
   // next 2 lines invoke server side processing
   "bServerSide": true,
-  "sAjaxSource": "p_dynamic_finder_ajax.php",
+  "sAjaxSource": "ph_dynamic_finder_ajax.php",
   // sDom invokes ColReorderWithResize and allows inclusion of a custom div
   "sDom"       : 'Rlfrt<"mytopdiv">ip',
   // These column names come over as $_GET['sColumns'], a comma-separated list of the names.
@@ -174,7 +175,7 @@ $(document).ready(function() {
  //$('#pt_table tbody tr').live('click', function (e) {
   // ID of a row element is pid_{value}
   var newpid = this.id.substring(4);
-  var encounter=$(this).find('td').eq(3).html();
+  var encounter=$(this).find('td').eq(2).html();
   //var encounter=enc.substring(4);
  //alert(enc);
   // If the pid is invalid, then don't attempt to set 
@@ -327,22 +328,7 @@ function openNewTopWindow(pid) {
 <form name='fnew' method='post' target='_blank' action='../main_screen.php?auth=login&site=<?php echo attr($_SESSION['site_id']); ?>'>
 <input type='hidden' name='patientID'      value='0' />
 </form>
-<script type="text/javascript">
- $(document).ready(function() {
-function explode(){
-$("#pt_table tbody tr").each(function(i){
-	var con = i+1;
-    $(this).prepend("<td style='text-align: center'>" + con + "</td>")
-});
-$("#pt_table thead tr:nth-child(2)").each(function(i){
-        $(this).prepend("<th>Sr No</th>")
-});
-}
-setTimeout(explode, 2000);
 
-    });
-</script>
-</script>
 </body>
 </html>
 
