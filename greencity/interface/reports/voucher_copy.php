@@ -204,6 +204,7 @@ else
  //sqlStatement("update discharge_clearence set printed=2 ,reprinted_by='" . $_SESSION["authUser"] . "' where encounter='".$enc['encounter']."'");
 echo "<p style=margin-top:70px><center><h4>".xlt("General Voucher")."</h4></center></p>";
  ?>
+ <img src=" <?php echo $GLOBALS['webroot']?>/interface/pic/medii.jpg" />
 <form method="post" action="<?php echo $rootdir;?>/reports/voucher_copy.php" name="my_form" id="my_form">
 <div id="report">
 <table style='border-top: 1px solid #000;' width=100%>
