@@ -1426,6 +1426,7 @@ if (!empty($reg)) {
   <li><a class="collapsed" id="feeimg" ><span><?php xl('Fees','e') ?></span></a>
     <ul>
       <?php genMiscLink('RBot','cod','2',xl('Billing Sheet'),'patient_file/encounter/load_form.php?formname=fee_sheet'); ?>
+	  <?php genMiscLink('RBot','bil','2',xl('Discount'),'patient_file/pos_checkout.php?framed=1'); ?> 
       <?php //if ($GLOBALS['use_charges_panel']) genTreeLink('RBot','cod',xl('Charges')); ?>
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
 	  <!--<!--?php genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher.php?framed=1'); ?> -->
@@ -1433,7 +1434,6 @@ if (!empty($reg)) {
 	  <?php genMiscLink('RTop','voc','0',xl('Expenditure Voucher'),'reports/General_Voucher.php?framed=1'); ?> 
       <?php genMiscLink('RBot','pay','2',xl('Payment'),'patient_file/front_payment.php'); ?>
 	  <?php genMiscLink('RBot','pay','2',xl('Payment IP'),'patient_file/front_payment_test.php'); ?>
-      <?php genMiscLink('RBot','bil','2',xl('Discount'),'patient_file/pos_checkout.php?framed=1'); ?> 
 	  <?php genMiscLink('RBot','bil','2',xl('Refund'),'patient_file/pos_checkout1.php?framed=1'); ?> 
 	  <?php //genMiscLink('RBot','bil','0',xl('Final Handover'),'reports/ecash.php?framed=1'); ?> 
 	  <?php //genMiscLink('RBot','bil','0',xl('Cash Transfer'),'reports/cashtransfer.php?framed=1'); ?> 

@@ -175,7 +175,10 @@ $query ="SELECT $sellist FROM form_encounter a,patient_data b ,billing d,openemr
 }
 else 
 {
-$query = "SELECT  $sellist,(SELECT sum(amount1+amount2) as pay FROM payments a  where activity=1 AND a.dtime>= '".$today."') payments FROM form_encounter a,patient_data b  ,billing d,openemr_postcalendar_categories c where a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter and    a.pid=b.pid   and a.provider_id='".$providerid."' and a.date>='".$today."' and a.pc_catid!=12 and activity=1 group by d.encounter order by d.encounter asc  $limit";
+$query = "SELECT  $sellist,(SELECT sum(amount1+amount2) as pay FROM payments a  where activity=1 AND a.dtime>= '".$today."') payments 
+FROM form_encounter a,patient_data b  ,billing d,openemr_postcalendar_categories c where a.pc_catid=c.pc_catid and  a.pid=d.pid 
+and a.encounter=d.encounter and    a.pid=b.pid   and a.provider_id='".$providerid."' and a.date>='".$today."' and a.pc_catid!=12 
+and activity=1  and d.code_type IN('Scans','Doctor Charges') group by d.encounter order by d.encounter asc  $limit";
 }
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
