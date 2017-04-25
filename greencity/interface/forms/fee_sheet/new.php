@@ -517,7 +517,6 @@ $bilgrpval=$_POST[''];
 	
 	
 	
-	
   }
   
  
@@ -525,7 +524,7 @@ $bilgrpval=$_POST[''];
 }
 if (!$alertmsg && ($_POST['bn_save'] || $_POST['bn_save_close'])) {
 	$newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
- if($newcrop_user_role['newcrop_user_role']!='erxdoctor') { 
+ if($newcrop_user_role['newcrop_user_role']=='erxdoctor') { 
 	$doctor = $_SESSION['authUserID'];
  $qry = "UPDATE patient_data SET visit_status='1', doctor='$doctor' WHERE pid='$pid'";
  $res = sqlStatement($qry);

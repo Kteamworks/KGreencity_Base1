@@ -48,9 +48,11 @@ $weight          = (isset($_POST['weight'])) ? $_POST['weight'] : '';
 $height          = (isset($_POST['height'])) ? $_POST['height'] : '';
 $tod          = (isset($_POST['tod'])) ? $_POST['tod'] : '';
 $review_after          = (isset($_POST['review_after'])) ? $_POST['review_after'] : '';
-$referal_check =  sqlQuery("select doctor_name FROM referral_doctor WHERE doctor_name = ?", array($referral_source));
+if(isset($referral_source)) {
+$referal_check =  sqlQuery("select fname FROM users WHERE fname = ?", array($referral_source));
 if(!$referal_check) {
-	sqlQuery("INSERT INTO referral_doctor (doctor_name) VALUES ('" . add_escape_custom($referral_source) . "')");
+	sqlQuery("INSERT INTO users ( username, password, authorized, info, source, title, fname, lname, mname,  federaltaxid, federaldrugid, upin, facility, see_auth, active, npi, taxonomy, specialty, organization, valedictory, assistant, billname, email, email_direct, url, street, streetb, city, state, zip, street2, streetb2, city2, state2, zip2, phone, phonew1, phonew2, phonecell, fax, notes, abook_type,newcrop_user_role ) VALUES ( '', '', 0, '', NULL, 'Dr.', '" . add_escape_custom($referral_source) . "', '', '', '', '', '', '', 0, 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'spe','erxdoctor' )");
+}
 }
 $facilityresult = sqlQuery("select name FROM facility WHERE id = ?", array($facility_id));
 $facility = $facilityresult['name'];
