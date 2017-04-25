@@ -259,7 +259,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
         "JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter " .
 		"JOIN openemr_postcalendar_categories AS op ON op.pc_catid = fe.pc_catid ".
         
-        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.activity = 1 AND b.fee != 0 AND " .
+        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.activity = 1 AND b.fee> 1 AND " .
         "b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59' ";
 		
       // If a facility was specified.

@@ -375,32 +375,32 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
 	  */
 	    $query="select code_type,sum(fee) as DTOPD,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
-         ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter  and b.code_type='Doctor Charges' and billed=1 and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'" ;
+         ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter  and b.fee>1 and b.code_type='Doctor Charges' and billed=1 and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'" ;
 		$res = sqlStatement($query); 
 		 $row = sqlFetchArray($res);
 		 $DTCT="OPD";
 		 $DTOPD=$row['DTOPD'];
-		 $query2="select sum(fee) LT from billing b where code_type='Lab Test' and activity=1 and billed=1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
+		 $query2="select sum(fee) LT from billing b where code_type='Lab Test' and activity=1 and billed=1 and b.fee>1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
 		 $res2 = sqlStatement($query2); 
 		 $row2 = sqlFetchArray($res2);
 		 $LTCT="LAB";
 		 $LT=$row2['LT'];
 		 
-		 $query3="select sum(fee) XR from billing b where code_type='Services' and  code='X - RAY' and activity=1 and billed=1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
+		 $query3="select sum(fee) XR from billing b where code_type='Services' and  code='X - RAY' and b.fee>1 and activity=1 and billed=1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
 		 $res3 = sqlStatement($query3); 
 		 $row3 = sqlFetchArray($res3);
 		 $XRCT="X-RAY";
 		 $XR=$row3['XR'];
 		 
 		 
-		 $query4="select sum(fee) RG from billing b where code_type='ward charges' and code like '% Registration' and activity=1 and billed=1 and   b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
+		 $query4="select sum(fee) RG from billing b where code_type='ward charges' and code like '% Registration' and activity=1 and billed=1 and b.fee>1 and   b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
 		 $res4 = sqlStatement($query4); 
 		 $row4 = sqlFetchArray($res4);
 		 $RGCT="Registration Charges";
 		 $RG=$row4['RG'];
 		 
 		 
-		 $query4="select sum(fee) SC from billing b where code_type in ('scans','Scans') and activity=1 and billed=1 and b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
+		 $query4="select sum(fee) SC from billing b where code_type in ('scans','Scans') and activity=1 and billed=1 and b.fee>1 and b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
 		 $res4 = sqlStatement($query4); 
 		 $row4 = sqlFetchArray($res4);
 		 $SCCT="Scans";
@@ -409,7 +409,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		 
 		 
 		 $query4="select code,sum(fee) as DO,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
-         ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter and billed=1  and b.code_type='Doctor Charges' and code in ('US00004','US00006') and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'  GROUP BY CODE";
+         ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter and billed=1  and b.fee>1 and b.code_type='Doctor Charges' and code in ('US00004','US00006') and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'  GROUP BY CODE";
 		 $res4 = sqlStatement($query4); 
 		 while($row4 = sqlFetchArray($res4))
 		 {
@@ -426,11 +426,11 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		 
 		 
 		 
-		 $query4="select fname,lname,amount1,amount2 from payments pa,patient_data p where pa.pid=p.pid and towards=1 AND pa.dtime >= '$from_date 00:00:00' AND pa.dtime <= '$to_date 23:59:59'  GROUP BY p.pid";
+		 $query4="select fname,lname,amount1,amount2 from payments pa,patient_data p where pa.pid=p.pid and towards=1 and pa.activity=1 AND pa.dtime >= '$from_date 00:00:00' AND pa.dtime <= '$to_date 23:59:59'  GROUP BY p.pid";
 		 $resadvance = sqlStatement($query4); 
 		 
 		 
-		 $query="select fname,lname,amount1,amount2 from t_form_admit fa,payments pa,patient_data pd  where pd.pid=pa.pid and fa.status='discharge' and pa.towards=2 and fa.encounter=pa.encounter and fa.discharge_date >= '$from_date 00:00:00' AND fa.discharge_date <= '$to_date 23:59:59'  GROUP BY pd.pid";
+		 $query="select fname,lname,amount1,amount2 from t_form_admit fa,payments pa,patient_data pd  where pd.pid=pa.pid and pa.activity=1 and fa.status='discharge' and pa.towards=2 and fa.encounter=pa.encounter and fa.discharge_date >= '$from_date 00:00:00' AND fa.discharge_date <= '$to_date 23:59:59'  GROUP BY pd.pid";
 		 $resdisch = sqlStatement($query); 
 		 
 		 $query5="select sum(amount) amount from vouchers where posted_date >= '$from_date 00:00:00' AND posted_date <= '$to_date 23:59:59'";

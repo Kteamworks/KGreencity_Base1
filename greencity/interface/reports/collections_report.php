@@ -518,7 +518,7 @@ if ($_POST['form_refresh'] || $_POST['form_export'] || $_POST['form_csvexport'])
       "p.pubpid, p.DOB, CONCAT(u.fname, ' ', u.lname) AS referrer, " .
       "( SELECT SUM(b.fee) FROM billing AS b WHERE " .
       "b.pid = f.pid AND b.encounter = f.encounter AND " .
-      "b.activity = 1 AND b.code_type != 'COPAY'  AND f.date >= '$form_date 00:00:00' AND f.date <= '$form_to_date 23:59:59') AS charges, " .
+      "b.activity = 1 and b.fee>1 AND b.code_type != 'COPAY'  AND f.date >= '$form_date 00:00:00' AND f.date <= '$form_to_date 23:59:59') AS charges, " .
       "( SELECT SUM(a.pay_amount) FROM ar_activity AS a WHERE " .
       "a.pid = f.pid AND a.encounter = f.encounter AND f.date >= '$form_date 00:00:00' AND f.date <= '$form_to_date 23:59:59' ) AS payments, " .
       "( SELECT SUM(a.adj_amount) FROM ar_activity AS a WHERE " .
