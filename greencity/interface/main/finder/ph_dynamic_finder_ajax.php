@@ -189,7 +189,7 @@ while ($row = sqlFetchArray($res)) {
   $paid1 ="Select coalesce(sum(fee),0) fee,(select coalesce(sum(amount1+amount2),0) paid from payments where encounter=b.encounter and activity=1)paid
 from billing b
 where b.encounter=? and b.pid=?
- and b.activity=1";
+ and b.activity=1 and b.code_type in ('Doctor Charges','Scans')";
   
  $billed = sqlStatement($paid1, array($encounter,$pid));
   // Each <tr> will have an ID identifying the patient.
