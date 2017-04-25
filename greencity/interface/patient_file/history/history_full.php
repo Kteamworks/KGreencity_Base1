@@ -339,8 +339,26 @@ $fres = sqlStatement("SELECT * FROM layout_options " .
     </div>
 
     <br/>
+<?php 
+$type1=sqlStatement("SELECT type from form_encounter where pid='".$pid."' and encounter='".$e."'");
+$type2=sqlFetchArray($type1);
+$type=$type2['type'];
+if($type=="gynic"){
+?>
+ <div id="HIS" style='float:none; margin-top: 10px; margin-right:20px'>
+        <ul class="tabNav" >
+           <?php display_layout_tabs_gynic('HIS', $result, $result2); ?>
+        </ul>
 
-    <!-- history tabs -->
+        <div class="tabContainer">
+            <?php display_layout_tabs_data_editable_gynic('HIS', $result, $result2); ?>
+        </div>
+    </div>
+
+   
+<?php }else{ ?>
+
+ <!-- history tabs -->
     <div id="HIS" style='float:none; margin-top: 10px; margin-right:20px'>
         <ul class="tabNav" >
            <?php display_layout_tabs('HIS', $result, $result2); ?>
@@ -350,6 +368,7 @@ $fres = sqlStatement("SELECT * FROM layout_options " .
             <?php display_layout_tabs_data_editable('HIS', $result, $result2); ?>
         </div>
     </div>
+<?php } ?>
 </form>
 
 <!-- include support for the list-add selectbox feature -->
