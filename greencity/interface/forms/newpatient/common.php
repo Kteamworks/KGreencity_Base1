@@ -330,7 +330,30 @@ function getRatePlan(plan)
 ?>
      </td>
     </tr>
-
+<tr>
+     <td class='bold' nowrap><?php echo xlt('Type:'); ?></td>
+     <!-- <td class='text'>
+  
+<?php
+  $ures = sqlStatement("SELECT * FROM list_options WHERE " .
+  "list_id='type' ORDER BY seq");
+    echo "<select name='type' style='width:100%' />  <option value='0'></option>";
+    while ($urow = sqlFetchArray($ures)) {
+      echo "    <option value='" . attr($urow['option_id']) . "'";
+     if ($urow['option_id'] == $defaultProvider);
+      echo ">" . text($urow['title']);
+    
+      echo "</option>\n";
+    }
+    echo "</select>";
+?>
+     </td> -->
+	   <td class='text'>
+<?php
+  echo generate_select_list('type', 'type', $viewmode ? $result['type'] : '', '');
+?>
+     </td>
+    </tr>
     <tr  style="visibility:hidden;position:absolute;opacity:0">
      <td class='bold' nowrap><?php echo xlt('Facility:'); ?></td>
      <td class='text'>

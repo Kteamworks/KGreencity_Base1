@@ -372,7 +372,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
         "JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter " .
         //"LEFT JOIN codes AS c ON c.code_type = ct.ct_id AND c.code = b.code AND c.modifier = b.modifier " .
         //"LEFT JOIN list_options AS lo ON lo.list_id = 'superbill' AND lo.option_id = c.superbill " .
-        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.billed=1 and b.activity = 1 AND b.fee != 0 AND " .
+        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.billed=1 and b.activity = 1 AND b.fee>1  AND " .
         "b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59' and  b.code_type='Lab Test' ";
       // If a facility was specified.
       if ($form_facility) {

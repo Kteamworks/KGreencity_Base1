@@ -37,6 +37,7 @@ $pc_catid         = (isset($_POST['pc_catid']))             ? $_POST['pc_catid']
 $facility_id      = (isset($_POST['facility_id']))          ? $_POST['facility_id'] : '';
 $billing_facility = (isset($_POST['billing_facility']))     ? $_POST['billing_facility'] : '';
 $reason           = (isset($_POST['reason']))               ? $_POST['reason'] : '';
+$type             = (isset($_POST['type']))? $_POST['type'] : '';
 $mode             = (isset($_POST['mode']))                 ? $_POST['mode'] : '';
 $provider_id      = (isset($_POST['form_provider'])) ? $_POST['form_provider'] : '';
 $referral_source  = (isset($_POST['form_referral_source'])) ? $_POST['form_referral_source'] : '';
@@ -97,6 +98,7 @@ if ($mode == 'new')
       "reason = '" . add_escape_custom($reason) . "', " .
       "facility = '" . add_escape_custom($facility) . "', " .
       "pc_catid = '" . add_escape_custom($pc_catid) . "', " .
+	   "type = '" . add_escape_custom($type) . "', " .
       "facility_id = '" . add_escape_custom($facility_id) . "', " .
       "billing_facility = '" . add_escape_custom($billing_facility) . "', " .
       "sensitivity = '" . add_escape_custom($sensitivity) . "', " .
@@ -270,6 +272,7 @@ else if ($mode == 'update')
     "facility = '" . add_escape_custom($facility) . "', " .
     "pc_catid = '" . add_escape_custom($pc_catid) . "', " .
     "facility_id = '" . add_escape_custom($facility_id) . "', " .
+	"type = '" . add_escape_custom($type) . "', " .
     "billing_facility = '" . add_escape_custom($billing_facility) . "', " .
     "sensitivity = '" . add_escape_custom($sensitivity) . "', " .
 	"provider_id = '" . add_escape_custom($provider_id) . "', " .
