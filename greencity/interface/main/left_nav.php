@@ -1527,7 +1527,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
       <!--<?php genTreeLink('RTop','orl',xl('Providers')); ?>-->
 	  <!---------------------------------access control---------------------------------->
 	  <?php if (acl_check('admin', 'super')){?>
-      <!--<!--?php genTreeLink('RTop','ort',xl('Configuration')); ?>-->
+      <?php genTreeLink('RTop','ort',xl('Configuration')); ?>
 	  <?php }?>
 <!--<!--?php genTreeLink('RTop','orc',xl('Load Compendium')); ?> -->
       <?php genTreeLink('RTop','orp',xl('Test Results')); ?>

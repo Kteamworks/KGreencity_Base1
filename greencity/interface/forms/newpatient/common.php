@@ -430,12 +430,11 @@ if ($fres) {
      <td class='text' id="select_dr">
 
 <?php
-  $ures = sqlStatement("SELECT id,doctor_name FROM referral_doctor");
-   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option value=''>Choose referral doctor</option>";
+  $ures = sqlStatement("SELECT user_id,title,fname FROM users WHERE newcrop_user_role='erxdoctor'");
+   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option value='' selected>Choose referral doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
-      echo "    <option value='" . text($urow['doctor_name']) . "'";
-      if ($urow['id'] == $defaultProvider) echo " selected";
-      echo ">".text($urow['doctor_name']);
+      echo "    <option value='" . text($urow['user_id']) . "'";
+      echo ">".text($urow['title']) .text($urow['fname']);
       echo "</option>\n";
     }
     echo "</select>";
@@ -443,7 +442,7 @@ if ($fres) {
      </td>
 
 	 <td class='text' id="input_dr" style="display:none">
-	 <input type="text" name="refsource" style="width: 100%">
+	 <input type="text" name="form_referral_source" style="width: 100%">
 	 </td>
 	 <td><a href="#" id="toggle_doc" title="Doctor Not listed? Add Doctor"><i class="fa fa-plus-circle"></i></a><td>
     </tr>
