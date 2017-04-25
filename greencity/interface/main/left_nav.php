@@ -1389,7 +1389,8 @@ if (!empty($reg)) {
 	  </li> -->
 	  <?php
 		$id=sqlQuery("select id from users where username='".$_SESSION['authUser']."'");
-		/*if($id['id']==94||$id['id']==1) */if (acl_check('admin','super')) { ?>
+		/*if($id['id']==94||$id['id']==1) */if (acl_check('admin','super')) { 
+	if($_SESSION['authUser']!='Receptionist'){ ?>
 		<li><a class="collapsed" id="manageimg" ><span><?php xl('Manage','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Vouchers'), 'reports/editvoucjers.php'); ?>
@@ -1404,7 +1405,7 @@ if (!empty($reg)) {
 		  <?php //genTreeLink('RTop','rop',xl('Manage Vouchers'));  ?>
         </ul>    
     </li>
-	
+	<?php } ?>
 	<li><a class="collapsed" id="manageimg" ><span><?php xl('Statistics','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
@@ -1426,7 +1427,6 @@ if (!empty($reg)) {
   <li><a class="collapsed" id="feeimg" ><span><?php xl('Fees','e') ?></span></a>
     <ul>
       <?php genMiscLink('RBot','cod','2',xl('Billing Sheet'),'patient_file/encounter/load_form.php?formname=fee_sheet'); ?>
-	  <?php genMiscLink('RBot','bil','2',xl('Discount'),'patient_file/pos_checkout.php?framed=1'); ?> 
       <?php //if ($GLOBALS['use_charges_panel']) genTreeLink('RBot','cod',xl('Charges')); ?>
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
 	  <!--<!--?php genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher.php?framed=1'); ?> -->
@@ -1434,6 +1434,7 @@ if (!empty($reg)) {
 	  <?php genMiscLink('RTop','voc','0',xl('Expenditure Voucher'),'reports/General_Voucher.php?framed=1'); ?> 
       <?php genMiscLink('RBot','pay','2',xl('Payment'),'patient_file/front_payment.php'); ?>
 	  <?php genMiscLink('RBot','pay','2',xl('Payment IP'),'patient_file/front_payment_test.php'); ?>
+      <?php genMiscLink('RBot','bil','2',xl('Discount'),'patient_file/pos_checkout.php?framed=1'); ?> 
 	  <?php genMiscLink('RBot','bil','2',xl('Refund'),'patient_file/pos_checkout1.php?framed=1'); ?> 
 	  <?php //genMiscLink('RBot','bil','0',xl('Final Handover'),'reports/ecash.php?framed=1'); ?> 
 	  <?php //genMiscLink('RBot','bil','0',xl('Cash Transfer'),'reports/cashtransfer.php?framed=1'); ?> 

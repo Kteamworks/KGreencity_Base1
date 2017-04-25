@@ -476,6 +476,9 @@ if ( $esign->isButtonViewable() ) {
         echo "<div class='form_header_controls'>";
         
         // If the form is locked, it is no longer editable
+		  $result = getAdmitData($pid, "*");
+			 if(!($result['status']=='admit')||(!($result['status'])))
+			 {
         if ( $esign->isLocked() ) {
             echo "<a href=# class='css_button_small form-edit-button-locked' id='form-edit-button-".attr($formdir)."-".attr($iter['id'])."'><span>".xlt('Locked')."</span></a>";
         } else {
@@ -492,6 +495,7 @@ if ( $esign->isButtonViewable() ) {
 			{
 			}
         }
+			 }
         
         if ( $esign->isButtonViewable() ) {
             echo $esign->buttonHtml();
