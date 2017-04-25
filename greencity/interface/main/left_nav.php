@@ -1452,7 +1452,7 @@ if (!empty($reg)) {
 	  <?php genMiscLink('RTop','rep','0',xl('Provisional Bill'),'reports/custom_report_range_test.php'); ?>
 	  <?php genMiscLink('RTop','rep','0',xl('Duplicate Bill'),'reports/finalbillcopy.php'); ?>
 	  <!--<!--?php genMiscLink('RTop','rep','0',xl('Duplicate Bill 2'),'reports/finalbillcopy2.php'); ?>-->
-	    <!--<!--?php genMiscLink('RTop','rep','0',xl('Generate Bills'),'reports/custom_report_range_bill.php'); ?>-->
+	    <?php genMiscLink('RTop','rep','0',xl('Generate Bills'),'reports/custom_report_range_bill.php'); ?>
 		<?php }?>
     </ul>
   </li>
