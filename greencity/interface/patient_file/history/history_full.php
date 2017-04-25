@@ -375,7 +375,39 @@ if($type=="gynic"){
 <?php include $GLOBALS['fileroot']."/library/options_listadd.inc"; ?>
 
 </body>
+<?php 
+$type1=sqlStatement("SELECT type from form_encounter where pid='".$pid."' and encounter='".$e."'");
+$type2=sqlFetchArray($type1);
+$type=$type2['type'];
+if($type=="gynic"){
+?>
+<script language="JavaScript">
+<?php echo $date_init; // setup for popup calendars ?>
+$(document).ready(function () {
+ $('.tabNav').addClass('nav nav-tabs');
+  $('.tabContainer').addClass('tab-pane');
+     var ids = $(".nav-tabs").children().length; //think about it ;)
+  var id = 7 + 1;
+     var tabId = 'iclick_' + 8;
+     $('.tabNav li:nth-child(7)').after('<li><a href="#iclick_' + id + '" id="newt">Gynis Examination</a></li>');
+     $('.tabContainer div:nth-child(7)').after('<div class="tab" id="' + tabId + '"><iframe src="<?php echo $GLOBALS['webroot'] ?>/interface/drugs/gynExam.php" frameborder="0" width="2000" height="500" scrolling="auto" id="myFrame"></iframe></div>');
 
+     // add this
+
+  // $('.tabNav li:nth-child(' + id + ')').click.addClass('current').siblings().removeClass('current');
+
+   $("#newt").click(function(){
+   $('.tabNav li:nth-child(8)').addClass('current').siblings().removeClass('current');
+    $("#"+tabId).addClass('current').siblings().removeClass('current');
+    });
+    
+    
+     
+    
+});
+</script>
+
+<?php }else{ ?>
 <script language="JavaScript">
 <?php echo $date_init; // setup for popup calendars ?>
 $(document).ready(function () {
@@ -401,5 +433,5 @@ $(document).ready(function () {
     
 });
 </script>
-
+<?php } ?>
 </html>
