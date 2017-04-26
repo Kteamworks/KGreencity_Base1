@@ -79,8 +79,44 @@ require_once($GLOBALS['srcdir'].'/acl.inc');
 
  <script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/js/jquery.js"></script>
 
+ 
+ 
+ 
  <?php
-
+ function SendSMS()
+{
+	                     $user = 'kavaii';
+						 $password = '12345';
+						 $sender_id = 'KAVAII';//helloz welcom FAPcop abhiii'hiiiii
+						 $sender = '7976345602';//9673776599 9320491970
+						 $msg = 'City Hospital- Appointment Confirmed with Dr. Anikethan at ';
+						 //$msg.=$starttime;
+						 $msg.=' hrs on ';
+						 //$msg.=$event_date;
+						 $priority = 'sdnd';
+						 $sms_type = 'normal';
+						 //$data = array('user'=>$user, 'pass'=>$password, 'sender'=>$sender_id, 'phone'=>$sender, 'text'=>$msg,  'stype'=>$sms_type);//'priority'=>$priority,
+						 $data='user='.$user.'&pass='.$password.'&sender='.$sender_id.'&phone='.$sender.'&text='.$msg.'&stype='.$sms_type.'&priority=sdnd'; 
+						 
+						 //http://bhashsms.com/api/sendmsg.php?user='kavaii'&pass='12345'&sender='KAVAII'&phone='9782364064'&text='Hii'&stype='normal'&priority='sdnd'
+						 
+						 //http://bhashsms.com/api/sendmsg.php?user=kavaii&pass=12345&sender=kavaii%20&phone=9731960662%20&text=hii%20&priority=sdnd&stype=normal
+						 $ch = curl_init('http://bhashsms.com/api/sendmsg.php?'.$data);
+						 echo var_dump($data);
+						 curl_setopt($ch, CURLOPT_POST, true);
+						 curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+						 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+						 echo var_dump($ch);
+						 try {
+						  $response = curl_exec($ch);
+						  echo var_dump($ch);
+						  curl_close($ch);
+						  echo var_dump($response);
+						  echo 'Message has been sent.';
+						 }catch(Exception $e){
+						  echo 'Message: ' .$e->getMessage();
+						 }
+}
 function InsertEventFull()
  {
 	global $new_multiple_value,$provider,$event_date,$duration,$recurrspec,$starttime,$endtime,$locationspec;
@@ -106,6 +142,7 @@ function InsertEventFull()
                 $args['endtime'] = $endtime;
                 $args['locationspec'] = $locationspec;
                 InsertEvent($args);
+				SendSMS();
             }
 
         // ====================================
@@ -122,6 +159,7 @@ function InsertEventFull()
             $args['endtime'] = $endtime;
             $args['locationspec'] = $locationspec;
             InsertEvent($args);
+			SendSMS();
         }
  }
 function DOBandEncounter()
@@ -345,6 +383,7 @@ if ($_POST['form_action'] == "save") {
                     $args['endtime'] = $endtime;
                     $args['locationspec'] = $locationspec;
                     InsertEvent($args);
+					SendSMS();
                 }
             }
 
@@ -379,6 +418,7 @@ if ($_POST['form_action'] == "save") {
                     $args['endtime'] = $endtime;
                     $args['locationspec'] = $locationspec;
                     InsertEvent($args);
+					SendSMS();
                 }
             }
 
@@ -420,6 +460,7 @@ if ($_POST['form_action'] == "save") {
                         $args['endtime'] = $endtime;
                         $args['locationspec'] = $locationspec;
                         InsertEvent($args);
+						SendSMS();
                     } 
                 } 
 
@@ -486,6 +527,7 @@ if ($_POST['form_action'] == "save") {
                 $args['endtime'] = $endtime;
                 $args['locationspec'] = $locationspec;
                 InsertEvent($args);
+				SendSMS();
             }
             else if ($_POST['recurr_affect'] == 'future') {
                 // mod original event to stop recurring on this date-1
@@ -504,6 +546,7 @@ if ($_POST['form_action'] == "save") {
                 $args['endtime'] = $endtime;
                 $args['locationspec'] = $locationspec;
                 InsertEvent($args);
+				SendSMS();
             }
             else {
 
@@ -809,6 +852,12 @@ if ($_POST['form_action'] == "save") {
 td { font-size:0.8em; }
 </style>
 
+
+<link rel="stylesheet" href="<?php echo $GLOBALS['webroot'] ?>/library/js/jAlert-master/src/jAlert-v3.css" />
+<link rel="stylesheet" href="<?php echo $GLOBALS['webroot'] ?>/library/js/jquery.treeview-1.4.1/jquery.treeview.css" />
+<script src="<?php echo $GLOBALS['webroot'] ?>/library/js/jquery-1.7.2.min.js"></script>
+<script src="<?php echo $GLOBALS['webroot'] ?>/library/js/jAlert-master/src/jAlert-v3.js"></script>
+<script src="<?php echo $GLOBALS['webroot'] ?>/library/js/jAlert-master/src/jAlert-functions.js"> //optional!!</script>
 <style type="text/css">@import url(../../../library/dynarch_calendar.css);</style>
 <script type="text/javascript" src="../../../library/topdialog.js"></script>
 <script type="text/javascript" src="../../../library/dialog.js"></script>
