@@ -417,7 +417,7 @@ if ($form_batch) {
   <td><?php xl('','e'); ?></td>
   <td><?php xl('Code','e'); ?></td>
   <td><?php xl('Name','e'); ?></td>
-  <td><?php xl('','e'); ?></td>
+  <td><?php xl('Abn','e'); ?></td>
   <td><?php xl('Value','e'); ?></td>
   <td><?php xl('Units', 'e'); ?></td>
   <td><?php xl('Range','e'); ?></td>
@@ -667,8 +667,8 @@ while ($row = sqlFetchArray($res)) {
       "</td>\n";
 
     echo "  <td>";
-    /*echo generate_select_list("form_result_abnormal[$lino]", 'proc_res_abnormal',
-      $result_abnormal, xl('Indicates abnormality'), ' ', 'cellselect'); */
+    echo generate_select_list("form_result_abnormal[$lino]", 'proc_res_abnormal',
+      $result_abnormal, xl('Indicates abnormality'), ' ', 'cellselect'); 
     echo "</td>\n";
 
     echo "  <td>";
