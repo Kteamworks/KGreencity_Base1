@@ -262,11 +262,14 @@ table{
 						</td> -->
 						<td> Description:
 						<input type="text" name="form_des" size=10 id="form_des"></input></td>
-						<td><?php echo xlt('Payment Mode ');?><select id="form_paymode">
-<option value=1>Cash</option>
-<option value=2>Check</option>
+						<td><?php echo xlt('Payment Mode ');?><select id="form_paymode" name="form_paymode">
+<option value="Cash">Cash</option>
+<option value="Check">Check</option>
+<option value="NEFT Payment">NEFT Payment</option>
 </select>
 </td>
+<td><?php echo xlt('Reference Number:'); ?></td>
+<td><input type='text' name='reference_no' size=8></input>  </td> 
 </tr>
 						
 		
@@ -479,8 +482,8 @@ echo "".text($pr)."</td>";
 </tr>
 <tr> </tr>
 <tr height="30">
-<td>Payment Mode:<?php echo text($paymode)?></td>
-<td align="right">Reference No:</td>
+<td>Payment Mode:<?php echo text($_POST['form_paymode'])?></td>
+<td align="right">Reference No:<?php echo text($_POST['reference_no'])?></td>
 </tr>
 <tr> </tr>
 <tr> </tr>
@@ -736,12 +739,14 @@ $bgcolor = ((++$orow & 1) ? "#ffdddd" : "#ddddff");
 		
 		echo "<td class='detail'>".text("Total Amount ").text($Totalamt)."</td>";
 		echo "<td>".text("         ")."</td></tr>";
-		echo "<tr><td>".text("Payment Mode ")."</td>";
+		echo "<tr><td>".text("Payment Mode ").text($_POST['form_paymode'])."</td>";
 		echo "<td>".text("Card Type ")."</td>";
 		echo "<td>".text("Bank Name ")."</td>";
-		echo "<td>".text("Reference No ")."</td></tr>";
+		echo "<td>".text("Reference No ").text($_POST['reference_no'])."</td></tr>";
 
 		 ?>
+		 <input type='hidden' name='form_paymode' id='form_paymode' value='<?php echo $_POST['form_paymode'] ?>'></input>
+<input type='hidden' name='reference_no' id='reference_no' value='<?php echo $_POST['reference_no']?>'></input>
                 </table> 
 <table>
 <tr>

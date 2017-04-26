@@ -55,7 +55,7 @@ if (isset($_GET['iSortCol_0'])) {
         $orderby .= "lname $sSortDir, fname $sSortDir, mname $sSortDir";
       }
       else {
-        $orderby .= "`" . escape_sql_column_name($aColumns[$iSortCol],array('patient_data','form_encounter','users')) . "` $sSortDir";
+        $orderby .= "`" . escape_sql_column_name($aColumns[$iSortCol],array('patient_data','form_encounter','users','openemr_postcalendar_categories')) . "` $sSortDir";
       }
 		}
 	}
@@ -75,7 +75,7 @@ if (isset($_GET['sSearch']) && $_GET['sSearch'] !== "") {
         "mname LIKE '$sSearch%' ";
     }
     else {
-      $where .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','users')) . "` LIKE '$sSearch%' ";
+      $where .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','users','openemr_postcalendar_categories')) . "` LIKE '$sSearch%' ";
     }
   }
   if ($where) $where .= ")";
@@ -95,7 +95,7 @@ for ($i = 0; $i < count($aColumns); ++$i) {
         "mname LIKE '$sSearch%' )";
     }
     else {
-      $where .= " `" . escape_sql_column_name($colname,array('patient_data','form_encounter','users')) . "` LIKE '$sSearch%'";
+      $where .= " `" . escape_sql_column_name($colname,array('patient_data','form_encounter','users','openemr_postcalendar_categories')) . "` LIKE '$sSearch%'";
     }
   }
 }
@@ -116,7 +116,7 @@ foreach ($aColumns as $colname) {
     $sellist .= "lname, fname, mname";
   }else
   {
-    $sellist .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','users')) . "`";
+    $sellist .= "`" . escape_sql_column_name($colname,array('patient_data','form_encounter','users','openemr_postcalendar_categories')) . "`";
   }
 }
 
@@ -178,7 +178,7 @@ $query ="SELECT $sellist FROM form_encounter a,patient_data b where a.pid=b.pid 
 }
 else 
 {
-$query = "SELECT $sellist FROM patient_data a,form_encounter b where a.pid=b.pid and date(b.date)='".$today."' order by provider_id  $limit";
+$query = "SELECT $sellist FROM patient_data a,form_encounter b ,openemr_postcalendar_categories c where a.pid=b.pid and c.pc_catid=b.pc_catid and date(b.date)='".$today."' order by provider_id  $limit";
 }
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {

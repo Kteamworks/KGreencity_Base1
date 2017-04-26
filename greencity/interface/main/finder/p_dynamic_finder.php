@@ -283,7 +283,16 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
 		}*/
     });
 
-
+ $('ul.menu1 li').live("click", function() {
+		var name=$(this).text();
+		var review=1;
+		if(name=="OPtoIP")
+		{
+		alert(encounter);
+		top.restoreSession();
+		document.location.href="../../main/finder/convert_op_to_ip.php?encounter="+encounter+'&name='+name;
+		}
+    });
 });
  } );
  
@@ -300,7 +309,13 @@ function openNewTopWindow(pid) {
 
 </head>
 <body class="body_top">
-
+<div class="menu">
+	<ul class="menu1">
+	    
+		<li><a href="#">OPtoIP</a></li>
+		
+	</ul>
+</div>
 <div id="dynamic"><!-- TBD: id seems unused, is this div required? -->
 
 <!-- Class "display" is defined in demo_table.css -->
