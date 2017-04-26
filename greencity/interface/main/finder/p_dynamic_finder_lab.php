@@ -229,6 +229,16 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
   }
 	   }
  $(document).ready(function() {
+	    $('table#pt_table.display.datatable tr').live("click", function() {
+		var name=$(this).text();
+		var formname='admit';
+		var review=1;
+		top.restoreSession();
+		//alert(encounter);
+		
+		document.location.href="../../orders/orders_results.php?set_pid=" + newpid+'&review='+review+'&encounter='+enc;
+		
+    });
     $('ul.menu1 li').live("click", function() {
 		var name=$(this).text();
 		var review=1;
