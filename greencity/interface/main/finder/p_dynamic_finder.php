@@ -288,7 +288,7 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
 		var review=1;
 		if(name=="OPtoIP")
 		{
-		alert(encounter);
+		//alert(encounter);
 		top.restoreSession();
 		document.location.href="../../main/finder/convert_op_to_ip.php?encounter="+encounter+'&name='+name;
 		}
