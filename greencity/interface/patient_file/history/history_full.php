@@ -38,6 +38,7 @@ $e=$_GET["encounter"] ? $_GET["encounter"] : $GLOBALS['encounter'];
 setencounter($encounter);
 $returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_encounter.php';
  include_once("$srcdir/pid.inc");
+    $root = $GLOBALS['webroot'];
 $CPR = 4; // cells per row
 //echo $encounter=$_GET["encounter"] ;
 // Check authorization.
@@ -69,8 +70,12 @@ if ( !acl_check('patients','med','',array('write','addonly') ))
 <?php include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); ?>
 <script type="text/javascript" src="../../../library/dynarch_calendar_setup.js"></script>
 
-<script type="text/javascript" src="../../../library/js/jquery.1.3.2.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript" src="../../../library/js/common.js"></script>
+<script type="text/javascript" src="../../../library/js/fancybox/jquery.fancybox-1.2.6.js"></script>
 <?php include_once("{$GLOBALS['srcdir']}/options.js.php"); ?>
 <script type="text/javascript">
 function setMyPatient() {
@@ -327,6 +332,10 @@ $fres = sqlStatement("SELECT * FROM layout_options " .
   &nbsp;&nbsp;
   <?php echo htmlspecialchars($husband,ENT_NOQUOTES);?>
     </div>
+	<div class="float:right">
+<a class="css_button_small iframe2" href="<?php echo $root ?>/controller.php?prescription&edit&id=&pid=<?php echo $pid ?>" ><span>Add Prescription</span></a>
+	</div>
+
 	<br>
 	<br><br><br>
     <div>
