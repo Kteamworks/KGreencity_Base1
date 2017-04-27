@@ -1391,7 +1391,7 @@ if (!empty($reg)) {
 	  <?php
 		$id=sqlQuery("select id from users where username='".$_SESSION['authUser']."'");
 		/*if($id['id']==94||$id['id']==1) */if (acl_check('admin','super')) { 
-	if($_SESSION['authUser']!='Receptionist'){ ?>
+	if($newcrop_user_role['newcrop_user_role']=='erxadmin'){ ?>
 		<li><a class="collapsed" id="manageimg" ><span><?php xl('Manage','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Vouchers'), 'reports/editvoucjers.php'); ?>
@@ -1682,7 +1682,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
   
   if (acl_check('acct', 'rep_a')||$_SESSION['authUser']=='DR. NIRMALA.B.M') { 
   
-   if($_SESSION['authUser']!='Receptionist'){
+   if($newcrop_user_role['newcrop_user_role']=='erxadmin'){
   
   
   
@@ -1709,7 +1709,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
   <?php }} ?>
 
 <?php if(acl_check('admin','super')){
-	if($_SESSION['authUser']!='Receptionist'){
+	if($newcrop_user_role['newcrop_user_role']=='erxadmin'){
 	
 	
 	?>
