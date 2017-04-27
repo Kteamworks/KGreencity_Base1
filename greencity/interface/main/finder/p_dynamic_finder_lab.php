@@ -236,7 +236,7 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
 		top.restoreSession();
 		//alert(encounter);
 		
-		document.location.href="../../orders/orders_results.php?set_pid=" + newpid+'&review='+review+'&encounter='+enc;
+		document.location.href="../../patient_file/encounter/forms_lab.php?set_pid=" + newpid+'&encounter='+enc;
 		
     });
     $('ul.menu1 li').live("click", function() {

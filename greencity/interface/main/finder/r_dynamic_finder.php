@@ -253,7 +253,7 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
   }
 	   }
  $(document).ready(function() {
-    $('table#pt_table.display.datatable tr').live("click", function() {
+   /* $('table#pt_table.display.datatable tr').live("click", function() {
 		var name=$(this).text();
 		var formname='admit';
 		top.restoreSession();
@@ -280,8 +280,8 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
 		{
 		top.restoreSession();
 		document.location.href="../../forms/admit/delete.php?set_pid=" + newpid+'&encounter='+encounter+'&formname='+formname;
-		}*/
-    });
+		}
+    });*/
 
 
 });
