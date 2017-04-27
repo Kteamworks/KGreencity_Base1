@@ -218,12 +218,12 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 }
 </style>
 
-<title><?php xl('Sales by Item','e') ?></title>
+<title><?php xl('Sales by Sub Category','e') ?></title>
 </head>
 
 <body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' class="body_top">
 
-<span class='title'><?php xl('Report','e'); ?> - <?php xl('Sales by Item','e'); ?></span>
+<span class='title'><?php xl('Report','e'); ?> - <?php xl('Sales by Sub Category','e'); ?></span>
 
 <form method='post' action='sales_by_item.php' id='theform'>
 

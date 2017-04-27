@@ -164,11 +164,11 @@ table{
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
 <input type='hidden' name='form_save' id='form_save' value=''/>
 Enter the Voucher Number to Change: <input type='text' name='voucher_change' id='voucher_change' value=''/><br/>
- Enter the date to Change:  <input type='text' name='form_from_date' id="form_from_date" size='10' value='<?php echo attr($form_from_date) ?>'
+ <!--Enter the date to Change:  <input type='text' name='form_from_date' id="form_from_date" size='10' value='<?php echo attr($form_from_date) ?>'
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
                                 id='img_from_date' border='0' alt='[?]' style='cursor:pointer'
-                                title='<?php echo xla("Click here to choose a date"); ?>'><br/>
+                                title='<?php echo xla("Click here to choose a date"); ?>'><br/>-->
 Enter the changed date:	   <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo attr($form_to_date) ?>'
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
@@ -188,9 +188,9 @@ if($_POST['submit'])
 {
 
 $voucher_change=$_POST['voucher_change'];
-$date=$_POST['form_from_date'];
+//$date=$_POST['form_from_date'];
 $datechange=$_POST['form_to_date'];
-$voucher="SELECT * from vouchers where voucher_no='$voucher_change'  and DATE(posted_date)='$date'";
+$voucher="SELECT * from vouchers where voucher_no='$voucher_change'";
 	  $vouchers=sqlStatement($voucher);
 	  $vouch=sqlFetchArray($vouchers);
 	  $authuser=$_SESSION["authUser"];
@@ -204,7 +204,7 @@ $id="SELECT * from vouchers where voucher_no='$voucher_change'";
        {
 	         echo( "Please Enter the Proper Voucher Number!" );
           }else{	
-			sqlStatement("update vouchers set posted_date='$datechange', changed_by='".$_SESSION['authUser']."' where DATE(posted_date)='$date' and voucher_no='$voucher_change'");
+			sqlStatement("update vouchers set posted_date='$datechange', changed_by='".$_SESSION['authUser']."' where voucher_no='$voucher_change'");
 			/* while($billed= sqlFetchArray($bills))
 
 			{
@@ -270,7 +270,7 @@ $id="SELECT * from vouchers where voucher_no='$voucher_change'";
 <?php include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); ?>
 <script type="text/javascript" src="../../library/dynarch_calendar_setup.js"></script>
 <script language="Javascript">
- Calendar.setup({inputField:"form_from_date", ifFormat:"%Y-%m-%d ", button:"img_from_date"});
+ //Calendar.setup({inputField:"form_from_date", ifFormat:"%Y-%m-%d ", button:"img_from_date"});
 Calendar.setup({inputField:"form_to_date", ifFormat:"%Y-%m-%d %H:%M:%S", button:"img_to_date", showsTime:true});
  top.restoreSession();
 </script>
