@@ -1474,7 +1474,7 @@ echo xlt('Providers') . ": &nbsp;";
 echo "&nbsp;&nbsp;" . xlt('Rendering') . "\n";
 genProviderSelect('ProviderID', '-- '.xl("Please Select").' --', $encounter_provid, $isBilled);
 
-if (!$GLOBALS['ippf_specific']) {
+if ($GLOBALS['ippf_specific']) {
   echo "&nbsp;&nbsp;" . xlt('Supervising') . "\n";
   genProviderSelect('SupervisorID', '-- '.xl("N/A").' --', $encounter_supid, $isBilled);
 }
