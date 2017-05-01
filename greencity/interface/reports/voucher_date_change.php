@@ -169,7 +169,7 @@ Enter the Voucher Number to Change: <input type='text' name='voucher_change' id=
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
                                 id='img_from_date' border='0' alt='[?]' style='cursor:pointer'
                                 title='<?php echo xla("Click here to choose a date"); ?>'><br/>-->
-Enter the changed date:	   <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo attr($form_to_date) ?>'
+Enter the date that you want to change:	   <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo attr($form_to_date) ?>'
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
                                 id='img_to_date' border='0' alt='[?]' style='cursor:pointer'

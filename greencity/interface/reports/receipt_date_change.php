@@ -164,12 +164,12 @@ table{
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
 <input type='hidden' name='form_save' id='form_save' value=''/>
 Enter the Receipt Number to Change: <input type='text' name='receipt_change' id='receipt_change' value=''/><br/>
- Enter the date to Change:  <input type='text' name='form_from_date' id="form_from_date" size='10' value='<?php echo attr($form_from_date) ?>'
+Enter the date that you want to Change  <input type='text' name='form_from_date' id="form_from_date" size='10' value='<?php echo attr($form_from_date) ?>'
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
                                 id='img_from_date' border='0' alt='[?]' style='cursor:pointer'
                                 title='<?php echo xla("Click here to choose a date"); ?>'><br/>
-Enter the changed date:	   <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo attr($form_to_date) ?>'
+Enter the changed date that you will Change: <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo attr($form_to_date) ?>'
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
                                 id='img_to_date' border='0' alt='[?]' style='cursor:pointer'
