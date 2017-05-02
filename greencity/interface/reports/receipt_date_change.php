@@ -164,12 +164,7 @@ table{
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
 <input type='hidden' name='form_save' id='form_save' value=''/>
 Enter the Receipt Number to Change: <input type='text' name='receipt_change' id='receipt_change' value=''/><br/>
-Enter the date that you want to Change  <input type='text' name='form_from_date' id="form_from_date" size='10' value='<?php echo attr($form_from_date) ?>'
-                                onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
-                           <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
-                                id='img_from_date' border='0' alt='[?]' style='cursor:pointer'
-                                title='<?php echo xla("Click here to choose a date"); ?>'><br/>
-Enter the changed date that you will Change: <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo attr($form_to_date) ?>'
+Select the date you wish to Change: <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo attr($form_to_date) ?>'
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
                                 id='img_to_date' border='0' alt='[?]' style='cursor:pointer'
@@ -188,9 +183,8 @@ if($_POST['submit'])
 {
 
 $receipt_change=$_POST['receipt_change'];
-$date=$_POST['form_from_date'];
 $datechange=$_POST['form_to_date'];
-$billing="SELECT * from payments where receipt_id='$receipt_change' and activity='1' and DATE(dtime)='$date'";
+$billing="SELECT * from payments where receipt_id='$receipt_change' and activity='1'";
 	  $bills=sqlStatement($billing);
 	  $bill=sqlFetchArray($bills);
 	  $authuser=$_SESSION["authUser"];
@@ -204,7 +198,7 @@ $id="SELECT * from payments where receipt_id='$receipt_change' and activity='1'"
        {
 	         echo( "Please Enter the Proper Receipt Number!" );
           }else{	
-			sqlStatement("update payments set dtime='$datechange', user='".$_SESSION['authUser']."' where DATE(dtime)='$date' and receipt_id='$receipt_change' and encounter='".$bill['encounter']."' and activity=1");
+			sqlStatement("update payments set dtime='$datechange', user='".$_SESSION['authUser']."' where  receipt_id='$receipt_change' and encounter='".$bill['encounter']."' and activity=1");
 			/* while($billed= sqlFetchArray($bills))
 
 			{
@@ -270,7 +264,6 @@ $id="SELECT * from payments where receipt_id='$receipt_change' and activity='1'"
 <?php include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); ?>
 <script type="text/javascript" src="../../library/dynarch_calendar_setup.js"></script>
 <script language="Javascript">
- Calendar.setup({inputField:"form_from_date", ifFormat:"%Y-%m-%d ", button:"img_from_date"});
 Calendar.setup({inputField:"form_to_date", ifFormat:"%Y-%m-%d %H:%M:%S", button:"img_to_date", showsTime:true});
  top.restoreSession();
 </script>
