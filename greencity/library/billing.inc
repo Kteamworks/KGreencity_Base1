@@ -127,7 +127,7 @@ function updateClaim($newversion, $patient_id, $encounter_id, $payer_id=-1, $pay
       $billset .= ", billed = 1";
       if ($status == 2) $billset  .= ", bill_date = NOW()";
     } else {
-      $billset .= ", billed = 0";
+      $billset .= ", billed = 0,subbillprint=0,grpbill=0";
     }
   }
   if ($status==7) {//$status==7 is the claim denial case.

@@ -32,6 +32,9 @@ require_once("$srcdir/classes/Note.class.php");
 require_once("$srcdir/formatting.inc.php");
 
 $startdate = $enddate = "";
+if ($_POST['submit']) {
+    sqlStatement("UPDATE billing set subbillprint='1' where grpbill='1'");
+}
 if(empty($_POST['start']) || empty($_POST['end'])) {
     // set some default dates
     $startdate = date('Y-m-d', (time() - 10*24*60*60));
@@ -381,7 +384,7 @@ $test=$_POST['form_billlist'];
 
                 $ta = split(":",$patient);
                 $billing = getPatientBillingEncounter2($pids[$iCounter],$ta[1]);
-				sqlStatement("UPDATE billing set subbillprint='1' where grpbill='1'");
+				//sqlStatement("UPDATE billing set subbillprint='1' where grpbill='1'");
                 $billings[] = $billing;
 				
 				$item_code=null;
@@ -449,7 +452,7 @@ $test=$_POST['form_billlist'];
 
 
            
-//		   echo "<tr style='border-top: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
+          echo "<tr style='border-top: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
 	//	   echo "<tr style='border-bottom: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
 			echo "<tr style='border-top: 1px solid #000;'><td>&nbsp; </td></tr>";
             echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=5 style='text-align:right'>".xlt('Total Bill Amount:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($total + abs($copays)) . "</td></tr>";
@@ -577,9 +580,9 @@ $test=$_POST['form_billlist'];
 					</a>-->
 
 					<?php if (1) { ?>
-					<a href='#' class='css_button' onclick='window.print()'>
+					<a href='#' class='button-css' onclick='window.print()'>
 						<span>
-							<?php echo xlt('Print'); ?>
+							<input type='submit'  id='submit' name='submit' value="Print">
 						</span>
 					</a>
 					<?php } ?>
