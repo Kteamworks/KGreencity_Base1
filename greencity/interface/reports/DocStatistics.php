@@ -302,6 +302,7 @@ $(document).ready(function(){
 			<td class='label'>
 			   <?php xl('Choose Doctor','e'); ?>:
 			
+			     <select name='doc' style="width: 110px;">
     <option value="">Select Doctor</option>
     <?php while($docname = sqlFetchArray($redoc)) { ?>      
 
