@@ -13,7 +13,7 @@ function getBillingByPid ($pid, $cols = "*")
     return  sqlQuery("select $cols from billing where pid ='$pid' and activity=1 order by date DESC limit 0,1");
 }
 
-function getBillingByEncounter ($pid,$encounter, $cols = "code_type, code, code_text,payout")
+function getBillingByEncounter ($pid,$encounter, $cols = "code_type, code, code_text,payout,referral")
 {
     $res = sqlStatement("select $cols from billing where encounter = ? and pid=? and activity=1 and code_type!='Pharmacy Charge' order by code_type, date ASC", array($encounter,$pid) );
 
@@ -39,14 +39,14 @@ function getBillingByEncounterPharm ($pid,$encounter, $cols = "code_type, code, 
 
 function addBilling($encounter_id,$ct, $service_id,$code_type, $code, $code_text, $pid,
   $authorized="0", $provider, $modifier="", $units="", $fee="0.00",
-  $ndc_info='', $justify='', $billed=0, $notecodes='',$payout='')
+  $ndc_info='', $justify='', $billed=0, $notecodes='',$payout='',$referral='')
 {
   $sql = "insert into billing (date,encounter,servicegrp_id,service_id, code_type, code, code_text, " .
     "pid, authorized, user, groupname, activity, billed, provider_id, " .
-    "modifier, units, fee, ndc_info, justify, notecodes,payout) values (" .
-    "NOW(), ?,?, ?, ?, ?,?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?,?)";	
+    "modifier, units, fee, ndc_info, justify, notecodes,payout,referral) values (" .
+    "NOW(), ?,?, ?, ?, ?,?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";	
 	
-  return sqlInsert($sql, array($encounter_id,$ct,$service_id,$code_type,$code,$code_text,$pid,$authorized,$_SESSION['authId'],$_SESSION['authProvider'],$billed,$provider,$modifier,$units,$fee,$ndc_info,$justify,$notecodes,$modifier));
+  return sqlInsert($sql, array($encounter_id,$ct,$service_id,$code_type,$code,$code_text,$pid,$authorized,$_SESSION['authId'],$_SESSION['authProvider'],$billed,$provider,$modifier,$units,$fee,$ndc_info,$justify,$notecodes,$modifier,$payout,$referral));
 }
 
 function authorizeBilling($id, $authorized = "1")

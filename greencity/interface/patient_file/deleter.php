@@ -225,6 +225,7 @@ function popup_close() {
    if (!acl_check('admin', 'super')) die("Not authorized!");
    row_modify("billing", "activity = 0", "encounter = '$encounterid'");
    delete_drug_sales(0, $encounterid);
+   row_delete("payments"       , "encounter = '$encounterid'");
    row_delete("ar_activity", "encounter = '$encounterid'");
    row_delete("claims", "encounter_id = '$encounterid'");
    row_delete("issue_encounter", "encounter = '$encounterid'");
