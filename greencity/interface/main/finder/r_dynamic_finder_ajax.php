@@ -98,7 +98,7 @@ for ($i = 1; $i < count($aColumns); ++$i) {
 // Compute list of column names for SELECT clause.
 // Always includes pid because we need it for row identification.
 //
-$sellist = 'a.pid,a.date,a.pc_catid,a.encounter,sum(fee) fees,a.referral_source';
+$sellist = 'a.pid,a.date,a.pc_catid,a.encounter,sum(fee) fees,a.referral_source,a.referrer_name';
 foreach ($aColumns as $colname) {
   if ($colname == 'pid') continue;
   if ($colname == 'referral_source') continue;
@@ -176,13 +176,13 @@ $query ="SELECT $sellist FROM form_encounter a,patient_data b ,billing d,openemr
 }
 else 
 {
-$query = "SELECT  $sellist FROM form_encounter a,patient_data b,billing d,openemr_postcalendar_categories c where a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter and    a.pid=b.pid and a.referral_source != '' and activity=1  group by d.encounter order by d.encounter asc $limit;";
+$query = "SELECT  $sellist FROM form_encounter a,patient_data b,billing d,openemr_postcalendar_categories c where a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter and    a.pid=b.pid and a.referrer_name != '' and activity=1  group by d.encounter order by d.encounter asc $limit;";
 }
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
-  
   // Each <tr> will have an ID identifying the patient.
-
+$refdoc = $row['referral_source'];
+		$qry_usr = sqlQuery("SELECT * FROM users where user_id=?",array($refdoc));
   $arow = array('DT_RowId' => 'pid_' . $row['pid']);
   foreach ($aColumns as $colname) {
     if ($colname == 'name') {

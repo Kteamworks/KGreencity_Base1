@@ -49,10 +49,16 @@ $height          = (isset($_POST['height'])) ? $_POST['height'] : '';
 $tod          = (isset($_POST['tod'])) ? $_POST['tod'] : '';
 $review_after          = (isset($_POST['review_after'])) ? $_POST['review_after'] : '';
 if(isset($referral_source)) {
-$referal_check =  sqlQuery("select fname FROM users WHERE fname = ?", array($referral_source));
-if(!$referal_check) {
-	$referal_id = sqlQuery("INSERT INTO users ( username, password, authorized, info, source, title, fname, lname, mname,  federaltaxid, federaldrugid, upin, facility, see_auth, active, npi, taxonomy, specialty, organization, valedictory, assistant, billname, email, email_direct, url, street, streetb, city, state, zip, street2, streetb2, city2, state2, zip2, phone, phonew1, phonew2, phonecell, fax, notes, abook_type,newcrop_user_role ) VALUES ( '', '', 0, '', NULL, 'Dr.', '" . add_escape_custom($referral_source) . "', '', '', '', '', '', '', 0, 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'spe','erxdoctor' )");
+$referal_check =  sqlStatement("select user_id FROM users WHERE user_id = ?", array($referral_source));
+if(sqlNumRows($referal_check) == 0) {
+	$referal_id = sqlQuery("INSERT INTO users ( username, password, authorized, info, source, title, fname, lname, mname,  federaltaxid, federaldrugid, upin, facility, see_auth, active, npi, taxonomy, specialty, organization, valedictory, assistant, billname, email, email_direct, url, street, streetb, city, state, zip, street2, streetb2, city2, state2, zip2, phone, phonew1, phonew2, phonecell, fax, notes, abook_type,newcrop_user_role ) VALUES ( 'DR. ". strtoupper($referral_source) ."', '', 0, '', NULL, 'Dr.', '" . add_escape_custom($referral_source) . "', '', '', '', '', '', '', 0, 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'spe','erxdoctor' )");
+	$referral_sour = sqlStatement("SELECT * FROM users ORDER BY id DESC LIMIT 1");
+	while($ref_id = sqlFetchArray($referral_sour)) {
+		$referral_source = $ref_id['user_id'];
 	}
+}
+$referrer = sqlQuery("select username FROM users WHERE user_id = ?", array($referral_source));
+	$referrer_name = $referrer['username'];
 }
 $facilityresult = sqlQuery("select name FROM facility WHERE id = ?", array($facility_id));
 $facility = $facilityresult['name'];
@@ -105,6 +111,7 @@ if ($mode == 'new')
       "billing_facility = '" . add_escape_custom($billing_facility) . "', " .
       "sensitivity = '" . add_escape_custom($sensitivity) . "', " .
       "referral_source = '" . add_escape_custom($referral_source) . "', " .
+	        "referrer_name = '" . add_escape_custom($referrer_name) . "', " .
 	  "type_of_delivery = '" . add_escape_custom($tod) . "', " .
 	  "weight = '" . add_escape_custom($weight) . "', " .
 	  "height = '" . add_escape_custom($height) . "', " .

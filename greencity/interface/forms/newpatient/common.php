@@ -431,7 +431,7 @@ if ($fres) {
 
 <?php
   $ures = sqlStatement("SELECT user_id,title,fname FROM users WHERE newcrop_user_role='erxdoctor'");
-   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option value='' selected>Choose referral doctor</option>";
+   echo "<select name='form_referral_source' id='form_referral_source' style='width:100%' /><option value=''>Choose referral doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
       echo "    <option value='" . text($urow['user_id']) . "'";
       echo ">".text($urow['title']) .text($urow['fname']);
@@ -442,7 +442,7 @@ if ($fres) {
      </td>
 
 	 <td class='text' id="input_dr" style="display:none">
-	 <input type="text" name="form_referral_source" style="width: 100%">
+	 <input type="text" name="form_referral_source" disabled="disabled" style="width: 100%">
 	 </td>
 	 <td><a href="#" id="toggle_doc" title="Doctor Not listed? Add Doctor"><i class="fa fa-plus-circle"></i></a><td>
     </tr>
@@ -583,7 +583,7 @@ while ($irow = sqlFetchArray($ires)) {
 <script type="text/javascript">
 $( document ).ready(function() {
 $('#toggle_doc').on('click', function() {
-
+$('#input_dr > input').attr("disabled",false);
 	$(this).find('i').toggleClass('fa-plus-circle fa-minus-circle');
 	$('#select_dr, #input_dr').toggle();
 
