@@ -286,7 +286,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?>>
+			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?>checked>
 			   <?php  xl('Details','e'); ?>
 			</td>
 		</tr>
