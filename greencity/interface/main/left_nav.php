@@ -1414,7 +1414,7 @@ if (!empty($reg)) {
 		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
 
 		<?php genMiscLink('RTop','fin','0',xl('Lab Statstics'),'reports/LabStatistics.php'); ?>
-		<?php genMiscLink('RTop','rep','0',xl('IP Patients'), 'reports/bed_managment_report.php'); ?>
+		<?php genMiscLink('RTop','rep','0',xl('IN Patients'), 'reports/bed_managment_report.php'); ?>
 		<?php genMiscLink('RTop','rep','0',xl('Patients By Sub Category'), 'reports/subCatstatistics.php'); ?>
 		
 		  
@@ -1696,7 +1696,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
         <ul>
 		 <?php genMiscLink('RTop','rep','0',xl('Doctors By IP/OP'),'reports/salesdocipop.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Lab Report'),'reports/LabStatistics.php'); ?>
-          <?php genMiscLink('RTop','rep','0',xl('Sales By Sub Category'),'reports/sales_by_item.php'); ?>
+          <?php genMiscLink('RTop','rep','0',xl('Sales'),'reports/sales_by_item.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Sales By Category'),'reports/sales_by_category.php'); ?>
 		 
 		   <?php genMiscLink('RTop','rep','0',xl('Main Report'),'reports/briefreport.php'); ?>
