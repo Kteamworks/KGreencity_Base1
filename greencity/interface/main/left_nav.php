@@ -1298,6 +1298,7 @@ if ($GLOBALS['athletic_team']) {
 
  $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
 ?>
+<?php if($_SESSION['authUser']!='Shanthini') {?>
   <li><a class="collapsed" id="patimg" ><span><?php xl('Patient','e') ?></span></a>
     <ul>
 	<?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor'||$_SESSION['authUser']=='DR. NIRMALA.B.M') {?>
@@ -1376,6 +1377,7 @@ if (!empty($reg)) {
 
     </ul>
   </li>
+<?php } ?>
   <!-- <li><a class="collapsed" id="bedimg" ><span><?php xl('Bed Management','e') ?></span></a>
     <ul>
       <?php // genTreeLink('RTop','dis',xl('Bed Management Form'));  ?>
@@ -1412,6 +1414,8 @@ if (!empty($reg)) {
 		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
 
 		<?php genMiscLink('RTop','fin','0',xl('Lab Statstics'),'reports/LabStatistics.php'); ?>
+		<?php genMiscLink('RTop','rep','0',xl('IP Patients'), 'reports/bed_managment_report.php'); ?>
+		<?php genMiscLink('RTop','rep','0',xl('Patients By Sub Category'), 'reports/subCatstatistics.php'); ?>
 		
 		  
         </ul>    
@@ -1425,6 +1429,7 @@ if (!empty($reg)) {
 	  
   <?php // TajEmo Work by CB 2012/06/21 10:41:15 AM hides fees if disabled in globals ?>
   <?php if(!isset($GLOBALS['enable_fees_in_left_menu']) || $GLOBALS['enable_fees_in_left_menu'] == 1){ ?>
+  <?php if($_SESSION['authUser']!='Shanthini') {?>
   <li><a class="collapsed" id="feeimg" ><span><?php xl('Fees','e') ?></span></a>
     <ul>
       <?php genMiscLink('RBot','cod','2',xl('Billing Sheet'),'patient_file/encounter/load_form.php?formname=fee_sheet'); ?>
@@ -1458,7 +1463,7 @@ if (!empty($reg)) {
 		<?php }?>
     </ul>
   </li>
-  <?php } ?>
+<?php }} ?>
 	<?php  if (acl_check('menus', 'modle')) {?>
    <!-- <li><a class="collapsed" id="modimg" ><span><?php echo xlt('Modules') ?></span></a>
     <ul> -->
