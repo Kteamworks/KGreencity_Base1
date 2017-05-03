@@ -143,7 +143,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   </td>
  
   <td align="right">
-   <?php bucks($rowamount); ?>
+  <!-- <?php bucks($rowamount); ?>-->
   </td>
  </tr>
 <?php
@@ -189,7 +189,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
      // echo '"Qty",';
 	 // echo '"Doctor Chrg",';
 	 // echo '"Hospital Chrg",';
-      echo '"Amount"' . "\n";
+     // echo '"Amount"' . "\n";
     }
     else {
       echo '"Category",';
@@ -379,9 +379,9 @@ $(document).ready(function(){
    <?php xl('Patient Name','e'); ?>
   </th>
  
-  <th align="right">
+ <!-- <th align="right">
    <?php xl('Amount','e'); ?>
-  </th>
+  </th>-->
  </thead>
 <?php
   } // end not export

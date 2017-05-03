@@ -164,6 +164,8 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   $form_from_date = fixDate($_POST['form_from_date'], date('Y-m-d'));
   $form_to_date   = fixDate($_POST['form_to_date']  , date('Y-m-d'));
   $form_facility  = $_POST['form_facility'];
+  
+  $subcat  = $_POST['subcat'];
 
   if ($_POST['form_csvexport']) {
     header("Pragma: public");
@@ -235,14 +237,30 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
  <tr>
   <td width='630px'>
 	<div style='float:left'>
-
+<?php $qrycat = "SELECT distinct code_type from billing";
+    $reqrycat = sqlStatement($qrycat); ?>
+	
 	<table class='text'>
 		<tr>
 			<td class='label'>
-				<?php xl('Facility','e'); ?>:
+				<?php xl('Category','e'); ?>:
 			</td>
 			<td>
-			<?php dropdown_facility(strip_escape_custom($form_facility), 'form_facility', true); ?>
+			<select name='subcat'  style='width:100%'>
+   <option value="">Select Category</option>
+<?php while($qry1 = sqlFetchArray($reqrycat)) { ?>      
+     <?php if($qry1['code_type']=='Doctor Charges')
+	 {
+              $catshow = 'Consultation';
+	 }
+	 else {
+		 $catshow = $qry1['code_type'];
+	 }
+		 ?>
+
+<option value="<?php echo $qry1['code_type'] ?>"><?php echo $catshow; ?></option>
+<?php } ?>
+   </select>
 			</td>
 			<td class='label'>
 			   <?php xl('From','e'); ?>:
@@ -362,7 +380,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
         "JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter " .
         //"LEFT JOIN codes AS c ON c.code_type = ct.ct_id AND c.code = b.code AND c.modifier = b.modifier " .
         //"LEFT JOIN list_options AS lo ON lo.list_id = 'superbill' AND lo.option_id = c.superbill " .
-        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.activity = 1 AND b.fee > 1 AND " .
+        "WHERE b.code_type='$subcat' and b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.activity = 1 AND b.fee > 1 AND " .
         "b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
       // If a facility was specified.
       if ($form_facility) {
