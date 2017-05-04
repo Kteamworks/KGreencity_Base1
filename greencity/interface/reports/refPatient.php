@@ -1,5 +1,4 @@
 <?php
-
 // Copyright (C) 2006-2010 Rod Roark <rod@sunsetsystems.com>
 //
 // This program is free software; you can redistribute it and/or
@@ -29,13 +28,13 @@ function display_desc($desc) {
   return $desc;
 }
 
-function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transdate, $qty, $amount, $irnumber='') {
-  global $product, $category, $producttotal, $productqty, $cattotal, $catqty, $grandtotal, $grandqty;
-  global $productleft, $catleft;
+function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transdate, $qty,$payout, $amount, $irnumber='') {
+  global $product, $category, $producttotal, $productqty, $cattotal, $catqty,$catpayout,$grandhospayout,$granddocpayout, $grandtotal, $grandqty,$totcatpayout;
+  global $productleft, $catleft,$catsubpayout;
 
   $invnumber = $irnumber ? $irnumber : "$patient_id.$encounter_id";
   $rowamount = sprintf('%01.2f', $amount);
-
+  $catpayout= sprintf('%01.2f', $payout);
   if (empty($rowcat)) $rowcat = 'None';
   $rowproduct = $description;
   if (! $rowproduct) $rowproduct = 'Unknown';
@@ -53,25 +52,32 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       }
       else {
 ?>
- <tr bgcolor="#ddddff">
+ <!--<tr bgcolor="#ddddff">
   <td class="detail">
-   <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
+   <!--?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
   </td>
   <td class="detail" colspan="3">
-   <?php if ($_POST['form_details']) echo xl('Total for') . ' '; echo display_desc($product); ?>
+   <!--?php if ($_POST['form_details']) echo xl('Total for') . ' '; echo display_desc($product); ?>
   </td>
   <td align="right">
-   <?php echo $productqty; ?>
+   <!--?php echo $productqty; ?>
+  </td>
+   <td align="right">
+   <!--?php echo  bucks($catsubpayout); ?>
+  </td>
+   <td align="right">
+   <!--?php echo bucks($producttotal-$catsubpayout); ?>
   </td>
   <td align="right">
-   <?php bucks($producttotal); ?>
+   <!--?php bucks($producttotal); ?>
   </td>
- </tr>
+ </tr> -->
 <?php
       } // End not csv export
     }
     $producttotal = 0;
     $productqty = 0;
+	$catsubpayout=0;
     $product = $rowproduct;
     $productleft = $product;
   }
@@ -82,20 +88,15 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       if (!$_POST['form_csvexport']) {
 ?>
 
- <tr bgcolor="#ffdddd">
+<tr bgcolor="#ffdddd">
   <td class="detail">
    &nbsp;
   </td>
-  <td class="detail" colspan="3">
-   <?php echo xl('Total for category') . ' '; echo display_desc($category); ?>
+  <td class="detail" colspan="5">
+  
   </td>
-  <td align="right">
-   <?php echo $catqty; ?>
-  </td>
-  <td align="right">
-   <?php bucks($cattotal); ?>
-  </td>
- </tr>
+  
+ </tr> 
 <?php
       } // End not csv export
     }
@@ -103,6 +104,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     $catqty = 0;
     $category = $rowcat;
     $catleft = $category;
+	//$totcatpayout=0;
   }
 
   if ($_POST['form_details']) {
@@ -111,7 +113,10 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       echo '"' . display_desc($product  ) . '",';
       echo '"' . oeFormatShortDate(display_desc($transdate)) . '",';
       echo '"' . display_desc($invnumber) . '",';
+	  
       echo '"' . display_desc($qty      ) . '",';
+	  echo '"' . bucks($catpayout      ) . '",';
+	  echo '"' . bucks($rowamount-$catpayout      ) . '",';
       echo '"'; bucks($rowamount); echo '"' . "\n";
     }
     else {
@@ -121,8 +126,8 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   <td class="detail">
    <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
   </td>
-  <td class="detail">
-   <?php echo display_desc($productleft); $productleft = "&nbsp;"; ?>
+  <td class="detail" >
+   <?php echo display_desc($productleft); ?>
   </td>
   <td>
    <?php echo oeFormatShortDate($transdate); ?>
@@ -136,11 +141,9 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <a href='../patient_file/pos_checkout.php?ptid=<?php echo $patient_id; ?>&enc=<?php echo $encounter_id; ?>'>
    <?php echo $name ?></a>
   </td>
+ 
   <td align="right">
-   <?php echo $qty; ?>
-  </td>
-  <td align="right">
-   <?php bucks($rowamount); ?>
+  <!-- <?php bucks($rowamount); ?>-->
   </td>
  </tr>
 <?php
@@ -148,11 +151,14 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     } // End not csv export
   } // end details
   $producttotal += $rowamount;
+  $catsubpayout += $catpayout; 
   $cattotal     += $rowamount;
   $grandtotal   += $rowamount;
+  $totcatpayout += $catpayout;
   $productqty   += $qty;
   $catqty       += $qty;
   $grandqty     += $qty;
+  $grandhospayout+=$totcatpayout;
 } // end function
 
   if (! acl_check('acct', 'rep')) die(xl("Unauthorized access."));
@@ -164,6 +170,8 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   $form_from_date = fixDate($_POST['form_from_date'], date('Y-m-d'));
   $form_to_date   = fixDate($_POST['form_to_date']  , date('Y-m-d'));
   $form_facility  = $_POST['form_facility'];
+  $docuser  = $_POST['doc'];
+  
 
   if ($_POST['form_csvexport']) {
     header("Pragma: public");
@@ -178,13 +186,17 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       echo '"Item",';
       echo '"Date",';
       echo '"Bill No.",';
-      echo '"Qty",';
-      echo '"Amount"' . "\n";
+     // echo '"Qty",';
+	 // echo '"Doctor Chrg",';
+	 // echo '"Hospital Chrg",';
+     // echo '"Amount"' . "\n";
     }
     else {
       echo '"Category",';
       echo '"Item",';
       echo '"Qty",';
+	  echo '"Doctor Chrg",';
+	  echo '"Hospital Chrg",';
       echo '"Total"' . "\n";
     }
   } // end export
@@ -218,19 +230,38 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 }
 </style>
 
-<title><?php xl('Sales by Sub Category','e') ?></title>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script language="JavaScript">
+$(document).ready(function(){
+//$("tr td:nth-child(5)").css("display","none");
+//$("tr td:nth-child(6)").css("display","none");
+//$("tr td:nth-child()").css("display","none");
+
+
+});
+</script>
+
+
+
+
+
+
+
+<title><?php xl('Doctor Charges IP & OP','e') ?></title>
 </head>
 
 <body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' class="body_top">
 
-<span class='title'><?php xl('Report','e'); ?> - <?php xl('Sales by Sub Category','e'); ?></span>
+<span class='title'><?php xl('Referral Patients','e'); ?>  <?php xl('','e'); ?></span>
 
-<form method='post' action='sales_by_item.php' id='theform'>
+<form method='post' action='refPatient.php' id='theform'>
 
 <div id="report_parameters">
 <input type='hidden' name='form_refresh' id='form_refresh' value=''/>
 <input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
-
 <table>
  <tr>
   <td width='630px'>
@@ -238,12 +269,12 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 
 	<table class='text'>
 		<tr>
-			<td class='label'>
-				<?php xl('Facility','e'); ?>:
+			<!--<td class='label'>
+				<!--?php xl('Facility','e'); ?>:
 			</td>
-			<td>
-			<?php dropdown_facility(strip_escape_custom($form_facility), 'form_facility', true); ?>
-			</td>
+		<!--	<td>
+			<!--?php dropdown_facility(strip_escape_custom($form_facility), 'form_facility', true); ?>
+			</td> -->
 			<td class='label'>
 			   <?php xl('From','e'); ?>:
 			</td>
@@ -264,11 +295,18 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 				id='img_to_date' border='0' alt='[?]' style='cursor:pointer'
 				title='<?php xl('Click here to choose a date','e'); ?>'>
 			</td>
+			
+			 <?php $qdoc = "SELECT id, username, fname, lname FROM users WHERE authorized != 0 AND active = 1"; 
+			 $redoc= sqlStatement($qdoc); ?>
+			
+		
+			
+			
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?>>
+			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?> checked>
 			   <?php  xl('Details','e'); ?>
 			</td>
 		</tr>
@@ -316,25 +354,25 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 <div id="report_results">
 <table >
  <thead>
-  <th>
-   <?php xl('Category','e'); ?>
+  
+  <th align="left">
+   <?php xl('Referral Name','e'); ?>
   </th>
-  <th align="center">
-   <?php xl('Item','e'); ?>
+  
+  <th align="left">
+   <?php xl('','e'); ?>
   </th>
  
- <th align="center">
-   <?php xl('','e'); ?>
+ <th align="left">
+   <?php xl('Date','e'); ?>
   </th>
-   <th align="center">
-   <?php xl('','e'); ?>
+   <th align="left">
+   <?php xl('Patient Name','e'); ?>
   </th>
-  <th align="right">
-   <?php xl('Qty','e'); ?>
-  </th>
-  <th align="right">
+ 
+ <!-- <th align="right">
    <?php xl('Amount','e'); ?>
-  </th>
+  </th>-->
  </thead>
 <?php
   } // end not export
@@ -353,36 +391,32 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     $productqty = 0;
     $grandtotal = 0;
     $grandqty = 0;
-
+    $totcatpayout=0;
+	$catsubpayout=0;
     if ($INTEGRATED_AR) {
-      $query = "SELECT b.date,b.fee, b.pid, b.encounter, b.code_type, b.code, b.units, " .
-        "b.code_text, fe.date, fe.facility_id, fe.invoice_refno " .
-        "FROM billing AS b " .
-        "JOIN code_types AS ct ON ct.ct_key = b.code_type " .
-        "JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter " .
-        //"LEFT JOIN codes AS c ON c.code_type = ct.ct_id AND c.code = b.code AND c.modifier = b.modifier " .
-        //"LEFT JOIN list_options AS lo ON lo.list_id = 'superbill' AND lo.option_id = c.superbill " .
-        "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND b.activity = 1 AND b.fee > 1 AND " .
-        "b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
-      // If a facility was specified.
+		
+		
+		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
+		
+			  $query = "SELECT  * FROM form_encounter a,patient_data b,billing d,openemr_postcalendar_categories c,users u 
+where a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter and  u.user_id=a.referral_source and  
+a.pid=b.pid and a.referrer_name != 'DR.' and  a.referrer_name !=' ' and activity=1  and  a.date >= '$from_date 00:00:00' AND a.date <= '$to_date 23:59:59' group by d.encounter" ;
+		 
+		
       if ($form_facility) {
         $query .= " AND fe.facility_id = '$form_facility'";
       }
-      $query .= " ORDER BY b.code_type, b.code, fe.date, fe.id";
-      //
+      $query .= " ORDER BY a.date desc";
+      //group by fe.encounter_ipop,b.code_text,fe.encounter 
+        //    ORDER BY b.code, IPOP
       $res = sqlStatement($query);
       while ($row = sqlFetchArray($res)) {
-		  if($row['code_type']=='Doctor Charges')
-		  {
-			  $row['code_type']='Doctor Consultation';
-		  }
-		  
+		 
 		  
         thisLineItem($row['pid'], $row['encounter'],
-          $row['code_type'], $row['code'] . ' ' . $row['code_text'],
-          substr($row['date'], 0, 10), $row['units'], $row['fee'], $row['invoice_refno']);
+          $row['referrer_name'], $row['code1'] . ' ' . $cat,
+          substr($row['date'], 0, 10), $row['units'], $row['payout'],$row['fee'], $row['invoice_refno']);
       }
-	  
       //
       /* $query = "SELECT s.sale_date, s.fee, s.quantity, s.pid, s.encounter, " .
         "d.name, fe.date, fe.facility_id, fe.invoice_refno " .
@@ -439,47 +473,65 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     else {
 ?>
 
- <tr bgcolor="#ddddff">
+ <!--<tr bgcolor="#ddddff">
   <td class="detail">
-   <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
+   <!--?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
   </td>
   <td class="detail" colspan="3">
-   <?php if ($_POST['form_details']) echo xl('Total for') . ' '; echo display_desc($product); ?>
+   <!--?php if ($_POST['form_details']) echo xl('Total for') . ' '; echo display_desc($product); ?>
   </td>
   <td align="right">
-   <?php echo $productqty; ?>
+   <!--?php echo $productqty; ?>
   </td>
   <td align="right">
-   <?php bucks($producttotal); ?>
+   <!--?php //echo $productqty; ?>
   </td>
- </tr>
+  <td align="right">
+   <!--?php //echo $productqty; ?>
+  </td>
+  <td align="right">
+   <!--?php bucks($producttotal); ?>
+  </td>
+ </tr> -->
 
- <tr bgcolor="#ffdddd">
+ <!--<tr bgcolor="#ffdddd">
   <td class="detail">
    &nbsp;
   </td>
   <td class="detail" colspan="3">
-   <?php echo xl('Total for category') . ' '; echo display_desc($category); ?>
+   <!--?php echo xl('Total for category') . ' '; echo display_desc($category); ?>
   </td>
   <td align="right">
-   <?php echo $catqty; ?>
+   <!--?php echo $catqty; ?>
+  </td>
+  <td align="right" >
+   <!--?php echo bucks($totcatpayout); ?>
+  </td>
+  <td align="right" >
+   <!--?php echo bucks($cattotal-$totcatpayout); ?>
   </td>
   <td align="right">
-   <?php bucks($cattotal); ?>
+   <!--?php bucks($cattotal); ?>
   </td>
- </tr>
+ </tr> -->
 
- <tr>
+<!--<tr>
   <td class="detail" colspan="4">
-   <?php xl('Grand Total','e'); ?>
+   <!--?php xl('Grand Total','e'); ?>
+  </td>
+  <td align="right" >
+   <!--?php echo $grandqty; ?>
+  </td>
+  <td align="right" >
+   <!--?php  ?>
+  </td>
+  <td align="right" >
+   <!--?php //echo $grandqty; ?>
   </td>
   <td align="right">
-   <?php echo $grandqty; ?>
+   <!--?php bucks($grandtotal); ?>
   </td>
-  <td align="right">
-   <?php bucks($grandtotal); ?>
-  </td>
- </tr>
+ </tr> -->
 
 <?php
 
@@ -513,37 +565,10 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 <script language="Javascript">
  Calendar.setup({inputField:"form_from_date", ifFormat:"%Y-%m-%d", button:"img_from_date"});
  Calendar.setup({inputField:"form_to_date", ifFormat:"%Y-%m-%d", button:"img_to_date"});
- $(document).ready(function() {
- function swap( cells, x, y ){
-   if( x != y ){     
- 
-   var $cell1 = cells[y][x];
-   var $cell2 = cells[x][y];
-   $cell1.replaceWith( $cell2.clone() );
-   $cell2.replaceWith( $cell1.clone() );
-    }
-}
-function tableswap() {
-var cells = [];
-$('table').find('tr').each(function(){
-    var row = [];
-    $(this).find('td').each(function(){
-       row.push( $(this) );    
-    });
-    cells.push( row );
-});
-
-for( var y = 0; y <= cells.length/2; y++ ){
-    for( var x = 0; x < cells[y].length; x++ ){
-        swap( cells, x, y );
-    }   
-}
-
-}
- setTimeout(tableswap, 1000)
- });
-
 </script>
+
+
+
 
 </html>
 <?php

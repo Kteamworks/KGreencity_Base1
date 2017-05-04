@@ -1413,9 +1413,10 @@ if (!empty($reg)) {
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Doctor Statistics'), 'reports/DocStatistics.php'); ?>
 
-		<?php genMiscLink('RTop','fin','0',xl('Lab Statstics'),'reports/LabStatistics.php'); ?>
+		<!--<?php genMiscLink('RTop','fin','0',xl('Lab Statstics'),'reports/LabStatistics.php'); ?>-->
 		<?php genMiscLink('RTop','rep','0',xl('IN Patients'), 'reports/bed_managment_report.php'); ?>
 		<?php genMiscLink('RTop','rep','0',xl('Patients By Sub Category'), 'reports/subCatstatistics.php'); ?>
+		<?php genMiscLink('RTop','rep','0',xl('Referral Patients'), 'reports/refPatient.php'); ?>
 		
 		  
         </ul>    
