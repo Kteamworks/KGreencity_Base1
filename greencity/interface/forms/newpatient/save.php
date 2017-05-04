@@ -48,7 +48,7 @@ $weight          = (isset($_POST['weight'])) ? $_POST['weight'] : '';
 $height          = (isset($_POST['height'])) ? $_POST['height'] : '';
 $tod          = (isset($_POST['tod'])) ? $_POST['tod'] : '';
 $review_after          = (isset($_POST['review_after'])) ? $_POST['review_after'] : '';
-if(isset($referral_source)) {
+if(!empty($referral_source)) {
 $referal_check =  sqlStatement("select user_id FROM users WHERE user_id = ?", array($referral_source));
 if(sqlNumRows($referal_check) == 0) {
 	$referal_id = sqlQuery("INSERT INTO users ( username, password, authorized, info, source, title, fname, lname, mname,  federaltaxid, federaldrugid, upin, facility, see_auth, active, npi, taxonomy, specialty, organization, valedictory, assistant, billname, email, email_direct, url, street, streetb, city, state, zip, street2, streetb2, city2, state2, zip2, phone, phonew1, phonew2, phonecell, fax, notes, abook_type,newcrop_user_role ) VALUES ( 'DR. ". strtoupper($referral_source) ."', '', 0, '', NULL, 'Dr.', '" . add_escape_custom($referral_source) . "', '', '', '', '', '', '', 0, 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'spe','erxdoctor' )");
