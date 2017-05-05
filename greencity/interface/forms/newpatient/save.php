@@ -147,7 +147,7 @@ if ($mode == 'new')
 	$dayy=$days['day'];
 	
 	
-		if(!($pc_catid==5 || $pc_catid==12 || $pc_catid==16 || $pc_catid==17))
+		if(!($pc_catid==5 || $pc_catid==12 || $pc_catid==16 || $pc_catid==17||$pc_catid==22))
 	{
 	$patient=getPatientData($pid, "rateplan");
     $rate=$patient['rateplan'];
