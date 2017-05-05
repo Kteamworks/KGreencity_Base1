@@ -798,7 +798,7 @@ $billresult = getBillingByEncounter($pid, $encounter, "*");
 <script language="JavaScript">
 $(document).ready(function(){
 $("tr td:nth-child(8)").css("display","none");
-$("tr td:nth-child(7)").css("display","none");
+//$("tr td:nth-child(7)").css("display","none");
 $("tr td:nth-child(3)").css("display","none");
 $("tr td:nth-child(6)").css("display","none");
 $("tr td:nth-child(9)").css("display","none");
