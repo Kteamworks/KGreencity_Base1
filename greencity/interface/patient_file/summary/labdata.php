@@ -632,6 +632,10 @@ $i = 0;
 
 if(!$printable){
 	if(!$nothing){
+		if ($_POST['submit']) {
+			$encounter=$GLOBALS['encounter'];
+    sqlStatement("UPDATE procedure_order set order_status='complete' where encounter_id='".$encounter."'");
+}
 		echo "<p>";
 		echo "<form method='post' action='" . $path_to_this_script . "' target='_new' onsubmit='return top.restoreSession()'>";
 		echo "<input type='hidden' name='mode' value='". attr($mode) . "'>";	
