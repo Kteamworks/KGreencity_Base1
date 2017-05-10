@@ -166,7 +166,10 @@ while ($row = sqlFetchArray($res)) {
     }
    else if ($colname == 'DOB' || $colname == 'regdate' || $colname == 'ad_reviewed' || $colname == 'userdate1') {
       $arow[] = oeFormatShortDate($row[$colname]);
-    }
+    }else if($colname=='date_collected')
+	{
+		 $arow[] =  date( "d-M-y g:i a", strtotime( $row['date_collected'] ) );
+	}
     else {
       $arow[] = $row[$colname];
     }
