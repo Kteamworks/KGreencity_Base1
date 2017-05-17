@@ -105,7 +105,7 @@ $(document).ready(function() {
   "bProcessing": true,
   // next 2 lines invoke server side processing
   "bServerSide": true,
-  "sAjaxSource": "p_dynamic_finder_ajax_lab.php",
+  "sAjaxSource": "p_dynamic_finder_outsidelabajax.php",
   // sDom invokes ColReorderWithResize and allows inclusion of a custom div
   "sDom"       : 'Rlfrt<"mytopdiv">ip',
   // These column names come over as $_GET['sColumns'], a comma-separated list of the names.
@@ -263,7 +263,7 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
 		//alert(newpid);
 		 top.restoreSession();
 		document.location.href="../../main/finder/update_pending.php?encounter=" + enc+'&name='+name+'&orderid='+orderid;
-		}else if(name=="Sent Outside")
+		}else if(name=="GCH Lab")
 		{
 		top.restoreSession();
 		document.location.href="../../main/finder/update_pending.php?encounter=" + enc+'&name='+name+'&orderid='+orderid;
@@ -300,8 +300,8 @@ function openNewTopWindow(pid) {
 	     <!--<li><a href="#">Sample Collection</a></li>
 		  <li><a href="#">Sample Received</a></li>-->
 	    <li><a href="#">Add Results</a></li>
-		<!--<li><a href="#">GCH Lab</a></li>-->
-		<li><a href="#">Sent Outside</a></li>
+		<li><a href="#">GCH Lab</a></li>
+		<!--<li><a href="#">Sent Outside</a></li>-->
 		<!--<li><a href="#">Complete</a></li>
 		<li><a href="#">Routed</a></li>-->
 		

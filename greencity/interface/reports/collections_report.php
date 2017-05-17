@@ -391,7 +391,7 @@ function checkAll(checked) {
 						<td>
 						   <select name='form_category'>
 						<?php
-						 foreach (array('Open' => xl('Open'),'Due Pt' => xl('Due Pt'),'Due Ins' => xl('Due Ins'),'Ins Summary' => xl('Ins Summary'),'Credits' => xl('Credits'),'All' => xl('All')) as $key => $value) {
+						 foreach (array('Open' => xl('Open')) as $key => $value) {
 						  echo "    <option value='$key'";
 						  if ($_POST['form_category'] == $key) echo " selected";
 						  echo ">$value</option>\n";

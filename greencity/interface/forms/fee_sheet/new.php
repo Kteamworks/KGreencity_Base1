@@ -301,8 +301,11 @@ $gbfa=sqlFetchArray($grpbillq); */
 		echo "  <td class='billcell' align='center'><input type='text' name='bill[".attr($lino)."][referral]' " .
         "value='" . htmlspecialchars($referral, ENT_QUOTES) . "' size='8' /></td>\n";
   }
-
-  echo "  <td class='billcell'>$strike1" . text($code_text) . "$strike2</td>\n";
+  
+  if (strpos($code_text,DR) !== false) {
+                $des = '(Consultation)';
+  }
+  echo "  <td class='billcell'>$strike1" . text($code_text).$des  . "$strike2</td>\n";
     
   echo " </tr>\n";
 

@@ -317,13 +317,13 @@ function getRatePlan(plan)
   
 <?php
   $ures = sqlStatement("SELECT id, username, fname, lname FROM users WHERE " .
-  "authorized != 0 AND active = 1 ORDER BY lname, fname");
+  "authorized != 0 AND active = 1 AND newcrop_user_role='erxdoctor' ORDER BY lname, fname");
    echo "<select name='form_provider'  onchange='getval(this);' style='width:100%' /><option value='_blank'>Choose A Doctor</option>";
     while ($urow = sqlFetchArray($ures)) {
       echo "    <option value='" . attr($urow['id']) . "'";
       if ($urow['id'] == $defaultProvider) echo " selected";
-      echo ">" . "Dr. ".text($urow['fname']);
-      if ($urow['lname']) echo " " . text($urow['lname']);
+      echo ">".text($urow['username']);
+      //if ($urow['lname']) echo " " . text($urow['lname']);
       echo "</option>\n";
     }
     echo "</select>";

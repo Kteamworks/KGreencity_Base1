@@ -147,7 +147,7 @@ $out = array(
   "aaData"               => array()
 );
 
-$query ="SELECT $sellist FROM form_encounter a,patient_data b,procedure_order c,procedure_order_code d $where where a.pid=b.pid and a.encounter=c.encounter_id and c.lab=0 and c.procedure_order_id=d.procedure_order_id and a.pid=b.pid and a.encounter=c.encounter_id and c.order_status IN ('pending','collected','received')  group by a.pid,a.encounter,c.procedure_order_id  order by c.procedure_order_id desc  $limit";
+$query ="SELECT $sellist FROM form_encounter a,patient_data b,procedure_order c,procedure_order_code d $where where a.pid=b.pid and a.encounter=c.encounter_id and c.lab=1 and c.procedure_order_id=d.procedure_order_id and a.pid=b.pid and a.encounter=c.encounter_id and c.order_status IN ('pending','collected','received')  group by a.pid,a.encounter,c.procedure_order_id  order by c.procedure_order_id desc  $limit";
 
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
@@ -166,10 +166,7 @@ while ($row = sqlFetchArray($res)) {
     }
    else if ($colname == 'DOB' || $colname == 'regdate' || $colname == 'ad_reviewed' || $colname == 'userdate1') {
       $arow[] = oeFormatShortDate($row[$colname]);
-    }else if($colname=='date_collected')
-	{
-		 $arow[] =  date( "d-M-y g:i a", strtotime( $row['date_collected'] ) );
-	}
+    }
     else {
       $arow[] = $row[$colname];
     }

@@ -88,7 +88,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       if (!$_POST['form_csvexport']) {
 ?>
 
-<tr bgcolor="#ffdddd">
+<tr bgcolor="#E5E4E2">
   <td class="detail">
    &nbsp;
   </td>
@@ -129,10 +129,10 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   <td class="detail" >
    <?php echo display_desc($productleft); ?>
   </td>
-  <td>
+  <td align="right">
    <?php echo oeFormatShortDate($transdate); ?>
   </td>
-  <td class="detail">
+  <td align="right">
   
   <?php  $tmp = sqlQuery("SELECT fname,lname FROM patient_data WHERE " .
             "pid = '$patient_id' ".
@@ -255,9 +255,9 @@ $(document).ready(function(){
 
 <body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' class="body_top">
 
-<span class='title'><?php xl('Referral Patients','e'); ?>  <?php xl('','e'); ?></span>
+<span class='title'><?php xl('Registered Patients','e'); ?>  <?php xl('','e'); ?></span>
 
-<form method='post' action='refPatient.php' id='theform'>
+<form method='post' action='RegPat.php' id='theform'>
 
 <div id="report_parameters">
 <input type='hidden' name='form_refresh' id='form_refresh' value=''/>
@@ -356,17 +356,17 @@ $(document).ready(function(){
  <thead>
   
   <th align="left">
-   <?php xl('Referral Name','e'); ?>
+   <?php xl('S.NO.','e'); ?>
   </th>
   
   <th align="left">
-   <?php xl('Purpose','e'); ?>
+   <?php xl('','e'); ?>
   </th>
  
- <th align="left">
+ <th align="right">
    <?php xl('Date','e'); ?>
   </th>
-   <th align="left">
+   <th align="right">
    <?php xl('Patient Name','e'); ?>
   </th>
  
@@ -398,18 +398,18 @@ $(document).ready(function(){
 		
 		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
 		
-			  $query = "SELECT  * FROM form_encounter a,patient_data b,billing d,openemr_postcalendar_categories c,users u 
-where a.pc_catid=c.pc_catid and  a.pid=d.pid and a.encounter=d.encounter and  u.user_id=a.referral_source and  
-a.pid=b.pid and a.referrer_name != 'DR.' and  a.referrer_name !=' ' and activity=1  and  a.date >= '$from_date 00:00:00' AND a.date <= '$to_date 23:59:59' group by d.encounter" ;
+			  $query = "SELECT  * FROM patient_data 
+where date >= '$from_date 00:00:00' AND date <= '$to_date 23:59:59' " ;
 		 
 		
       if ($form_facility) {
-        $query .= " AND fe.facility_id = '$form_facility'";
+       // $query .= " AND fe.facility_id = '$form_facility'";
       }
-      $query .= " ORDER BY a.date desc";
+      $query .= " ORDER BY date desc";
       //group by fe.encounter_ipop,b.code_text,fe.encounter 
         //    ORDER BY b.code, IPOP
       $res = sqlStatement($query);
+	  $i=1;
       while ($row = sqlFetchArray($res)) {
 		  
 		  $des = $row['code_text'];
@@ -419,8 +419,9 @@ a.pid=b.pid and a.referrer_name != 'DR.' and  a.referrer_name !=' ' and activity
   }
 		  
         thisLineItem($row['pid'], $row['encounter'],
-          $row['referrer_name'], $row['code1'] . ' ' . $des,
+          $i, $row['code1'] . ' ' . $des,
           substr($row['date'], 0, 10), $row['units'], $row['payout'],$row['fee'], $row['invoice_refno']);
+		  $i++;
       }
       //
       /* $query = "SELECT s.sale_date, s.fee, s.quantity, s.pid, s.encounter, " .
