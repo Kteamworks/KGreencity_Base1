@@ -338,14 +338,14 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <?php xl('Category','e'); ?>
   </th>
   <th align="center">
-   <?php xl('Item','e'); ?>
+   <?php xl('','e'); ?>
   </th>
  
- <th align="center">
-   <?php xl('','e'); ?>
+ <th align="left">
+   <?php xl('Date','e'); ?>
   </th>
-   <th align="center">
-   <?php xl('','e'); ?>
+   <th align="left">
+   <?php xl('Patient','e'); ?>
   </th>
  <th align="right">
    <?php xl('Qty','e'); ?>
@@ -373,7 +373,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
     $grandqty = 0;
 
     if ($INTEGRATED_AR) {
-      $query = "SELECT b.date, b.pid, b.encounter, b.code_type,b.units, " .
+      $query = "SELECT b.date as billDate, b.pid, b.encounter, b.code_type,b.units, " .
         "b.code_text, fe.date, fe.facility_id, fe.invoice_refno " .
         "FROM billing AS b " .
         "JOIN code_types AS ct ON ct.ct_key = b.code_type " .
@@ -398,7 +398,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		  
         thisLineItem($row['pid'], $row['encounter'],
           $row['code_type'], $row['code'] . ' ' . $row['code_text'],
-          substr($row['date'], 0, 10), $row['units'], $row['fee'], $row['invoice_refno']);
+          substr($row['billDate'], 0, 10), $row['units'], $row['fee'], $row['invoice_refno']);
       }
 	  
       //

@@ -715,8 +715,8 @@ if($age!=0)
 	}?>
  </tr>
  <tr>
- <td><?php echo xlt('Doctor'); ?>&nbsp:&nbsp<?php echo text($row2['username']) ?></td>
- <td><?php echo xlt('Department'); ?> &nbsp:&nbsp<?php echo text($row2['specialty']) ?></td>
+ <!--<td><?php echo xlt('Doctor'); ?>&nbsp:&nbsp<?php echo text($row2['username']) ?></td>-->
+ <!--<td><?php echo xlt('Department'); ?> &nbsp:&nbsp<?php echo text($row2['specialty']) ?></td>-->
  </tr>
  <tr>
  <td><?php echo xlt('Receipt ID'); ?>&nbsp:&nbsp<?php echo text($payrow['receipt_id']) ?></td>
@@ -909,7 +909,13 @@ $age_days=$patdata['age_days'];
 						 echo "<td class='text' style='font-size: 0.8em'>" . text(date('d/M/y',strtotime($cc['d']))) ."</td>";
 					}
                     echo "<td class='text'>". text($b['code_type'])."</td>\n";
+					 $code_text= $b['code_text'];
+					if (strpos($code_text,DR) !== false) {
+                         echo "<td class='text'>".Consultation. "</td>";
+                         }
+				    else {		 
 					echo "<td class='text'>".text($b['code_text'] .' '.$b['notecodes']) . "</td>";
+					}
 					echo "<td class='text' align='right'>" .text(oeFormatMoney($rate)) . "</td>";
 			        echo "<td class='text' align='right'>" .text($b['units']) . "</td>";
                     echo "<td class='text' align='right'>";

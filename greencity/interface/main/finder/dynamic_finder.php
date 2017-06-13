@@ -57,6 +57,13 @@ while ($row = sqlFetchArray($res)) {
 
 <link rel="stylesheet" href="<?php echo $css_header; ?>" type="text/css">
 
+<link rel="stylesheet" href="../../../library/css/bootstrap.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../../library/dist/css/AdminLTE.css">
+<link rel="stylesheet" href="../../../library/css/mycss.css">
+
 <style type="text/css">
 @import "../../../library/js/datatables/media/css/demo_page.css";
 @import "../../../library/js/datatables/media/css/demo_table.css";
@@ -293,6 +300,129 @@ function openNewTopWindow(pid) {
 		 <li><a href="#">New Visit</a></li>
 	</ul>
 </div>
+<div class="col-md-12">
+<div class="col-md-3">
+          <!-- Info Boxes Style 2 -->
+          <div class="info-box bg-yellow">
+            <span class="info-box-icon"><i class="ion ion-ios-people-outline"></i></span>
+<?php $registration_qry = sqlStatement("Select count(pid)last_month from patient_Data
+where date between  date_sub(now(), interval 30 day ) and now()");
+
+$progress_reg = sqlQuery("SELECT a.last_month,b.two_months,b.two_months-a.last_month change_value,round(((a.last_month-b.two_months)*100)/b.two_months ,0)change_percentage
+FROM 
+(
+Select count(pid)last_month from patient_Data
+where date between  date_sub(now(), interval 30 day ) and now())a,
+(select count(pid)two_months
+from patient_data
+where date between date_sub(date_sub(now(), interval 30 day ),interval 30 day) and
+date_sub(now(), interval 30 day ))b");
+
+$progress_app = sqlQuery("SELECT a.last_month,b.two_months,b.two_months-a.last_month change_value,
+round(((a.last_month-b.two_months)*100)/b.two_months ,2)change_percentage
+FROM 
+(
+Select count(pc_eid)last_month from openemr_postcalendar_events
+where pc_time between  date_sub(now(), interval 30 day) and now()
+and pc_eventstatus=1)a,
+(select count(pc_eid)two_months
+from openemr_postcalendar_events
+where pc_time between date_sub(date_sub(now(), interval 30 day ),interval 30 day) and
+date_sub(now(), interval 30 day)  and pc_eventstatus=1 )b");
+
+$progress_ipd = sqlQuery("SELECT a.last_month,b.two_months,b.two_months-a.last_month change_value,
+round(((a.last_month-b.two_months)*100)/b.two_months ,2)change_percentage
+FROM 
+(
+Select count(id)last_month from form_encounter
+where date between  date_sub(now(), interval 30 day) and now()
+and pc_catid=12)a,
+(select count(id)two_months
+from form_encounter
+where date between date_sub(date_sub(now(), interval 30 day ),interval 30 day) and
+date_sub(now(), interval 30 day)  and pc_catid=12)b"); 
+
+$progress_visit = sqlQuery("select count(encounter) as visit from form_encounter where date between  date_sub(now(), interval 30 day ) and now()");
+
+
+
+?>
+
+            <div class="info-box-content">
+              <span class="info-box-text">New Registration</span>
+     <?php while($registration = sqlFetchArray($registration_qry)) {  ?>
+              <span class="info-box-number"><?php echo $registration['last_month']; ?></span>
+<?php } ?> 
+              <div class="progress">
+                <div class="progress-bar" style="width: <?php echo $progress_reg['change_percentage']; ?>%"></div>
+              </div>
+                  <span class="progress-description">
+                    <?php echo $progress_reg['change_percentage']; ?>% Increase in 30 Days
+                  </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+    </div>
+    <div class="col-md-3">
+          <div class="info-box bg-green">
+            <span class="info-box-icon"><i class="ion ion-ios-calendar-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Total Appointments</span>
+              <span class="info-box-number"><?php echo $progress_app['last_month']; ?></span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: <?php echo $progress_app['change_percentage']; ?>%"></div>
+              </div>
+                  <span class="progress-description">
+                    <?php echo $progress_app['change_percentage']; ?>% Increase in 30 Days
+                  </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+    </div>
+    <div class="col-md-3">
+          <div class="info-box bg-red">
+            <span class="info-box-icon"><i class="ion ion-ios-pulse"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Total IPD Registration</span>
+              <span class="info-box-number"><?php echo $progress_ipd['last_month']; ?></span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 70%"></div>
+              </div>
+                  <span class="progress-description">
+                    <?php echo $progress_ipd['change_percentage']; ?>% Increase in 30 Days
+                  </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+    </div>
+          <!-- /.info-box -->
+    <div class="col-md-3">
+          <div class="info-box bg-aqua">
+            <span class="info-box-icon"><i class="ion-ios-heart-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Total visits</span>
+              <span class="info-box-number"><?php echo $progress_visit['visit']; ?></span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 40%"></div>
+              </div>
+                  <span class="progress-description">
+                    40% Increase in 30 Days
+                  </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+</div>
+        </div>
+
 <div id="dynamic"><!-- TBD: id seems unused, is this div required? -->
 
 <!-- Class "display" is defined in demo_table.css -->

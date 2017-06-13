@@ -170,7 +170,7 @@ function educlick(codetype, codevalue) {
  </tr>
  <tr bgcolor='#cccccc'>
   <td nowrap><?php echo xlt('Patient Name'); ?></td>
-  <td><?php echo myCellText($orow['lname'] . ', ' . $orow['fname'] . ' ' . $orow['mname']); ?></td>
+  <td><?php echo myCellText($orow['fname'] . ' ' . $orow['mname']); ?></td>
   <td nowrap><?php echo xlt('Ordered By'); ?></td>
   <td><?php echo myCellText($orow['ulname'] . ', ' . $orow['ufname'] . ' ' . $orow['umname']); ?></td>
  </tr>
@@ -201,7 +201,7 @@ function educlick(codetype, codevalue) {
  <tr class='head'>
   <td rowspan='2' valign='middle'><?php echo xlt('Ordered Procedure'); ?></td>
   <td colspan='4'><?php echo xlt('Report'); ?></td>
-  <td colspan='7'><?php echo xlt('Results'); ?></td>
+  <td colspan='8'><?php echo xlt('Results'); ?></td>
  </tr>
 
  <tr class='head'>
@@ -216,6 +216,7 @@ function educlick(codetype, codevalue) {
   <td><?php echo xlt('Range'); ?></td>
   <td><?php echo xlt('Units'); ?></td>
   <td><?php echo xlt('Note'); ?></td>
+  <td><?php echo xlt('Lab'); ?></td>
  </tr>
 
 <?php 
@@ -267,7 +268,7 @@ function educlick(codetype, codevalue) {
 
     $query = "SELECT " .
       "ps.result_code, ps.result_text, ps.abnormal, ps.result, ps.range, " .
-      "ps.result_status, ps.facility, ps.units, ps.comments, ps.document_id " .
+      "ps.result_status, ps.facility, ps.units, ps.comments, ps.document_id,ps.lab " .
       "FROM procedure_result AS ps " .
       "WHERE ps.procedure_report_id = ? " .
       "ORDER BY ps.result_code, ps.procedure_result_id";
@@ -286,6 +287,7 @@ function educlick(codetype, codevalue) {
       $result_text      = empty($rrow['result_text'     ]) ? '' : $rrow['result_text'];
       $result_abnormal  = empty($rrow['abnormal'        ]) ? '' : $rrow['abnormal'];
       $result_result    = empty($rrow['result'          ]) ? '' : $rrow['result'];
+	  $result_lab       = empty($rrow['lab'             ]) ? '' : $rrow['lab'];
       $result_units     = empty($rrow['units'           ]) ? '' : $rrow['units'];
       $result_facility  = empty($rrow['facility'        ]) ? '' : $rrow['facility'];
       $result_comments  = empty($rrow['comments'        ]) ? '' : $rrow['comments'];
@@ -390,6 +392,7 @@ function educlick(codetype, codevalue) {
           echo "  <td>";
           echo myCellText($result_result);
           echo "</td>\n";
+		  
           echo "  <td>";
           echo myCellText($result_range);
           echo "</td>\n";
@@ -400,9 +403,17 @@ function educlick(codetype, codevalue) {
         echo "  <td align='center'>";
         echo myCellText($result_noteid);
         echo "</td>\n";
+		
+		$lab='GCH Lab';
+		if($result_lab=='yes')$lab='Outside Lab';
+		
+		 echo "  <td>";
+          echo $lab;
+          echo "</td>\n";
+		
       }
       else {
-        echo "  <td colspan='7' style='background-color:transparent'>&nbsp;</td>\n";
+        echo "  <td colspan='8' style='background-color:transparent'>&nbsp;</td>\n";
       }
 
       echo " </tr>\n";

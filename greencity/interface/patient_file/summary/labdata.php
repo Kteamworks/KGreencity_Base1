@@ -83,8 +83,8 @@ $main_spell .= "JOIN procedure_order ";
 $main_spell .= "	ON procedure_report.procedure_order_id = procedure_order.procedure_order_id ";
 $main_spell .= "WHERE procedure_result.result_code = ? "; // '?'
 $main_spell .= "AND procedure_order.patient_id = ? AND procedure_order.encounter_id=?";
-$main_spell .= "AND procedure_result.result IS NOT NULL ";
-$main_spell .= "AND procedure_result.result != ''";
+//$main_spell .= "AND procedure_result.result IS NOT NULL ";
+//$main_spell .= "AND procedure_result.result != ''";
 $main_spell .= "ORDER BY procedure_result.seq,procedure_report.date_collected DESC limit 1 ";
 //----------------------------------------
 
@@ -249,9 +249,9 @@ if(!$printable){
 	//$spell .= "	ON procedure_order_code.procedure_order_id = procedure_report.procedure_order_id ";
 	//$spell .= "AND procedure_order_code.procedure_order_seq = procedure_report.procedure_order_seq ";
 	$spell .= "WHERE procedure_order.patient_id = ? AND procedure_order.encounter_id=? ";
-	$spell .= "AND procedure_result.result IS NOT NULL ";
-	$spell .= "AND procedure_result.result != ''";
-	$spell .= "ORDER BY procedure_report.procedure_report_id,procedure_result.seq,procedure_result.result_code ASC ";
+	//$spell .= "AND procedure_result.result IS NOT NULL ";
+	//$spell .= "AND procedure_result.result != ''";
+	$spell .= "ORDER BY procedure_report.procedure_report_id,procedure_result.result_code ASC ";
 	//$spell .= "ORDER BY procedure_result.result_code,procedure_report.procedure_report_id,procedure_result.seq ASC ";
 	$query  = sqlStatement($spell,array($pid,$encounter));
 	
@@ -387,26 +387,26 @@ $i = 0;
 			$spell  = $main_spell;
 			$query  = sqlStatement($spell,array($this_value,$pid,$encounter));	
 			while($myrow = sqlFetchArray($query)){
-			   
-				$r=sqlStatement("SELECT * from procedure_type where procedure_code='".$myrow['result_code']."'");
+			   echo $myrow['result_code'].'</br>';
+				$r=sqlStatement("SELECT * from procedure_type where procedure_code='".$myrow['result_code']."' ");
 				$r1=sqlFetchArray($r);
 				$re=sqlStatement("SELECT name,parent,head from procedure_type where procedure_type_id='".$r1['parent']."' order by parent");
 				$re1=sqlFetchArray($re);
 				$ree=sqlStatement("SELECT name from procedure_type where procedure_type_id='".$re1['parent']."' ");
 				$ree1=sqlFetchArray($ree);
 					  
-			if($item_code!=$re1['name']&& $re1['head']==1){
+			/*if($item_code!=$re1['name']&& $re1['head']==1){
 					 $item_code=$re1['name'];
 					 echo "<td><h3><u>".$item_code."</u></h3></td>";
 					 
 					  
-					}
+					}*/
 				
 				if($item_code!=$re1['name']&& $re1['head']!=1){
 					 $item_code=$re1['name'];
 					 echo "<td><h3><u>".$item_code."</u></h3></td>";
 					  
-					}
+					} 
 					
 					
 					
@@ -419,7 +419,12 @@ $i = 0;
 				//echo "<td class='list_item'>" . text($ree1['name']) . "</td>";
 				echo "<td class='list_item' nowrap>&nbsp;&nbsp;&nbsp;" . text($myrow['result_text']) . "</td>";
 
-				if($myrow['abnormal'] == 'No' || $myrow['abnormal'] == 'no'  || $myrow['abnormal'] == '' || $myrow['abnormal'] == NULL ) {
+				
+				if($myrow['result']=='')
+				{
+					echo "<td class='list_item' align='center' nowrap>--</td>";
+				}
+				else if($myrow['abnormal'] == 'No' || $myrow['abnormal'] == 'no'  || $myrow['abnormal'] == '' || $myrow['abnormal'] == NULL ) {
 					echo "<td class='list_item' align='center' nowrap>&nbsp;&nbsp;&nbsp;" . text($myrow['result']) . " ".generate_display_field(array('data_type'=>'1','list_id'=>'proc_unit'),$myrow['units']) ."&nbsp;&nbsp;</td>";
 				} else {
 					echo "<td class='list_result_abnorm' nowrap>&nbsp;" ;
@@ -636,7 +641,8 @@ if(!$printable){
 			$encounter=$GLOBALS['encounter'];
     sqlStatement("UPDATE procedure_order set order_status='complete' where encounter_id='".$encounter."'");
 }
-		echo "<p>";
+	
+	echo "<p>";
 		echo "<form method='post' action='" . $path_to_this_script . "' target='_new' onsubmit='return top.restoreSession()'>";
 		echo "<input type='hidden' name='mode' value='". attr($mode) . "'>";	
 		foreach($_POST['value_code'] as $this_valuecode) {

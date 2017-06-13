@@ -88,9 +88,10 @@ if ($_POST['form_submit'] && !empty($_POST['form_line'])) {
         "procedure_order_seq = '$order_seq', " .
         "date_report = '$date_report', " .
         "date_collected = " . QuotedOrNull(oresData("form_date_collected", $lino)) . ", " .
+		"lab = '" . oresData("form_result_lab", $lino) . "', " .
         "specimen_num = '" . oresData("form_specimen_num", $lino) . "', " .
         "report_status = '" . oresData("form_report_status", $lino) . "'";
-
+  
       // Set the review status to reviewed.
       if ($form_review) 
         $sets .= ", review_status = 'reviewed'";
@@ -123,6 +124,7 @@ if ($_POST['form_submit'] && !empty($_POST['form_line'])) {
         "result_code = '" . oresData("form_result_code", $lino) . "', " .
         "result_text = '" . oresData("form_result_text", $lino) . "', " .
         "abnormal = '" . oresData("form_result_abnormal", $lino) . "', " .
+		"lab = '" . oresData("form_result_lab", $lino) . "', " .
         "result = '" . oresData("form_result_result", $lino) . "', " .
 		"seq = '" . oresData("form_seq_num", $lino) . "', " .
         "`range` = '" . oresData("form_result_range", $lino) . "', " .
@@ -130,6 +132,8 @@ if ($_POST['form_submit'] && !empty($_POST['form_line'])) {
         "facility = '" . oresData("form_facility", $lino) . "', " .
         "comments = '" . add_escape_custom($form_comments) . "', " .
         "result_status = '" . oresData("form_result_status", $lino) . "'";
+		
+		
       if ($result_id) { // result already exists
         sqlStatement("UPDATE procedure_result SET $sets "  .
           "WHERE procedure_result_id = '$result_id'");
@@ -140,6 +144,7 @@ if ($_POST['form_submit'] && !empty($_POST['form_line'])) {
 	
       }
     }
+	
   } // end foreach
 	/* $codetype="Lab Fees";
   	$code="1002";
@@ -171,6 +176,9 @@ if ($_POST['form_submit'] && !empty($_POST['form_line'])) {
 	  "activity = '" . add_escape_custom($act) . "', " .
 	  "groupname = '" . add_escape_custom($grpn) . "', " .
       "provider_id = '" . add_escape_custom($provider_id) . "'"); */
+	
+	$encounter=$GLOBALS['encounter'];
+    sqlStatement("UPDATE procedure_order set order_status='reviewed' where encounter_id='".$encounter."'");
 	
 }
 ?>
@@ -418,7 +426,7 @@ if ($form_batch) {
   <td><?php xl('Value','e'); ?></td>
   <td><?php xl('Units', 'e'); ?></td>
   <td><?php xl('Range','e'); ?></td>
-  <td><?php xl('','e'); ?></td>
+  <td><?php xl('Sent Outside','e'); ?></td>
  </tr>
 
 <?php 
@@ -461,7 +469,7 @@ else {
   "FROM procedure_order AS po " .
   "$joins " .
   "WHERE po.patient_id = '$pid' AND po.encounter_id= '$encounter' AND $where " .
-  "ORDER BY $orderby";
+  " group by order_type_id ORDER BY $orderby";
 }
 
 $res = sqlStatement($query);
@@ -502,7 +510,7 @@ while ($row = sqlFetchArray($res)) {
     "pt2.range AS pt2_range, pt2.procedure_type_id AS procedure_type_id, " .
     "pt2.name AS name, pt2.description, pt2.seq AS seq, " .
     "ps.procedure_result_id, ps.result_code AS result_code, ps.result_text, ps.abnormal, ps.result, " .
-    "ps.range, ps.result_status, ps.facility, ps.comments, ps.units, ps.comments";
+    "ps.range, ps.result_status, ps.facility, ps.comments, ps.units, ps.comments,ps.lab";
 
    // procedure_type_id for order:
   $pt2cond = "pt2.parent in( SELECT t1.procedure_type_id Grandparent
@@ -546,6 +554,7 @@ while ($row = sqlFetchArray($res)) {
     $result_code      = empty($rrow['result_code'     ]) ? $restyp_code : $rrow['result_code'];
     $result_text      = empty($rrow['result_text'     ]) ? $restyp_name : $rrow['result_text'];
     $result_abnormal  = empty($rrow['abnormal'        ]) ? $status: $rrow['abnormal'];
+    $result_lab       = empty($rrow['lab'        ]) ? $status: $rrow['lab'];
     $result_result    = empty($rrow['result'          ]) ? '' : $rrow['result'];
     $result_units     = empty($rrow['units'           ]) ? $restyp_units : $rrow['units'];
     $result_facility  = empty($rrow['facility'        ]) ? '' : $rrow['facility'];
@@ -570,9 +579,9 @@ while ($row = sqlFetchArray($res)) {
       ++$encount;
       $lastrcn = '';
     }
-    $bgcolor = "#" . (($encount & 1) ? "ddddff" : "ffdddd");
+   // $bgcolor = "#" . (($encount & 1) ? "ddddff" : "ffdddd");
 
-    echo " <tr class='detail' bgcolor='$bgcolor'>\n";
+    echo " <tr class='detail' bgcolor='#ddddff'>\n";
 
     // Generate first 2 columns.
     if ($lastpoid != $order_id || $lastpcid != $order_seq) {
@@ -696,10 +705,9 @@ while ($row = sqlFetchArray($res)) {
       "value='$order_id:$order_seq:$report_id:$result_id' />";
     echo "</td>\n";
 
-    echo "  <td class='bold' style='cursor:pointer' " .
-      "onclick='extShow($lino, this)' align='center' " .
-      "title='" . xl('Click here to view/edit more details') . "'>";
-    echo "&nbsp;&nbsp;"; 
+   echo "  <td>";
+    echo generate_select_list("form_result_lab[$lino]", 'proc_res_abnormal',
+      $result_lab, xl(''), ' ', 'cellselect'); 
     echo "</td>\n";
 
     echo " </tr>\n";
@@ -769,20 +777,20 @@ if (!empty($facilities)) {
 <?php
 if ($form_review) {
  // if user authorized for pending review.
- if ($reviewauth) {
+ //if ($reviewauth) { 
  ?>
   <center><p>
    <input type='submit' name='form_submit' value='<?php xl('Sign Results','e'); ?>' />
   </p></center>
  <?php
- }
- else {
+ //}
+/* else {
  ?>
   <center><p>
    <input type='button' name='form_submit' value='<?php xl('Sign Results','e'); ?>' onclick="alert('<?php xl('Not authorized to Sign Results','e') ?>');" />
   </p></center>
  <?php
- }
+ } */
 }
 else {
 ?>

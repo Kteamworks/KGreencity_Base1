@@ -75,7 +75,7 @@ if ($_POST['bn_save'] || $_POST['bn_xmit']) {
     "lab_id = " . $ppid                                                 . ", " .
     "date_collected = " . QuotedOrNull(formData('form_date_collected')) . ", " .
     "order_priority = '" . formData('form_order_priority')              . "', " .
-    "order_status = '" . formData('form_order_status')                  . "', " .
+    "order_status = '" . 'pending'                 . "', " .
     "clinical_hx = '" . formData('form_clinical_hx')                    . "', " .
     "patient_instructions = '" . formData('form_patient_instructions')  . "', " .
     "patient_id = '" . $pid                                             . "', " .
@@ -511,7 +511,7 @@ generate_form_field(array('data_type'=>1,'field_id'=>'order_priority',
   </td>
  </tr>
 
- <tr>
+ <!--<tr>
   <td width='1%' valign='top' nowrap><b><?php xl('Status','e'); ?>:</b></td>
   <td valign='top'>
 <?php
@@ -520,7 +520,7 @@ generate_form_field(array('data_type'=>1,'field_id'=>'order_status',
   'list_id'=>'ord_status'), $row['order_status']);
 ?>
   </td>
- </tr>
+ </tr>-->
 
  <tr>
   <td width='1%' valign='top' nowrap><b><?php xl('Clinical History','e'); ?>:</b></td>

@@ -313,7 +313,7 @@ function openNewTopWindow(pid) {
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="pt_table">
  <thead>
   <tr>
-<?php echo $header0; ?>
+<!--<?php echo $header0; ?>-->
   </tr>
   <tr>
 <?php echo $header; ?>

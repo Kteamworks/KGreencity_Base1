@@ -119,6 +119,7 @@ use ESign\Api;
   'orc' => array(xl('Proc Load') , 0, 'orders/load_compendium.php'),
   'orb' => array(xl('Proc Bat')  , 0, 'orders/orders_results.php?batch=1'),
   'ore' => array(xl('E-Reports') , 0, 'orders/list_reports.php'),
+  'oro' => array(xl('E-Reports') , 0, 'orders/a.php'),
   'ppo' => array(xl('CMS Portal'), 0, 'cmsportal/list_requests.php'),
   'cht' => array(xl('Chart Trk') , 0, '../custom/chart_tracker.php'),
   'imp' => array(xl('Import')    , 0, '../custom/import.php'),
@@ -1277,7 +1278,7 @@ if ($GLOBALS['athletic_team']) {
 <?php 
  $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");?>
   <?php if (!$GLOBALS['disable_calendar'] && !$GLOBALS['ippf_specific']) genTreeLink('RTop','cal',xl('Calendar')); ?>
-  <?php  genTreeLink('RBot','msg',xl('Messages')); ?> 
+  <!--<?php  genTreeLink('RBot','msg',xl('Messages')); ?>-> 
  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor'||$_SESSION['authUser']=='DR. NIRMALA.B.M') { ?>
    <!--<?php genTreeLink('RTop','ddb',xl('Dashboard')); ?>-->
    <?php //genTreeLink('RTop','ana',xl('OPs Dashboard')); ?>
@@ -1433,7 +1434,7 @@ if (!empty($reg)) {
 	  
   <?php // TajEmo Work by CB 2012/06/21 10:41:15 AM hides fees if disabled in globals ?>
   <?php if(!isset($GLOBALS['enable_fees_in_left_menu']) || $GLOBALS['enable_fees_in_left_menu'] == 1){ ?>
-  <?php if($_SESSION['authUser']!='Shanthini') {?>
+  <?php if($newcrop_user_role['newcrop_user_role']!='erxnurse') {?>
   <li><a class="collapsed" id="feeimg" ><span><?php xl('Fees','e') ?></span></a>
     <ul>
       <?php genMiscLink('RBot','cod','2',xl('Billing Sheet'),'patient_file/encounter/load_form.php?formname=fee_sheet'); ?>
@@ -1531,7 +1532,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
   <?php } ?>
   
 <?php //} ?>
-<?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') { ?>
+<?php if($newcrop_user_role['newcrop_user_role']=='erxnurse'||$newcrop_user_role['newcrop_user_role']=='erxadmin') { ?>
    <li><a class="collapsed" id="proimg" ><span><?php xl('Lab','e') ?></span></a>
     <ul>
 	 <?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/p_dynamic_finder_lab.php'); ?>
@@ -1539,12 +1540,15 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
       <!--<?php genTreeLink('RTop','orl',xl('Providers')); ?>-->
 	  <!---------------------------------access control---------------------------------->
 	  <?php if (acl_check('admin', 'super')){?>
-      <?php genTreeLink('RTop','ort',xl('Configuration')); ?>
+      <?php genTreeLink('RTop','ort',xl('ADD Test')); ?>
 	  <?php }?>
 <!--<!--?php genTreeLink('RTop','orc',xl('Load Compendium')); ?> -->
+      <?php genTreeLink('RTop','oro',xl('Sent Outside')); ?>
       <?php genTreeLink('RTop','orp',xl('Test Results')); ?>
       <?php genTreeLink('RTop','orr',xl('Patient Results')); ?>
+	   
       <?php genTreeLink('RTop','lda',xl('Reports')); ?>
+	  
       <?php genTreeLink('RTop','orb',xl('Batch Results')); ?>
       <?php genTreeLink('RTop','ore',xl('Summary')); ?>
      <!-- <!--?php genTreeLink('RTop','dld',xl('Lab Documents'));?>-->

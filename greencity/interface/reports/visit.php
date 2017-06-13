@@ -399,7 +399,7 @@ $(document).ready(function(){
 		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
 		
 			  $query = "SELECT  * FROM form_encounter a,patient_data b,billing d
-where a.pid=d.pid and a.encounter=d.encounter and
+where a.pid=d.pid and a.encounter=d.encounter and a.encounter_ipop like 'OP%'  and d.code_type in('Doctor charges','lab test','scans') and
 a.pid=b.pid and activity=1  and  a.date >= '$from_date 00:00:00' AND a.date <= '$to_date 23:59:59' group by d.encounter" ;
 		 
 		

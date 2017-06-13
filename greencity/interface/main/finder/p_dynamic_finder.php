@@ -40,7 +40,7 @@ while ($row = sqlFetchArray($res)) {
   $header .= "   <th>";
   $header .= text($title);
   $header .= "</th>\n";
-  $header0 .= "   <td align='center'><input type='text' size='10' ";
+  $header0 .= "   <td align='center'><input type='hidden' size='10' ";
   $header0 .= "value='' class='search_init' /></td>\n";
   if ($coljson) $coljson .= ", ";
   $coljson .= "{\"sName\": \"" . addcslashes($colname, "\t\r\n\"\\") . "\"}";
@@ -94,6 +94,7 @@ while ($row = sqlFetchArray($res)) {
 <script type="text/javascript" src="../../../library/js/datatables/media/js/jquery.dataTables.min.js"></script>
 <!-- this is a 3rd party script -->
 <script type="text/javascript" src="../../../library/js/datatables/extras/ColReorder/media/js/ColReorderWithResize.js"></script>
+
 
 <script language="JavaScript">
 
@@ -347,10 +348,10 @@ function openNewTopWindow(pid) {
 function explode(){
 $("#pt_table tbody tr").each(function(i){
 	var con = i+1;
-    $(this).prepend("<td style='text-align: center'>" + con + "</td>")
+    $(this).prepend("<td style='text-align: left'>" + con + "</td>")
 });
 $("#pt_table thead tr:nth-child(2)").each(function(i){
-        $(this).prepend("<th>Sr No</th>")
+        $(this).prepend("<th width='50'>Sr No</th>")
 });
 }
 setTimeout(explode, 2000);

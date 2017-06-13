@@ -142,8 +142,12 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <?php echo $name ?></a>
   </td>
  
+  <?php  $qry = sqlQuery("SELECT u.username FROM users u join form_encounter e on e.provider_id = u.id where e.pid = '$patient_id' and e.referral_source !=''" );
+          
+			$doc=$qry['username'];?>
+ 
   <td align="right">
-  <!-- <?php bucks($rowamount); ?>-->
+   <?php echo $doc; ?>
   </td>
  </tr>
 <?php
@@ -370,9 +374,9 @@ $(document).ready(function(){
    <?php xl('Patient Name','e'); ?>
   </th>
  
-  <!--<th align="left">
+  <th align="right">
    <?php xl('Referred To','e'); ?>
-  </th>-->
+  </th>
  </thead>
 <?php
   } // end not export
@@ -412,12 +416,15 @@ a.pid=b.pid and a.referrer_name != 'DR.' and  a.referrer_name !=' ' and activity
       $res = sqlStatement($query);
       while ($row = sqlFetchArray($res)) {
 		  
+		  $des = $row['pc_catname'];
+		  if($des !='IP')
+		  {
 		  $des = $row['code_text'];
 		  
 		  if (strpos($des,DR) !== false) {
                 $des = 'Consultation';
   }
-		  
+		  }	  
         thisLineItem($row['pid'], $row['encounter'],
           $row['referrer_name'], $row['code1'] . ' ' . $des,
           substr($row['date'], 0, 10), $row['units'], $row['payout'],$row['fee'], $row['invoice_refno']);

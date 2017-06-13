@@ -417,7 +417,14 @@ $rateplan=$patdata['rateplan'];
 						// echo "<td class='text' style='font-size: 0.8em'>" . text(date('d/M/y',strtotime($b['last_update_date']))) ."</td>";
 					//}
                     echo "<td class='text'>". text($b['code_type'])."</td>\n";
+					$code= $b['code_text'];
+					if(strpos($code,DR)!==false)
+					{
+						echo "<td class='text'>".Consultation. "</td>";
+					}
+					else {
 					echo "<td class='text'>".text($b['code_text'].' '.$b['notecodes']) . "</td>";
+					}
 					echo "<td class='text' align='right'>" .text(oeFormatMoney($rate)) . "</td>";
 			        echo "<td class='text' align='right'>" .text($b['units']) . "</td>";
                     echo "<td class='text' align='right'>";

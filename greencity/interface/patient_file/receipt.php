@@ -723,8 +723,8 @@ if($age!=0)
 	}?>
  </tr>
  <tr>
- <td><?php echo xlt('Doctor'); ?>&nbsp:&nbsp<?php echo text($row2['username']) ?></td>
- <td><?php echo xlt('Department'); ?> &nbsp:&nbsp<?php echo text($row2['specialty']) ?></td>
+ <!--<td><?php echo xlt('Doctor'); ?>&nbsp:&nbsp<?php echo text($row2['username']) ?></td>
+ <td><?php echo xlt('Department'); ?> &nbsp:&nbsp<?php echo text($row2['specialty']) ?></td>-->
  </tr>
  <tr>
  <td><?php echo xlt('Receipt ID'); ?>&nbsp:&nbsp<?php echo text($brow1112['receipt_id']) ?></td>

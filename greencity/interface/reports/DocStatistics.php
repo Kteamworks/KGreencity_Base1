@@ -409,26 +409,27 @@ $(document).ready(function(){
 		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
 		 if($docuser=='All')
 		 {
-			  $query = "SELECT b.date,b.fee, b.pid, b.encounter,u.id,u.username as user, b.code_type, b.code, b.units, " .
+			 $query = "SELECT b.date as billDate,b.fee, b.pid, b.encounter,u.id,u.username as user, b.code_type, b.code, b.units, " .
         "b.code_text, fe.date, fe.facility_id, fe.invoice_refno,b.payout,substring(fe.encounter_ipop,1,2)IPOP " .
         "FROM billing AS b " .
         "JOIN code_types AS ct ON ct.ct_key = b.code_type " .
         "JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter " .
-		 "JOIN users AS u ON fe.provider_id = u.id " .
+		 "JOIN users AS u ON b.provider_id = u.id " .
         //"LEFT JOIN codes AS c ON c.code_type = ct.ct_id AND c.code = b.code AND c.modifier = b.modifier " .
         //"LEFT JOIN list_options AS lo ON lo.list_id = 'superbill' AND lo.option_id = c.superbill " .
         "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND
           b.code_type not in ('Pharma Charges','Pharmacy Charge','Services','Ward Charges','Lab Test') and
 		b.activity = 1 AND b.fee != 0 AND " .
         " b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'" ;
+		
 		 }
 		else{
-      $query = "SELECT b.date,b.fee, b.pid, b.encounter,u.id,u.username as user, b.code_type, b.code, b.units, " .
+      $query = "SELECT b.date as billDate,b.fee, b.pid, b.encounter,u.id,u.username as user, b.code_type, b.code, b.units, " .
         "b.code_text, fe.date, fe.facility_id, fe.invoice_refno,b.payout,substring(fe.encounter_ipop,1,2)IPOP " .
         "FROM billing AS b " .
         "JOIN code_types AS ct ON ct.ct_key = b.code_type " .
         "JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter " .
-		 "JOIN users AS u ON fe.provider_id = u.id " .
+		 "JOIN users AS u ON b.provider_id = u.id " .
         //"LEFT JOIN codes AS c ON c.code_type = ct.ct_id AND c.code = b.code AND c.modifier = b.modifier " .
         //"LEFT JOIN list_options AS lo ON lo.list_id = 'superbill' AND lo.option_id = c.superbill " .
         "WHERE b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT') AND
@@ -462,7 +463,7 @@ $(document).ready(function(){
 		  
         thisLineItem($row['pid'], $row['encounter'],
           $row['user'], $row['code1'] . ' ' . $cat,
-          substr($row['date'], 0, 10), $row['units'], $row['payout'],$row['fee'], $row['invoice_refno']);
+          substr($row['billDate'], 0, 10), $row['units'], $row['payout'],$row['fee'], $row['invoice_refno']);
       }
       //
       /* $query = "SELECT s.sale_date, s.fee, s.quantity, s.pid, s.encounter, " .

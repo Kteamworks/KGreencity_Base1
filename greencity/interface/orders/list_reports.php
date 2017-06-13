@@ -93,7 +93,7 @@ if ($_POST['form_xmit']) {
 
 <style>
 
-tr.head   { font-size:10pt; background-color:#cccccc; text-align:center; }
+tr.head   { font-size:10pt; background-color:#cccccc; }
 tr.detail { font-size:10pt; }
 a, a:visited, a:hover { color:#0000cc; }
 
@@ -323,10 +323,11 @@ $form_provider = empty($_POST['form_provider']) ? '' : intval($_POST['form_provi
 <?php
 foreach (array(
   '1' => xl('All'),
-  '2' => xl('Reviewed'),
-  '3' => xl('Received, unreviewed'),
-  '4' => xl('Sent, not received'),
-  '5' => xl('Not sent'),
+  '2' => xl('GCH,Completed'),
+  '3' => xl('Sent Outside,Pending'),
+  '4' => xl('Sent Outside, Completed'),
+  '5' => xl('GCH,Pending'),
+  '6' => xl('Not sent outside'),
   ) as $key => $value) {
   echo "<option value='$key'";
   if ($key == $form_reviewed) echo " selected";
@@ -363,8 +364,11 @@ foreach (array(
   <td><?php echo xlt('ID'         ); ?></td>
   <td><?php echo xlt('Code'       ); ?></td>
   <td><?php echo xlt('Description'); ?></td>
+  <?php if (($form_reviewed == 3)||($form_reviewed == 4)||($form_reviewed == 6)||($form_reviewed == 2)||($form_reviewed == 5)) { ?>
+  <td><?php echo xlt('Test Name'); ?></td>
+  <?php } ?>
   <td><?php echo xlt('Date'       ); ?></td>
-  <td><?php echo xlt('Status'     ); ?></td>
+  <!--<td><?php echo xlt('Status'     ); ?></td>-->
   <!-- <td><?php echo xlt('Reviewed'   ); ?></td> -->
  </tr>
 
@@ -373,6 +377,8 @@ $selects =
   "po.patient_id, po.procedure_order_id, po.date_ordered, po.date_transmitted, " .
   "pc.procedure_order_seq, pc.procedure_code, pc.procedure_name, pc.do_not_send, " .
   "pr.procedure_report_id, pr.date_report, pr.report_status, pr.review_status";
+
+  
 
 $joins =
   "LEFT JOIN procedure_report AS pr ON pr.procedure_order_id = po.procedure_order_id AND " .
@@ -403,20 +409,38 @@ if ($form_provider) {
   $where .= " AND po.provider_id = ?";
   $sqlBindArray[] = $form_provider;
 }
-
+//---------------------completed------------------//
 if ($form_reviewed == 2) {
-  $where .= " AND pr.procedure_report_id IS NOT NULL AND pr.review_status = 'reviewed'";
+  $where .= " AND pr.procedure_report_id IS NOT NULL AND res.result !='' and res.lab='no'";
 }
+//------------------------sent outside,Pending-------------------//
 else if ($form_reviewed == 3) {
-  $where .= " AND pr.procedure_report_id IS NOT NULL AND pr.review_status != 'reviewed'";
+  $where .= " AND pr.procedure_report_id IS NOT NULL AND res.result='' and res.lab='yes'";
 }
+//-----------------Sent outside completed----------------------//
 else if ($form_reviewed == 4) {
-  $where .= " AND po.date_transmitted IS NOT NULL AND pr.procedure_report_id IS NULL";
+  $where .= " AND pr.procedure_report_id IS NOT NULL AND res.result !='' and res.lab='yes'";
 }
 else if ($form_reviewed == 5) {
-  $where .= " AND po.date_transmitted IS NULL AND pr.procedure_report_id IS NULL";
+  $where .= " AND po.date_transmitted IS NULL AND res.result ='' and res.lab='no'";
+}
+else if ($form_reviewed == 6) {
+  $where .= " AND pr.procedure_report_id IS NOT NULL AND res.result ='' and res.lab='yes' and res.sample !='yes' ";
 }
 
+if (($form_reviewed == 3)||($form_reviewed == 4)||($form_reviewed == 6)||($form_reviewed == 2)||($form_reviewed == 5)) 
+{
+	$query = "SELECT " .
+  "pd.fname, pd.mname, pd.lname, pd.pubpid,res.lab,res.result_text, $selects " .
+  "FROM procedure_order AS po " .
+  "LEFT JOIN procedure_order_code AS pc ON pc.procedure_order_id = po.procedure_order_id " .
+  "LEFT JOIN patient_data AS pd ON pd.pid = po.patient_id LEFT JOIN procedure_report AS pr ON pr.procedure_order_id = po.procedure_order_id AND " .
+  "pr.procedure_order_seq = pc.procedure_order_seq " .
+  "right JOIN procedure_result as res on res.procedure_report_id=pr.procedure_report_id " .
+  "WHERE $where " .
+  "ORDER BY pd.lname, pd.fname, pd.mname, po.patient_id, $orderby";
+}
+else {
 $query = "SELECT " .
   "pd.fname, pd.mname, pd.lname, pd.pubpid, $selects " .
   "FROM procedure_order AS po " .
@@ -424,7 +448,7 @@ $query = "SELECT " .
   "LEFT JOIN patient_data AS pd ON pd.pid = po.patient_id $joins " .
   "WHERE $where " .
   "ORDER BY pd.lname, pd.fname, pd.mname, po.patient_id, $orderby";
-
+}
 $res = sqlStatement($query, $sqlBindArray);
 
 $lastptid = -1;
@@ -444,6 +468,7 @@ while ($row = sqlFetchArray($res)) {
   $procedure_code   = empty($row['procedure_code'     ]) ? '' : $row['procedure_code'];
   $procedure_name   = empty($row['procedure_name'     ]) ? '' : $row['procedure_name'];
   $report_id        = empty($row['procedure_report_id']) ? 0 : ($row['procedure_report_id'] + 0);
+  $test_name        = empty($row['result_text'        ]) ? '' : $row['result_text'];
   $date_report      = empty($row['date_report'        ]) ? '' : $row['date_report'];
   $report_status    = empty($row['report_status'      ]) ? '' : $row['report_status']; 
   $review_status    = empty($row['review_status'      ]) ? '' : $row['review_status'];
@@ -451,16 +476,16 @@ while ($row = sqlFetchArray($res)) {
   // Sendable procedures sort first, so this also applies to the order on an order ID change.
   $sendable = isset($row['procedure_order_seq']) && $row['do_not_send'] == 0;
 
-  $ptname = $row['lname'];
+  $ptname = $row['fname'];
   if ($row['fname'] || $row['mname'])
-    $ptname .= ', ' . $row['fname'] . ' ' . $row['mname'];
+    $ptname .= ' ' . $row['mname'];
 
   if ($lastpoid != $order_id || $lastpcid != $order_seq) {
     ++$encount;
   }
-  $bgcolor = "#" . (($encount & 1) ? "ddddff" : "ffdddd");
+ // $bgcolor = "#ddddff" : "ffdddd";
 
-  echo " <tr class='detail' bgcolor='$bgcolor'>\n";
+  echo " <tr class='detail' bgcolor='#ddddff'>\n";
 
   // Generate patient columns.
   if ($lastptid != $patient_id) {
@@ -518,14 +543,17 @@ while ($row = sqlFetchArray($res)) {
   else {
     echo "  <td colspan='2' style='background-color:transparent'>&nbsp;</td>";
   }
-
+    if (($form_reviewed == 3)||($form_reviewed == 4)||($form_reviewed==6)||($form_reviewed == 2)||($form_reviewed == 5)) {
+ echo "  <td>" . text($test_name) . "</td>\n";
+	}
   // Generate report columns.
   if ($report_id) {
+	   
     echo "  <td>" . text($date_report) . "</td>\n";
-    echo "  <td title='" . xla('Check mark indicates reviewed') . "'>";
-    echo myCellText(getListItem('proc_rep_status', $report_status));
+    //echo "  <td title='" . xla('Check mark indicates reviewed') . "'>";
+    //echo myCellText(getListItem('proc_rep_status', $report_status));
     if ($review_status == 'reviewed') {
-      echo " &#x2713;"; // unicode check mark character
+      //echo " &#x2713;"; // unicode check mark character
     }
     echo "</td>\n";
   }
