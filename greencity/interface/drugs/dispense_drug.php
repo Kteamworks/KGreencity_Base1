@@ -116,30 +116,8 @@
    '$quantity', '$fee' "  .
    ")");
   *******************************************************************/
-    $encounter_id=$_SESSION['encounter'];
-	$rowdrug = sqlQuery("SELECT * FROM drugs WHERE " .
-    "drug_id = '$drug_id'");
-    $sql = "insert into billing (date, encounter, code_type, code, code_text, " .
-    "pid, authorized, user, groupname, activity, billed, provider_id, " .
-    "modifier, units, fee, ndc_info, justify, notecodes) values (" .
-    "NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?)";
-	$code_type="Pharma Charges";
-	$code=$rowdrug['name'];
-	$code_text=$drug_id;
-	$authorized=0;
-	$billed=0;
-	$provider="none";
-	$modifier="";
-	$ndc_info="";
-	$justify="";
-	$notecodes="";
-	$fee=$fee*$quantity;
-	//$pricelevel="standard";
-    sqlInsert($sql, array($encounter_id,$code_type,$code,$code_text,$pid,$authorized,
-    $_SESSION['authId'],$_SESSION['authProvider'],$billed,$provider,$modifier,$quantity,$fee,
-    $ndc_info,$justify,$notecodes));
-	
-    if (!$sale_id) die(xlt('Internal error, no drug ID specified!'));
+
+  if (!$sale_id) die(xlt('Internal error, no drug ID specified!'));
 
  } // end if not $sale_id
 
@@ -203,7 +181,7 @@
  // configured properly.
  //
  if (false) { // if PDF output is desired
-  $pdf =& new Cezpdf($dconfig['paper_size']);
+  $pdf = Cezpdf($dconfig['paper_size']);
   $pdf->ezSetMargins($dconfig['top'],$dconfig['bottom'],$dconfig['left'],$dconfig['right']);
   $pdf->selectFont($GLOBALS['fileroot'] . "/library/fonts/Helvetica.afm");
   $pdf->ezSetDy(20); // dunno why we have to do this...
@@ -259,7 +237,8 @@
 </table>
 </center>
 <script language="JavaScript">
- window.print();
+ var win = top.printLogPrint ? top : opener.top;
+ win.printLogPrint(window);
 </script>
 </body>
 </html>

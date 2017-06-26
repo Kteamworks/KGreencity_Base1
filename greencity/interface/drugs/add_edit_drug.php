@@ -140,13 +140,18 @@ input[type="number"] {
 <script type="text/javascript" src="../../library/topdialog.js"></script>
 <script type="text/javascript" src="../../library/dialog.js"></script>
 <script type="text/javascript" src="../../library/textformat.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+ 
+
+<script src="jquery.min.js"></script>
 
 <script language="JavaScript">
 
 
 $(document).ready(function()
 {
+	
+	
 $("#name1").change(function()
 {
 var id=$(this).val();
@@ -1480,13 +1485,7 @@ function sel_related() {
 <?php
 // If we are saving, then save and close the window.
 // First check for duplicates.
-if ($_POST['sbtrow']) {
-session_start();
-//$_SESSION['row']=$_POST['trr'];
-//$tableRow=$_SESSION['row'];
-$tableRow=$_POST['trr'];
 
-}
 
 
 
@@ -1530,7 +1529,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
    
          if(isset($_POST['supplier'])&& $_POST['supplier']!=""){
 			 
-			  $sup=$_POST['supplier'];
+			  $sup=$_POST['supplier']; 
 			  $invoice= $_POST['invoice'];
 			  
 			  $j=0;
@@ -1538,12 +1537,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		
 		
 		
-		if($selected=='add')
-		{
-		  $selected = $_POST['form_name1'][$j];
 		
-		
-		}
 		
 		$batch= $_POST['batch'][$j];
 		$medType= $_POST['medType'][$j];
@@ -1599,6 +1593,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 */	  
 //-------------------------------------------------------------------------------//		
 		
+		 include_once('dbconnect.php');
 		
 		
 			 $drug_id = sqlInsert("INSERT INTO drugs ( " .
@@ -1606,7 +1601,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
     "size, unit, route, cyp_factor, related_code, " .
     "allow_multiple, allow_combining, active " .
     ") VALUES ( " .
-    "'" . $selected          . "', " .
+    "'" .  mysqli_real_escape_string($conn,$selected)        . "', " .
     "'" . $mfr          . "', " .
     "'" . $instock          . "', " .
 	 "'" .$sup. "', " .
@@ -1648,8 +1643,8 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 	$codesmed=sqlInsert("INSERT INTO codes(".
 	"code_text,code,code_type,units,fee,cyp_factor,active".
 	") VALUES ( " .
-	"'" . $selected          . "', " .
-	"'" . $selected          . "', " .
+	"'" . mysqli_real_escape_string($conn,$selected)          . "', " .
+	"'" . mysqli_real_escape_string($conn,$selected)          . "', " .
 	"'" . $codetyp          . "', " .
 	"'" . $units          . "', " .
 	"'" . $unitPrice      . "', " .
@@ -1668,6 +1663,38 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 	"'" . $unitPrice      . "'" .
 
 	")");
+	
+	
+//-------------------------------------------------------------------------------------------//
+
+/*-----logic for unique primary key stats--------*/
+	
+	 
+	 $test = sqlStatement("SELECT  * FROM `list_options` WHERE `list_id`='drug_supplier' order by CONVERT(SUBSTRING(option_id, 1), SIGNED INTEGER) desc limit 1");
+ while($test1 = sqlFetchArray($test)){
+
+ $test2=$test1['option_id'];
+ }
+  $test3= $test2+1;
+  
+	/*-------logic Ends-------------------------------*/
+	$valid = sqlQuery("SELECT title FROM list_options WHERE " .
+"title = '"  . $sup  . "' " );
+
+   if(!$valid)	
+   {	
+
+$supply_id = sqlInsert("INSERT INTO list_options ( " .
+    "list_id,title,option_id " .
+    ") VALUES ( " .
+    "'" . 'drug_supplier'          . "', " .
+	 "'"  . $sup ."', " .
+	  "'" . $test3          . "' " .
+    ")");	
+	
+   }
+	
+	
 	
 	
 	
@@ -1728,284 +1755,19 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
       "drug_id, selector,quantity,taxrates " .
       ") VALUES ( " .
         "'" . add_escape_custom($drug_id) . "', " .
-        "'" . $selected . "', " .
+        "'" . mysqli_real_escape_string($conn,$selected) . "', " .
 		 "'" . $totalStock . "', " .
         "'" . add_escape_custom($form_notes) . "' )");
 		 
-		 
-		 
-	
-	
-	
-	
-	
 	
 	
 	$j++;
 		}  
 		
   }
-		else{
-			
-			$invoice= $_POST['invoice'];
-			
-			 $j=0;
-	foreach($_POST['form_name'] as $selected) {
 		
-		
-		if($selected=='add')
-		{
-		  $selected = $_POST['form_name1'][$j];
-		
-		
-		}
-		
-		$batch= $_POST['batch'][$j];
-		$medType= $_POST['medType'][$j];
-	    $group= $_POST['group'][$j];
-		//$date= $_POST['date'][$j];
-		$month= $_POST['month'][$j];
-		$year= $_POST['year'][$j];
-		echo $date= $month.'-'.$year; exit;
-		$qty= $_POST['qty'][$j];
-		$pack= $_POST['pack'][$j];
-		$mrp= $_POST['mrp'][$j];
-		$mfr= $_POST['mfr'][$j];
-		$instock= $_POST['instock'][$j];
-		$trade= $_POST['trade'][$j];
-		$discount= $_POST['discount'][$j];
-		$vat= $_POST['vat'][$j];
-		$mrpa = ($mrp * 100)/(100+$vat);
-		$total= $_POST['total'][$j];
-		$type= $_POST['type'][$j];
-		$unitPrice= $mrp/$pack;    
-        $free= $_POST['free'][$j];
-			$totalStock =  ($instock*$pack) + ($qty*$pack) + ($free*$pack) ;
-			if(empty($selected))
-			continue;
-	
-//------------------Duplicate---------------------------------//	
-/*
-		$crow = sqlStatement("SELECT COUNT(*) AS count,name FROM drugs WHERE " .
-    "name = '"  .  $selected   . "' " );
    
-      while ($croww = sqlFetchArray($crow))
-	  {
-		  
-		  $med=$croww['name'];
-		  
-	 $msg = 'Cannot add '.$med.'  because it already exists!';
-      
-   
-    if ($croww['name']) {
-		
-		
-	echo "<script type='text/javascript'>alert('$msg');";
-    //$alertmsg = addslashes(xl('Cannot add this entry because it already exists!'));
-	echo "window.location.href = 'add_edit_drug.php'";
-	echo "</script>";
-	}
-	  }
-	*/  
-//-------------------------------------------------------------------------------//	
 
-	
-    $drug_id = sqlInsert("INSERT INTO drugs ( " .
-    "name,mfr,inStock,supplier,batch,medType,medGroup,quantity,totalStock,free,date,pack,packType,expdate,mrp,mrpa,PricePerUnit,tradePrice,discount,vat,totalValue,invoice,max_level, form, " .
-    "size, unit, route, cyp_factor, related_code, " .
-    "allow_multiple, allow_combining, active " .
-    ") VALUES ( " .
-    "'" . $selected          . "', " .
-	"'" . $mfr          . "', " .
-	"'" . $instock          . "', " .
-	 "'" .escapedff('form_supplier'). "', " .
-    "'" . $batch    . "', " .
-	 "'" . $medType    . "', " .
-	  "'" . $group    . "', " .
-    "'" . $qty      . "', " .
-	 "'" . $totalStock      . "', " .
-	"'" . $free      . "', " .
-	"'" . date('Y/m/d') . "', " .
-	 "'" . $pack      . "', " .
-	 "'" . $type      . "', " .
-    "'" . $date . "', " .
-	 "'" . $mrp . "', " .
-	  "'" . $mrpa . "', " .
-	 "'" . $unitPrice . "', " .
-	  "'" . $trade . "', " .
-	   "'" . $discount . "', " .
-	    "'" . $vat . "', " .
-		 "'" . $total . "', " .
-		  "'" . $invoice . "', " .
-    "'" . escapedff('form_max_level')     . "', " .
-    "'" . escapedff('form_form')          . "', " .
-    "'" . escapedff('form_size')          . "', " .
-    "'" . escapedff('form_unit')          . "', " .
-    "'" . escapedff('form_route')         . "', " .
-    "'" . numericff('form_cyp_factor')    . "', " .
-    "'" . escapedff('form_related_code')  . "', " .
-    (empty($_POST['form_allow_multiple' ]) ? 0 : 1) . ", " .
-    (empty($_POST['form_allow_combining']) ? 0 : 1) . ", " .
-    (empty($_POST['form_active']) ? 0 : 1)        .
-    ")");
-	
-	$codetyp=11;
-	$cf=0;
-	$active=1;
-	$units=1;
-	$codesmed=sqlInsert("INSERT INTO codes(".
-	"code_text,code,code_type,units,fee,cyp_factor,active".
-	") VALUES ( " .
-	"'" . $selected          . "', " .
-	"'" . $selected          . "', " .
-	"'" . $codetyp          . "', " .
-	"'" . $units          . "', " .
-	"'" . $unitPrice      . "', " .
-	"'" . $cf      . "', " .
-	"'" . $active      . "'" .
-	")");
-	
-	$medprice=sqlInsert("INSERT INTO prices (".
-	"pr_id,pr_selector, pr_level, pr_price".
-	") VALUES ( " .
-	"'" .    $codesmed           . "', " .
-	"'" .    ''           . "', " .
-	"'" . 'standard'      . "', " .
-	"'" . $unitPrice      . "'" .
-
-	")");
-	
-	//----------------------------------Drugs_warehouse---------------------------------------//
-	
-	
-	
-	 $warehouse = 	sqlInsert("INSERT INTO product_warehouse ( " .
-        "pw_drug_id, pw_warehouse, pw_min_level, pw_max_level ) VALUES ( " .
-        "'" . add_escape_custom($drug_id) . "', "                            .
-          "'onsite ', " .
-          "' 1', " .
-         "' 10000' " .
-         ")");	
-	
-//--------------------------------------------drug_inventory-----------------------------------------//
-	
-	$lot_id = sqlInsert("INSERT INTO drug_inventory ( " .
-          "drug_id, lot_number, manufacturer, expiration, " .
-          "vendor_id, warehouse_id, on_hand " .
-          ") VALUES ( " .
-          "'" . add_escape_custom($drug_id) . "', "                            .
-          "'" . $batch. "', " .
-          "'" . $mfr . "', " .
-         "'" . $date . "', " .
-          "'" . add_escape_custom($_POST['form_vendor_id'])    . "', " .
-          "' onsite ', " .
-          "'" . $totalStock              . "' "  .
-          ")");	
-		  
-		  
-		 //$totalStock = $instock +  ($qty + $free)*$pack ; 
-	//-----------------------------Drug_sales------------------------------------------------------//	
-		 sqlInsert("INSERT INTO drug_sales ( " .
-        "drug_id, inventory_id, prescription_id, pid, encounter, user, " .
-        "sale_date, quantity, fee, xfer_inventory_id, distributor_id,rate,free,pack,vat,notes " .
-        ") VALUES ( " .
-        "'" . add_escape_custom($drug_id) . "', " .
-        "'" . add_escape_custom($lot_id) . "', '0', '0', '0', " .
-        "'" . add_escape_custom($_SESSION['authUser']) . "', " .
-        "'" . date('Y/m/d') . "', " .
-        "'" . add_escape_custom(0 - $totalStock)  . "', " .
-        "'" . add_escape_custom(0 - $total)      . "', " .
-        "'" . add_escape_custom($form_source_lot) . "', " .
-        "'" . add_escape_custom($form_distributor_id) . "', " .
-		 "'" . $total . "', " .
-		 "'" . $free . "', " .
-		 "'" . $pack . "', " .
-		 "'" . $vat . "', " .
-        "'" . add_escape_custom($form_notes) . "' )");
-
-		//-----------------------------drug_templates---------------------------------//
-		
-		
-		
-		
-		 sqlInsert("INSERT INTO drug_templates ( " .
-      "drug_id, selector,quantity,taxrates " .
-      ") VALUES ( " .
-        "'" . add_escape_custom($drug_id) . "', " .
-        "'" . $selected . "', " .
-		 "'" . $totalStock . "', " .
-        "'" . add_escape_custom($form_notes) . "' )");
-		  
-
-		  
-	
-	$j++;
-		}
-			
-  }
-   
-	/*-----logic for unique primary key stats--------*/
-	
-	 
-	 $test = sqlStatement("SELECT  * FROM `list_options` WHERE `list_id`='drug_supplier' order by CONVERT(SUBSTRING(option_id, 1), SIGNED INTEGER) desc limit 1");
- while($test1 = sqlFetchArray($test)){
-
- $test2=$test1['option_id'];
- }
-  $test3= $test2+1;
-  
-	/*-------logic Ends-------------------------------*/
-	
-	
-	
-   if(isset($_POST['supplier'])&& $_POST['supplier']!=""){
-			 
-			  $sup=$_POST['supplier'];
-			
-			  
-	$valid = sqlQuery("SELECT title FROM list_options WHERE " .
-"title = '"  . $sup  . "' " );
-
-   if(!$valid)	
-   {	   
-		echo "value";	  
-   
-	$supply_id = sqlInsert("INSERT INTO list_options ( " .
-    "list_id,title,option_id " .
-    ") VALUES ( " .
-    "'" . 'drug_supplier'          . "', " .
-	 "'"  . $sup ."', " .
-	  "'" . $test3          . "' " .
-    ")");
-	
-   }
-   }
-   else{
-	   
-	    
-		$valid = sqlQuery("SELECT title FROM list_options WHERE " .
-"title = '"  . escapedff('form_supplier')  . "' " );
-
-  
-  
-        if(!$valid)
-		{
-	       
-		 
-	   $supply_id = sqlInsert("INSERT INTO list_options ( " .
-    "list_id,title,option_id " .
-    ") VALUES ( " .
-    "'" . 'drug_supplier'          . "', " .
-	 "'"  . escapedff('form_supplier') ."', " .
-	  "'" . $test3          . "' " .
-    ")");
-	   
-		}
-   }
-	
-	
-	
-	
 	
   }
 
@@ -2034,12 +1796,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
      // Add prices for this drug ID and selector.
      foreach ($iter['price'] as $key => $value) {
       $value = $value + 0;
-      if ($value) {
-        sqlStatement("INSERT INTO prices ( " .
-          "pr_id, pr_selector, pr_level, pr_price ) VALUES ( " .
-          "?, ?, ?, ? )",
-          array($drug_id, $selector, $key, $value));
-      }
+   
      } // end foreach price
     } // end if selector is present
    } // end for each selector
@@ -2048,11 +1805,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
    foreach ($_POST['form_wh_min'] as $whid => $whmin) {
     $whmin = 0 + $whmin;
     $whmax = 0 + $_POST['form_wh_max'][$whid];
-    if ($whmin != 0 || $whmax != 0) {
-      sqlStatement("INSERT INTO product_warehouse ( " .
-        "pw_drug_id, pw_warehouse, pw_min_level, pw_max_level ) VALUES ( " .
-        "?, ?, ?, ? )", array($drug_id, $whid, $whmin, $whmax));
-    }
+   
    }
   } // end if saving a drug
 
@@ -2098,18 +1851,7 @@ else {
 }
 ?>
 
-<!--form method="post" name="row" action="" >
 
-<center>
-<table  width='50%'  cellspacing="10" style="border: 1px solid black;">
-<tr> <th>
-<input type="number" name="trr" placeholder="Enter Number of Rows" max="20" size="50" pattern="\d*"></th> <th> <input type="submit" value="Enter" name="sbtrow"></th>
-</tr>
-</center>
-</table>
-
-
-</form-->
 
 
 
@@ -2124,7 +1866,7 @@ else {
  <td width="20%"  valign='top' nowrap><b><?php echo xlt('Select Supplier'); ?>:</b></td>
 	
 <td>
- <select style="width:100%;height:2em;"  name="supplier" required>
+ <select style="width:100%;height:2em;"  name="supplier" id="selectbox" required>
     
        <option value="">Select</option>
     <?php
@@ -2145,12 +1887,7 @@ else {
 
  
  
- <!-- <tr>
-  <td valign='top' width="20%" nowrap><b><?php echo xlt('Add Supplier'); ?>:</b></td>
-  <td>
-   <input type='text' size='10' name='form_supplier' value="<?php echo $supply;?>" maxlength='80' style='width:100%' placeholder="Enter Supplier if it is not in Dropdown List" />
-  </td>
- </tr> -->
+
  
  <tr>
   <td valign='top' width="20%" nowrap><b><?php echo xlt('Invoice Number'); ?>:</b></td>
@@ -2190,6 +1927,17 @@ else {
  
  
  <?php
+ 
+ // $last_score=0;
+  $list1 = sqlStatement("SELECT  Medicine_Name FROM `medicine_master`");
+  while($list2=sqlFetchArray($list1)) 
+  {
+    $rows[] = $list2;
+	
+  }
+ 
+  $rowCount = count($rows);
+
  $i=1;
   while($i<=10) 
   {
@@ -2197,40 +1945,23 @@ else {
      
 ?> 
  
- 
- 
  <tr>
  
    <td>
    <?php echo $i ?>
   </td> 
   
-  
- 
-  
-  
-  
-  
- <!-- <td>
-  <!-- <input type='text' name='mfr[]' maxlength='80' value='' style='width:100%' placeholder="Manufacturer Name" />-->
-   <!--input type="text" name="form_name[]" class="typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Medicine">
-  </td-->
- 
-
 <td>
  <select style="width:100%;height:2em;"  name="form_name[]" id="<?php echo 'name'.$i?>">
     
        <option value="">Select</option>
 	   <!--<option value="add">Add New</option>-->
     <?php
-         $list1 = sqlStatement("SELECT  Medicine_Name FROM `medicine_master`");
- while($list2 = sqlFetchArray($list1)){
-
-         
- 
-   
-          ?> 
-            <option value="<?php echo $list2['Medicine_Name'];?>"> <?php echo $list2['Medicine_Name'];?></option>
+        
+      for($k=0;$k<$rowCount;$k++){
+              
+       ?> 
+            <option value="<?php echo $rows[$k]['Medicine_Name'];?>"> <?php  echo $rows[$k]['Medicine_Name'];?></option>
        <?php   }?>
  
     </select>
@@ -2241,8 +1972,6 @@ else {
  <select style="width:100%;height:2em;"  name="mfr[]" id="<?php echo 'manu'.$i?>">
     
        
-	   
- 
     </select>
  
  </td>
@@ -2251,16 +1980,12 @@ else {
  <select style="width:100%;height:2em;"  name="medType[]" id="<?php echo 'mtype'.$i?>">
     
        
-	   
- 
     </select>
  
  </td>
  
  
-<!-- <td>
-   <input type="text" name="form_name1[]" autocomplete="off" id="<?php echo 'nm'.$i?>" placeholder="Name">
-  </td>-->
+
  
   <td>
  
@@ -2333,9 +2058,7 @@ else {
   
  </td>
   
- <!-- <td>
-   <input type="text" size="10" name="date[]" value="" class="datepicker-example11" placeholder="MM-YYYY" id="<?php echo 'dt'.$i?>" />
-  </td-->
+ 
   
   <td>
   <input type='text' size="10" name='mrp[]' maxlength='80' value='' class="rgt" style='width:100%'  id="<?php echo 'mrp'.$i?>" placeholder="00.00"/>
@@ -2438,6 +2161,21 @@ else {
     });
 });
     </script>
+	
+	<script type="text/javascript" src="ScriptForSupplier/jquery-1.6.1.min.js">
+</script>
+<script src="ScriptForSupplier/jquery.eComboBox.min.js">
+</script>
+
+<script>
+$(function () {
+  $("#selectbox").eComboBox();
+ 
+  });
+ </script>
+	
+	
+	
     <style type="text/css">
 
 

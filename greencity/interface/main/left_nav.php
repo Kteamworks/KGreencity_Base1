@@ -1299,7 +1299,8 @@ if ($GLOBALS['athletic_team']) {
 
  $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
 ?>
-<?php if($_SESSION['authUser']!='Shanthini') {?>
+<?php if($_SESSION['authUser']!='Shanthini') {
+if($newcrop_user_role['newcrop_user_role']!='erxmidlevelPrescriber'){ ?>
   <li><a class="collapsed" id="patimg" ><span><?php xl('Patient','e') ?></span></a>
     <ul>
 	<?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor'||$_SESSION['authUser']=='DR. NIRMALA.B.M') {?>
@@ -1378,7 +1379,7 @@ if (!empty($reg)) {
 
     </ul>
   </li>
-<?php } ?>
+<?php }} ?>
   <!-- <li><a class="collapsed" id="bedimg" ><span><?php xl('Bed Management','e') ?></span></a>
     <ul>
       <?php // genTreeLink('RTop','dis',xl('Bed Management Form'));  ?>
@@ -1515,10 +1516,12 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
  if($newcrop_user_role['newcrop_user_role']=='erxmidlevelPrescriber'){ ?>
   <li><a class="collapsed" id="phrimg" ><span><?php xl('Pharmacy','e') ?></span></a>
     <ul>
+	 <?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/dynamic_finder_ph.php'); ?>
 	  <?php genTreeLink('RTop','neo',($GLOBALS['full_new_patient_form'] ? xl('OPD') : xl('OPD'))); ?>
-	  <?php genMiscLink('RTop','fin','0',xl('InPatients'),'main/finder/p_dynamic_finder_ip.php'); ?>
+	  <!--<?php genMiscLink('RTop','fin','0',xl('InPatients'),'main/finder/p_dynamic_finder_ip.php'); ?>-->
 	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/ph_dynamic_finder.php'); ?>
-	  <?php genMiscLink('RBot','cod','2',xl('Add Medicines'),'patient_file/encounter/load_form.php?formname=fee_sheet_ph'); ?>
+	 <!--<?php genMiscLink('RBot','cod','2',xl('Add Medicines'),'patient_file/encounter/load_form.php?formname=fee_sheet_ph'); ?>-->
+	<?php genMiscLink('RBot','adm','0',xl('Add Medicines'),'forms/fee_sheet_ph/medSale.php'); ?>
 	  <?php genMiscLink('RBot','pay','1',xl('Take Payment'),'patient_file/front_payment_pharmacy.php'); ?>
 	   <?php genMiscLink('RTop','rep','0',xl('Print Bill'),'reports/custom_report_pharmacy.php'); ?>
 	  <?php genMiscLink('RTop','adm','0',xl('Stock Purchase'),'drugs/drug_inventory.php'); ?>
@@ -1536,7 +1539,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
    <li><a class="collapsed" id="proimg" ><span><?php xl('Lab','e') ?></span></a>
     <ul>
 	 <?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/p_dynamic_finder_lab.php'); ?>
-	 <?php genMiscLink('RTop','fin','0',xl('Outside Lab'),'main/finder/p_dynamic_finder_outsidelab.php'); ?>
+	<!-- <?php genMiscLink('RTop','fin','0',xl('Outside Lab'),'main/finder/p_dynamic_finder_outsidelab.php'); ?>-->
       <!--<?php genTreeLink('RTop','orl',xl('Providers')); ?>-->
 	  <!---------------------------------access control---------------------------------->
 	  <?php if (acl_check('admin', 'super')){?>

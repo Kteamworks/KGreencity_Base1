@@ -136,7 +136,7 @@ $form_dob = date("Y-m-d",$dob1); // getting the date of birth here
     sqlQuery("UPDATE patient_data SET referral_source = '$refsource' " .
       "WHERE pid = '$pid'");
   }
-
+ sqlQuery("UPDATE patient_data SET opd = 1 where pid='$pid'");
 
    $provider_id = $_SESSION['authUserID'] ;
   $encounter = generate_id();
@@ -188,8 +188,10 @@ if ($alertmsg) {
   echo "alert('$alertmsg');\n";
 }
 if ($GLOBALS['concurrent_layout']) {
-  echo "window.location='$rootdir/patient_file/summary/demographics.php?" .
-    "set_pid=$pid&is_new=1';\n";
+  //echo "window.location='a.php";
+  header('location:../main/finder/dynamic_finder_ph.php');
+
+   // "set_pid=$pid&is_new=1';\n";
 } else {
   echo "window.location='$rootdir/patient_file/patient_file.php?set_pid=$pid';\n";
 }

@@ -210,7 +210,7 @@ if($printable) {
 	echo "<td>" . xlt('Patient ID') . ":" . text($genericname1) . "</td></tr>";
 	echo "<tr><td>" . xlt('Age/Gender') . ":" . ageCalculator($dob) ." ,". text($Gender)."</td>";
 	echo "<td>" . xlt('Patient Visit ID') . ":" . text($enc1['encounter_ipop']) . "</td></tr>";
-	echo "<tr><td>" . xlt('Referred') . ":" . text($row2['fname'])  ." ".text($row2['lname']). "</td>"; 
+	//echo "<tr><td>" . xlt('Referred') . ":" . text($row2['fname'])  ." ".text($row2['lname']). "</td>"; 
    echo "<td>" . xlt('') . "</td></tr>";
 	echo "</table>";
 	}
@@ -387,26 +387,26 @@ $i = 0;
 			$spell  = $main_spell;
 			$query  = sqlStatement($spell,array($this_value,$pid,$encounter));	
 			while($myrow = sqlFetchArray($query)){
-			   echo $myrow['result_code'].'</br>';
-				$r=sqlStatement("SELECT * from procedure_type where procedure_code='".$myrow['result_code']."' ");
+			   
+				$r=sqlStatement("SELECT * from procedure_type where procedure_code='".$myrow['result_code']."'");
 				$r1=sqlFetchArray($r);
 				$re=sqlStatement("SELECT name,parent,head from procedure_type where procedure_type_id='".$r1['parent']."' order by parent");
 				$re1=sqlFetchArray($re);
 				$ree=sqlStatement("SELECT name from procedure_type where procedure_type_id='".$re1['parent']."' ");
 				$ree1=sqlFetchArray($ree);
 					  
-			/*if($item_code!=$re1['name']&& $re1['head']==1){
+			if($item_code!=$re1['name']&& $re1['head']==1){
 					 $item_code=$re1['name'];
 					 echo "<td><h3><u>".$item_code."</u></h3></td>";
 					 
 					  
-					}*/
+					}
 				
 				if($item_code!=$re1['name']&& $re1['head']!=1){
 					 $item_code=$re1['name'];
 					 echo "<td><h3><u>".$item_code."</u></h3></td>";
 					  
-					} 
+					}
 					
 					
 					
@@ -637,12 +637,11 @@ $i = 0;
 
 if(!$printable){
 	if(!$nothing){
-		if ($_POST['submit']) {
+	/*	if ($_POST['submit']) {
 			$encounter=$GLOBALS['encounter'];
     sqlStatement("UPDATE procedure_order set order_status='complete' where encounter_id='".$encounter."'");
-}
-	
-	echo "<p>";
+} */
+		echo "<p>";
 		echo "<form method='post' action='" . $path_to_this_script . "' target='_new' onsubmit='return top.restoreSession()'>";
 		echo "<input type='hidden' name='mode' value='". attr($mode) . "'>";	
 		foreach($_POST['value_code'] as $this_valuecode) {

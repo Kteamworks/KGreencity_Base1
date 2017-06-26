@@ -36,58 +36,33 @@ function bucks($amount) {
         <link rel="stylesheet" href="public/css/default.css" type="text/css">
         <link rel="stylesheet" href="datepicker/public/css/style.css" type="text/css">
 		<link type="text/css" rel="stylesheet" href="datepicker/libraries/syntaxhighlighter/public/css/shCoreDefault.css">
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 <?php html_header_show(); ?>
 <title><?php echo $drug_id ? xlt("Edit") : xlt("Add New"); echo ' ' . xlt('Record'); ?></title>
 <link rel="stylesheet" href='<?php echo $css_header ?>' type='text/css'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style>
+
+ 
 
 
 
 input[class=rgt] { text-align:right }
 
 td { font-size:10pt; }
-input[type="text"] {
-     width: 100%; 
-     box-sizing: border-box;
-     -webkit-box-sizing:border-box;
-     -moz-box-sizing: border-box;
-}
+
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-.table1 input[type="number"] {
+input[type="number"] {
     -moz-appearance: textfield;
      text-align:right;
 }
-.table1 input[type="text"] {
-     border: none !important;
-}
-.table1 input[type="text"]:focus {
-    outline: none;
-}
-.table1 textarea {
-    border: none !important;
-	resize: none;
-}
-.table1 textarea:focus {
-    outline: none;
-}
-.table1 table-bordered {
-    border: 1px solid #000;
-}
-.table1 table {  
-    border-collapse: collapse;
-}
-.table1 th, td {
-    padding: 0 !important;
-	text-align: center;
-}
+
+
 <?php if ($GLOBALS['sell_non_drug_products'] == 2) { ?>
 .drugsonly { display:none; }
 <?php } else { ?>
@@ -155,7 +130,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		 
 		
 			 $drug_id = sqlInsert("INSERT INTO form_vitals ( " .
-    "date,complaint,bps,weight,pid,OED,pa,pv,hb,pallor,exam,note" .
+    "date,complaint,bps,weight,pid,note" .
     
     ") VALUES ( " .
     "'" . $date       . "', " .
@@ -163,12 +138,6 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
     "'" . $bp          . "', " .
     "'" . $weight          . "', " .
 	  "'" . $_SESSION['pid']          . "', " .
-	   "'" . $oed      . "', " .
-    "'" . $PA         . "', " .
-    "'" . $pv         . "', " .
-	  "'" . $hb    . "', " .
-    "'" . $pallor     . "', " .
-    "'" . $exam      . "', " .
 	 "'" .$advise. "' " .
     
     
@@ -193,28 +162,30 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 
 
 
-<div class="container-fluid">
+
 <form method='post' name='theform' action=''>
-<div class="row">
-<div class="col-md-8 table1">
- <table class="table table-bordered" style="transform: scale(1.0);
-    margin-left: -88px;
-    border-spacing: 0px !important;
-    margin-top: -8px;" cellspacing="0" cellpadding="0"> 
+<center>
+
+
+	
+
+ 
+ <br><br><br><br><br><br>
+ 
+ <table  cellspacing="0" width='60%' border='1' align='left'   id="dataTable" style="border:1px solid black;width:40%;float:left"> 
  <tr>
-  <th nowrap>S.No.</th>
+  <th nowrape>S.No.</th>
   <th nowrap>Date</th>
   <th nowrap>Complaints</th>
-  <!-- <th nowrap>HB </br>% </br>Unire RE</th>-->
+  
    
    <th nowrap>Pallor</th>
     <th nowrap>Weight</th>
    <!--<th nowrap>New</br>Medicine</th>-->
    <th nowrap>BP</th>
-   <th  nowrap>Oedema </th>
- <!-- <th  nowrap>PA</th>
-  <th  nowrap>PV</th>-->
- <th  nowrap>Examination Findings</th>
+   <th  nowrap>Oedema </br>Number</th>
+ 
+  <th  nowrap>Examination Findings</th>
   <th  nowrap>Treatment And Advise </br>Type</th>
   
  </tr>
@@ -232,7 +203,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
    while($result=mysqli_fetch_array($rid)) 
     
    {  
-   
+    
    ?>
 	   <tr>
 	   <td>
@@ -244,52 +215,44 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 	   
  
 
-    <td><textarea name ='date1[]' rows="2" cols="15" value='' style="border:1px solid white; background-color:#DCDCDC;padding: 0px;" readonly>
-	<?php echo text(date('d/M/y',strtotime($result['date']))) ?></textarea></td>
+    <td><textarea name ='date1[]' rows="2" cols="15" value='' style="border:1px solid white; background-color:#DCDCDC;" readonly><?php echo $result['date'] ?></textarea></td>
   
   
-    <td><textarea name='com1[]' rows="2" cols="25" style="border:1px solid black;background-color:#DCDCDC;padding: 0px;" readonly><?php echo $result['complaint'] ?></textarea></td>
+    <td><textarea name='com1[]' rows="2" cols="25" style="border:1px solid white;background-color:#DCDCDC;" readonly></textarea></td>
   
 
+  
+  
   <td>
-   <input type='text' size="10"  name='pallor1[]' maxlength='80' value='<?php echo $result['pallor']; ?>'  style="height: 50px; width:50px;background-color:#DCDCDC;padding: 0px;"  readonly/>
+   <input type='text' size="10"  name='pallor1[]' maxlength='80' value=''  style="height: 50px; width:80px;background-color:#DCDCDC;border:1px solid white;"  readonly/>
   </td> 
    
   <td>
-   <input type='text' size="10"  maxlength='80' name='weight1[]' value='<?php echo $result['weight']; ?>'  style="height: 50px; width:50px;background-color:#DCDCDC;"  readonly />
+   <input type='text' size="10"  maxlength='80' name='weight1[]' value='<?php echo $result['weight']; ?>'  style="height: 50px; width:80px;background-color:#DCDCDC;border:1px solid white; " readonly />
   </td>
   
   <td>
-   <input type='text' size="10"  maxlength='80' name='bp1[]' value='<?php echo $result['bps']; ?>' style="height: 50px; width:50px;background-color:#DCDCDC;" readonly/>
+   <input type='text' size="10"  maxlength='80' name='bp1[]' value='<?php echo $result['bps']; ?>' style="height: 50px; width:80px;background-color:#DCDCDC;border:1px solid white;" readonly/>
   </td>
   
    <td>
- <input type='text' size="10"  maxlength='80' name='ode1[]' value='<?php echo $result['OED']; ?>'  style="height: 50px; width:50px; background-color:#DCDCDC;" readonly/>
+ <input type='text' size="10"  maxlength='80' name='ode1[]' style="height: 50px; width:80px; background-color:#DCDCDC;border:1px solid white;" readonly/>
  </td>
   
-<!--
-  <td>
-  <input type='text' size="10" maxlength='80'  name='pa1[]' value="<?php echo $result['pa']; ?>" style="height: 50px; width:80px;background-color:#DCDCDC;" readonly/>
-  </td>-->
- <!--
-  <td><textarea name="pa1[]" rows="3" cols="25"  style="border:1px solid black;background-color:#DCDCDC;" readonly><?php $result['pa']; ?></textarea></td>
-  -->
- <!--
-  <td>
-  <input type='text' size="10"  maxlength='80' name='pv1[]' value='<?php echo $result['pv']; ?>'  style="height: 50px; width:80px;background-color:#DCDCDC;" readonly/>
-   
-  </td> -->
- 
-   <!-- <td><textarea name="pv1[]" rows="3" cols="25"  style="border:1px solid black;background-color:#DCDCDC;" readonly><?php $result['pv']; ?></textarea></td>-->
- 
- 
-   <td><textarea name="exam1[]" rows="3" cols="40"  style="border:1px solid black;background-color:#DCDCDC;" readonly><?php echo $result['exam']; ?></textarea></td>
 
+
+  
+ 
+  
+  
+   <td><textarea name="exam1[]" rows="3" cols="25" style="border:1px solid black;background-color:#DCDCDC;border:1px solid white;" readonly></textarea></td>
+  
+  
    
   
-    <td><textarea name="advise1[]" rows="3" cols="25" style="border:1px solid black;background-color:#DCDCDC;" readonly><?php echo $result['note']; ?></textarea></td>
+    <td><textarea name="advise1[]" rows="3" cols="25" style="border:1px solid black;background-color:#DCDCDC;border:1px solid white;" readonly><?php echo $result['note']; ?></textarea></td>
   
-	<td><a href="editrecord.php?id=<?php echo $result['id']; ?>" onclick="return confirm('Do You  Want To Edit This Record');"><i class="fa fa-edit"></i></a></td>   
+	<td><a href="editrecord.php?id=<?php echo $result['id']; ?>" onclick="return confirm('Do You  Want To Edit This Record');">Edit</a></td>   
 	   </tr>
 	   
 	   
@@ -314,142 +277,200 @@ $j++;
   </td> 
   
   
-  <td><textarea name='date[]' rows="2" cols="15" value='' style="border:1px solid black;"><?php echo $today = date("Y-m-d H:i");?></textarea></td>
+  <td><textarea name='date[]' rows="2" cols="15" value='' style="border:1px solid white;"><?php echo $today = date("Y-m-d H:i");?></textarea></td>
   
   
   
-     <td><textarea name='com[]' rows="2" cols="25" value='' style="border:1px solid black;"></textarea></td>
+     <td><textarea name='com[]' rows="2" cols="25" value='' style="border:1px solid white;"></textarea></td>
   
-
+     
+  
   <td>
-   <input type='text' size="10" name='pallor[]' maxlength='80' value=''  style="height: 50px; width:50px; "  />
+  <input type='text' size="10" name='pallor[]' maxlength='80' value=''  style="height: 50px; width:80px;border:1px solid white; "  />
   </td> 
   
   <td>
-   <input type='text' size="10" name='weight[]' maxlength='80' value=''  style="height: 50px; width:50px; "  />
+  <input type='text' size="10" name='weight[]' maxlength='80' value=''  style="height: 50px; width:80px;border:1px solid white; "  />
   </td>
   
   <td>
-   <input type='text' size="10" name='bp[]' maxlength='80'   style="height: 50px; width:50px; "  />
+  <input type='text' size="10" name='bp[]' maxlength='80'   style="height: 50px; width:80px;border:1px solid white; "  />
   </td>
   
-   <td>
- <input type='text' size="10" name='oed[]' maxlength='80'  style="height: 50px; width:50px; " />
+  <td>
+ <input type='text' size="10" name='oed[]' maxlength='80'  style="height: 50px; width:80px;border:1px solid white; " />
  </td>
-  
-<!--
-  <td>
-  <textarea name="PA[]" rows="3" cols="25"style="border:1px solid black;" ></textarea>
  
-  </td>
+   <td><textarea name="exam[]" rows="3" cols="25"style="border:1px solid white;" ></textarea></td>
+  
+    <td><textarea name="advise[]" rows="3" cols="25" style="border:1px solid white;"></textarea></td>
   
   
-  
-  <td>
-  <textarea name="pv[]" rows="3" cols="25"style="border:1px solid black;" ></textarea>  
-  </td>-->
-  <td>
-  <textarea name="exam[]" rows="3" cols="40"style="border:1px solid black;" ></textarea>  
-  </td>
-    <td><textarea name="advise[]" rows="3" cols="25" style="border:1px solid black;"></textarea></td>  
   </tr>
   
   <?php
+   
 
- $i++;          
+ $i++;  
+
+         
 }
  
-?>
-   </table>
- </div>
- <!--
- <div class="col-md-4 table2">
-  <table  class="table table-bordered">
-<?php 
- $pid=$_SESSION['pid'];
-$query="select result_text,patient_id,result  from procedure_result a,procedure_report b,procedure_order c where a.procedure_report_id=b.procedure_report_id and c.procedure_order_id = b.procedure_order_id and patient_id='".$pid."' and result!=' ' ";
-$query1=sqlStatement($query);
-$query2=sqlFetchArray($query1);
 
 ?>
 <tr>
-<td><b><u>Blood</u></b></td>     <td></td>     <td></td> <td></td><td></td>
+<th colspan="9"> 
+<input align="center" type='submit' name='form_save' value='<?php echo xla('Save'); ?>' />   </th>
 </tr>
+
+
+
+
+  
+  
+
+   </table>
+   <table  cellspacing="0" width='40%' border='1' style="width:40%;float:left;margin-top:100px;">
+
 <tr>
-  <td>Rubella<input type="text" name='' value='' size='2'></td> 
-  <td>Hb % igg<input type="text" name='' value='' size='2'></td> 
-  
-  <td>BLD group (Rh)<input type="text" name='' value='' size='2'></td>
-  <td>RBS<input type="text" name='' value='' size='2'></td> 
-  <td>TSH<input type="text" name='' value='' size='2'></td> 
-   <td>HIV<input type="text" name='' value='' size='2'></td>
-   <td>Urea<input type="text" name='' value='' size='2'></td>
-    <td>V.D.R.L.<input type="text" name='' value='' size='2'></td> 
-  
+<td><b><u>Blood</u></b></td>     <td></td>     <td></td> <td></td><td></td><td></td><td></td>
+</tr>
+
+
+    
+<tr>
+  <td>Rubella<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td>Hb % igg<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td>BLD group (Rh)<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+  <td>RBS<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td>TSH<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+   <td>HIV<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+   <td>Urea<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
   
 </tr>	
 
 
 <tr>
    
-   <td>HBS Ag<input type="text" name='' value='' size='2'></td>
-  <td>Uric Acid<font align='right'><input type="text" name='' value='' size='2'></font></td>
-  <td>Creatinine<input type="text" name='' value='' size='2'></td> 
-     <?php if($query2['result_text']=="PLATLETS COUNT"){
-	?>  
-  <td>Platelete Count<input type="text" name='' value='<?php echo $query2['result']; ?>' size='2'></td>
-  <?php }else{?>
-  <td>Platelete Count<input type="text" name='' value='' size='2'></td>
-  <?}?>
-  <td>Hb A<sub>1</sub>C<input type="text" name='' value='' size='2'></td> 
-</tr>
-
-<tr> 
-</tr>
-<tr>
-<td><b><u>Urine</u></b></td>     <td></td>     <td></td> <td></td><td><b><u>Others</u></b></td>
+  
+ 
+   
+   <td>V.D.R.L.<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+   <td>HBS Ag<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+  <td>Uric Acid<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+  <td>Creatinine<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td>Platelete Count<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+  <td>Hb A<sub>1</sub>C<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td></td>
 </tr>
 
 <tr>
    
   
-  <td>Alb<input type="text" name='' value='' size='2'></td>
-  <td>Sug<input type="text" name='' value='' size='2'></td> 
-  <td>Mic<input type="text" name='' value='' size='2'></td> 
-  <td>BS,BP<input type="text" name='' value='' size='2'></td>
-   <td>TC<input type="text" name='' value='' size='2'></td>
-  <td>DC<input type="text" name='' value='' size='2'></td> 
-  <td>ESR<input type="text" name='' value='' size='2'></td> 
+   
+  
+  
 </tr>
+
+
+<tr>
+<td><b><u>Urine</u></b></td>     <td></td>     <td></td> <td></td><td><b><u>Others</u></b></td><td></td><td></td>
+</tr>
+
+<tr>
+   
+  
+  <td>Alb<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+  <td>Sug<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td>Mic<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td>BS,BP<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+   <td>TC<input type="text" name='' value='' size='2' style="border:1px solid white;"></td>
+  <td>DC<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+  <td>ESR<input type="text" name='' value='' size='2' style="border:1px solid white;"></td> 
+</tr>
+
+
+
+
+ 
+
+
  
 </table>
-</div>
--->
- </div>
+ 
 
-<p>
-<!--
-<--INPUT type="button" value="Add Row" onclick="addRow('dataTable')" /> -->
-<input type='submit' name='form_save' value='<?php echo xla('Save'); ?>' />
 
-<?php if (acl_check('admin', 'super')) { ?>
-&nbsp;
 
-<?php } ?>
-
-&nbsp;
-<input type='button' value='<?php echo xla('Cancel'); ?>' onclick='window.close()' />
-
-</p>
-
+</center>
 </form>
-		</div>
+
+       
+
+
+
+ 
+		
+		
+		
+
+  
+   
+    <style type="text/css">
+
+
+.typeahead {
+	background-color: #FFFFFF;
+}
+.typeahead:focus {
+	border: 2px solid #0097CF;
+}
+.tt-query {
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+.tt-hint {
+	color: #999999;
+}
+.tt-dropdown-menu {
+	background-color: #FFFFFF;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	margin-top: 12px;
+	padding: 8px 0;
+	width: 422px;
+}
+.tt-suggestion {
+	font-size: 24px;
+	line-height: 24px;
+	padding: 3px 20px;
+}
+.tt-suggestion.tt-is-under-cursor {
+	background-color: #0097CF;
+	color: #FFFFFF;
+}
+.tt-suggestion p {
+	margin: 0;
+}
+
+
+
+</style>		
+		
+		
+
+
+
+<div width="100%">		
 <script language="JavaScript">
+
+
+
 <?php
  if ($alertmsg) {
   echo "alert('" . htmlentities($alertmsg) . "');\n";
  }
 ?>
 </script>
+</div>
 </body>
 </html>

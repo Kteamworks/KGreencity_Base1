@@ -14,7 +14,6 @@ require_once("$srcdir/acl.inc");
 require_once("drugs.inc.php");
 require_once("$srcdir/formdata.inc.php");
 require_once("$srcdir/options.inc.php");
-require_once("$srcdir/options_listadd.inc");
 require_once("$srcdir/htmlspecialchars.inc.php");
 
 function QuotedOrNull($fld) {
@@ -53,7 +52,7 @@ function genWarehouseList($tag_name, $currvalue, $title, $class='') {
   $count = 0;
 
   if ($allow_multiple /* || !checkWarehouseUsed('') */) {
-    
+    echo "<option value=''>" . xlt('Unassigned') . "</option>";
     ++$count;
   }
 
@@ -134,10 +133,6 @@ td { font-size:10pt; }
   var sel = f.form_trans_type;
   var type = sel.options[sel.selectedIndex].value;
   var showQuantity  = true;
-  var showQuantityExtra  = true;
-  var showPackof  = true;
-  var showTaxcode  = true;
-  var showRate  = true;
   var showSaleDate  = true;
   var showCost      = true;
   var showSourceLot = true;
@@ -168,13 +163,9 @@ td { font-size:10pt; }
     showNotes     = false;
   }
   document.getElementById('row_quantity'  ).style.display = showQuantity  ? '' : 'none';
-  document.getElementById('row_quantity_extra'  ).style.display = showQuantityExtra  ? '' : 'none';
-  document.getElementById('row_packof'  ).style.display = showPackof  ? '' : 'none';
   document.getElementById('row_sale_date' ).style.display = showSaleDate  ? '' : 'none';
   document.getElementById('row_cost'      ).style.display = showCost      ? '' : 'none';
   document.getElementById('row_source_lot').style.display = showSourceLot ? '' : 'none';
-  document.getElementById('row_rate'  ).style.display = showRate  ? '' : 'none';
-  document.getElementById('row_taxcode'  ).style.display = showTaxcode  ? '' : 'none';
   document.getElementById('row_notes'     ).style.display = showNotes     ? '' : 'none';
   document.getElementById('row_distributor').style.display = showDistributor ? '' : 'none';
  }
@@ -197,11 +188,6 @@ if ($_POST['form_save'] || $_POST['form_delete']) {
   $form_quantity = $_POST['form_quantity'] + 0;
   $form_cost = sprintf('%0.2f', $_POST['form_cost']);
   $form_source_lot = $_POST['form_source_lot'] + 0;
-  $form_rate = sprintf($_POST['form_rate']);
-  $form_free = sprintf($_POST['form_quantity_extra']);
-  $form_vat = sprintf($_POST['form_vat']);
-  $form_pack = sprintf($_POST['form_pack']);
-  
   $form_distributor_id = $_POST['form_distributor_id'] + 0;
 
   // Some fixups depending on transaction type.
@@ -288,7 +274,7 @@ if ($_POST['form_save'] || $_POST['form_delete']) {
       if (empty($form_sale_date)) $form_sale_date = date('Y-m-d');
       sqlInsert("INSERT INTO drug_sales ( " .
         "drug_id, inventory_id, prescription_id, pid, encounter, user, " .
-        "sale_date, quantity, fee, xfer_inventory_id, distributor_id,rate,free,pack,vat,notes" .
+        "sale_date, quantity, fee, xfer_inventory_id, distributor_id, notes " .
         ") VALUES ( " .
         "'" . add_escape_custom($drug_id) . "', " .
         "'" . add_escape_custom($lot_id) . "', '0', '0', '0', " .
@@ -298,14 +284,8 @@ if ($_POST['form_save'] || $_POST['form_delete']) {
         "'" . add_escape_custom(0 - $form_cost)      . "', " .
         "'" . add_escape_custom($form_source_lot) . "', " .
         "'" . add_escape_custom($form_distributor_id) . "', " .
-		"'" . add_escape_custom($form_rate) . "', " .
-		"'" . add_escape_custom($form_free) . "', " .
-		"'" . add_escape_custom($form_pack) . "', " .
-		"'" . add_escape_custom($form_vat) . "', " .
         "'" . add_escape_custom($form_notes) . "' )");
 
-	
-  
       // If this is a transfer then reduce source QOH, and also copy some
       // fields from the source when they are missing.
       if ($form_source_lot) {
@@ -328,7 +308,7 @@ if ($_POST['form_save'] || $_POST['form_delete']) {
   //
   echo "<script language='JavaScript'>\n";
   if ($info_msg) echo " alert('".addslashes($info_msg)."');\n";
-  echo " window.close();\n";
+  echo " window.location.href='add_edit_drug.php';\n";
   echo " if (opener.refreshme) opener.refreshme();\n";
   echo "</script></body></html>\n";
   exit();
@@ -341,24 +321,6 @@ if ($_POST['form_save'] || $_POST['form_delete']) {
 
 <table border='0' width='100%'>
 
-
-<tr>
-  <td valign='top' nowrap><b><?php echo xlt('Supplier'); ?>:</b></td>
-  <td>
-<?php
-// Address book entries for vendors.
-/* generate_form_field(array('data_type' => 14, 'field_id' => 'vendor_id',
-  'list_id' => '', 'edit_options' => 'V',
-  'description' => xl('Supplier Name')),
-  $row['vendor_id']);
- */?>
-<input type='text' size='40' name='vendor_id' maxlength='40' value='<?php echo attr($row['vendor_id']) ?>' style='width:100%' />
-<input type="button" id="addtolistid_" fieldid="vendor_id" class="addtolist" value="Add">
-  </td>
- </tr>
- 
- 
- 
  <tr>
   <td valign='top' width='1%' nowrap><b><?php echo xlt('Lot Number'); ?>:</b></td>
   <td>
@@ -386,7 +348,18 @@ if ($_POST['form_save'] || $_POST['form_delete']) {
   </td>
  </tr>
 
- 
+ <tr>
+  <td valign='top' nowrap><b><?php echo xlt('Vendor'); ?>:</b></td>
+  <td>
+<?php
+// Address book entries for vendors.
+generate_form_field(array('data_type' => 14, 'field_id' => 'vendor_id',
+  'list_id' => '', 'edit_options' => 'V',
+  'description' => xl('Address book entry for the vendor')),
+  $row['vendor_id']);
+?>
+  </td>
+ </tr>
 
  <tr>
   <td valign='top' nowrap><b><?php echo xlt('Warehouse'); ?>:</b></td>
@@ -404,7 +377,7 @@ if ($_POST['form_save'] || $_POST['form_delete']) {
  </tr>
 
  <tr>
-  <td valign='top' nowrap><b><?php echo xlt('In Stock'); ?>:</b></td>
+  <td valign='top' nowrap><b><?php echo xlt('On Hand'); ?>:</b></td>
   <td>
    <?php echo text($row['on_hand'] + 0); ?>
   </td>
@@ -465,46 +438,12 @@ generate_form_field(array('data_type' => 14, 'field_id' => 'distributor_id',
   </td>
  </tr>
 
-
-  <tr id='row_rate'>
-  <td valign='top' nowrap><b><?php echo xlt('M.R.P'); ?>:</b></td>
-  <td>
-   <input type='text' size='7' name='form_rate' maxlength='12' />
-  </td>
- </tr>
- 
- <tr id='row_quantity_extra'>
-  <td valign='top' nowrap><b><?php echo xlt('Free'); ?>:</b></td>
-  <td>
-   <input type='text' size='5' name='form_quantity_extra' maxlength='7' />
-  </td>
- </tr>
- 
- <tr id='row_packof'>
-  <td valign='top' nowrap><b><?php echo xlt('Pack'); ?>:</b></td>
-  <td>
-   <input type='text' size='5' name='form_pack' maxlength='7' />
-  </td>
- </tr>
-
  <tr id='row_cost'>
   <td valign='top' nowrap><b><?php echo xlt('Total Cost'); ?>:</b></td>
   <td>
    <input type='text' size='7' name='form_cost' maxlength='12' />
   </td>
  </tr>
- 
- 
-
-
- 
- <tr id='row_taxcode'>
-  <td valign='top' nowrap><b><?php echo xlt('VAT'); ?>:</b></td>
-  <td>
-   <input type='text' size='7' name='form_vat' maxlength='12' />
-  </td>
- </tr>
- 
 
  <tr id='row_source_lot'>
   <td valign='top' nowrap><b><?php echo xlt('Source Lot'); ?>:</b></td>
@@ -542,7 +481,7 @@ while ($lrow = sqlFetchArray($lres)) {
 </table>
 
 <p>
-<input type='submit' name='form_save' value='<?php echo xla('Save'); ?>' />
+<input type='submit' name='form_save' value='<?php echo xla('Save & Next'); ?>' />
 
 <?php if ($lot_id) { ?>
 &nbsp;
@@ -552,6 +491,7 @@ while ($lrow = sqlFetchArray($lres)) {
 
 &nbsp;
 <input type='button' value='<?php echo xla('Cancel'); ?>' onclick='window.close()' />
+
 </p>
 
 </center>

@@ -40,7 +40,7 @@ while ($row = sqlFetchArray($res)) {
   $header .= "   <th>";
   $header .= text($title);
   $header .= "</th>\n";
-  $header0 .= "   <td align='center'><input type='text' size='10' ";
+  $header0 .= "   <td align='center'><input type='hidden' size='10' ";
   $header0 .= "value='' class='search_init' /></td>\n";
   if ($coljson) $coljson .= ", ";
   $coljson .= "{\"sName\": \"" . addcslashes($colname, "\t\r\n\"\\") . "\"}";

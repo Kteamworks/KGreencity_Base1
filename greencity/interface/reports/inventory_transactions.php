@@ -76,8 +76,8 @@ function thisLineItem($row, $xfer=false) {
     echo '"' . esc4Export($row['lot_number'])       . '",';
     echo '"' . esc4Export($row['warehouse'])        . '",';
     echo '"' . esc4Export($dpname)                  . '",';
-    echo '"' . (0 - $row['quantity'])               . '",';
-    echo '"' . bucks(-$row['fee'])                   . '",';
+    echo '"' . ($row['quantity'])               . '",';
+    echo '"' . bucks($row['fee'])                   . '",';
     echo '"' . $row['billed']                       . '",';
     echo '"' . esc4Export($row['notes'])            . '"' . "\n";
   }
@@ -105,10 +105,10 @@ function thisLineItem($row, $xfer=false) {
    <?php echo htmlspecialchars($dpname); ?>
   </td>
   <td class="detail" align="right">
-   <?php echo htmlspecialchars(0 - $row['quantity']); ?>
+   <?php echo htmlspecialchars(-($row['quantity'])); ?>
   </td>
   <td class="detail" align="right">
-   <?php echo htmlspecialchars (bucks(-($row['fee']))); ?>
+   <?php echo htmlspecialchars (bucks($row['fee'])); ?>
   </td>
   <td class="detail" align="center">
    <?php echo empty($row['billed']) ? '&nbsp;' : '*'; ?>
@@ -121,7 +121,7 @@ function thisLineItem($row, $xfer=false) {
   } // End not csv export
 
   $grandtotal   += $row['fee'];
-  $grandqty     -= $row['quantity'];
+  $grandqty     = $row['quantity'];
 
   // In the special case of a transfer, generate a second line item for
   // the source lot.
@@ -129,7 +129,7 @@ function thisLineItem($row, $xfer=false) {
     $row['xfer_inventory_id'] = 0;
     $row['lot_number'] = $row['lot_number_2'];
     $row['warehouse'] = $row['warehouse_2'];
-    $row['quantity'] = 0 - $row['quantity'];
+    $row['quantity'] = $row['quantity'];
     $row['fee'] = 0 - $row['fee'];
     thisLineItem($row, true);
   }
@@ -390,10 +390,10 @@ if ($form_action) { // if submit or export
    <?php echo htmlspecialchars(xl('Grand Total'), ENT_NOQUOTES); ?>
   </td>
   <td class="dehead" align="right">
-   <?php echo htmlspecialchars($grandqty, ENT_NOQUOTES); ?>
+   <?php echo htmlspecialchars($grandqty1, ENT_NOQUOTES); ?>
   </td>
   <td class="dehead" align="right">
-   <?php echo htmlspecialchars(bucks(-$grandtotal), ENT_NOQUOTES); ?>
+   <?php echo htmlspecialchars(bucks($grandtotal), ENT_NOQUOTES); ?>
   </td>
   <td class="dehead" colspan="2">
 

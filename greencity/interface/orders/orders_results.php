@@ -178,7 +178,7 @@ if ($_POST['form_submit'] && !empty($_POST['form_line'])) {
       "provider_id = '" . add_escape_custom($provider_id) . "'"); */
 	
 	$encounter=$GLOBALS['encounter'];
-    sqlStatement("UPDATE procedure_order set order_status='reviewed' where encounter_id='".$encounter."'");
+   sqlStatement("UPDATE procedure_order set order_status='complete' where encounter_id='".$encounter."'");
 	
 }
 ?>

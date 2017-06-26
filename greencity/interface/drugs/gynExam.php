@@ -197,7 +197,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
  
  
  <?php
- include_once("../../sites/default/dbconnect.php");
+ include_once("dbconnect.php");
  $pid=$_SESSION['pid'];
  $list = "SELECT * FROM `form_vitals` where pid='".$pid."'";
  $rid=mysqli_query($conn,$list);
@@ -247,7 +247,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
   
     <td><textarea name="advise1[]" rows="3" cols="25" style="border:1px solid black;background-color:#DCDCDC;border:1px solid white;" readonly><?php echo $result['Treatmentadvise']; ?></textarea></td>
   
-	<td><a href="editrecord_gyn.php?id=<?php echo $result['id']; ?>" onclick="return confirm('Do You  Want To Edit This Record');">Edit</a></td>   
+	<td><a href="editrecord.php?id=<?php echo $result['id']; ?>" onclick="return confirm('Do You  Want To Edit This Record');">Edit</a></td>   
 	   </tr>
 	   
 	   

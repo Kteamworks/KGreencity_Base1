@@ -415,7 +415,7 @@ if ($form_reviewed == 2) {
 }
 //------------------------sent outside,Pending-------------------//
 else if ($form_reviewed == 3) {
-  $where .= " AND pr.procedure_report_id IS NOT NULL AND res.result='' and res.lab='yes'";
+  $where .= " AND pr.procedure_report_id IS NOT NULL AND res.result='' and res.lab='yes' and res.sample ='yes'";
 }
 //-----------------Sent outside completed----------------------//
 else if ($form_reviewed == 4) {

@@ -51,7 +51,10 @@ $(document).ready(function() {
     });
 
     $('.datepicker-example11').Zebra_DatePicker({
-        format: 'M-Y'
+        format: 'M-Y',
+		direction: 70
+        
+		
     });
 
     $('#datepicker-example12').Zebra_DatePicker({
