@@ -281,7 +281,7 @@ $row2=  sqlFetchArray($row1);
 $billing=sqlStatement("select * from billing  where encounter='".$encounter."'");
 $billid=sqlFetchArray($billing);
 
-$billingdate=sqlStatement("select max(date) as d from billing  where encounter='".$encounter."'");
+$billingdate=sqlStatement("select max(date) as d from billing  where encounter='".$encounter."' and activity=1");
 $billdate=sqlFetchArray($billingdate);
 
 $admit=sqlStatement("select * from t_form_admit  where encounter='".$encounter."'");
