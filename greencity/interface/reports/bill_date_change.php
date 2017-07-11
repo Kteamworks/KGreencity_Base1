@@ -173,7 +173,25 @@ Select the date you wish to Change: <input type='text' name='form_to_date' id="f
                                 onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
                            <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
                                 id='img_to_date' border='0' alt='[?]' style='cursor:pointer'
-                                title='<?php echo xla("Click here to choose a date"); ?>'><br/><br/><br/>
+                                title='<?php echo xla("Click here to choose a date"); ?>'><br/>
+Select the Service you wish to Change:
+
+                <?php
+                        // Build a drop-down list of providers.
+                                //
+                                $query = "SELECT distinct code_type FROM billing ";
+                                  $ures = sqlStatement($query);
+                                echo "   <select name='heads' id='heads'>\n";
+                                echo "    <option value='all' selected>-- " . xlt('All') . " --\n";
+                                while ($urow = sqlFetchArray($ures)) {
+                                        $provid = $urow['code_type'];
+                                        echo "    <option value='" . attr($provid) ."'";
+                                        //if ($provid == $_POST['form_provider']) echo " selected";
+                                        echo ">" . text($urow['code_type'])  . "\n";
+                                }
+                                echo "   </select>\n";
+                                ?>
+				<br/><br/><br/>
                         
 <input type='submit' name='submit' id='submit' value='submit'/>
 </div>
@@ -190,7 +208,15 @@ if($_POST['submit'])
 $bill_change=$_POST['bill_change'];
 $date=$_POST['form_from_date'];
 $datechange=$_POST['form_to_date'];
-$billing="SELECT * from billing where bill_id='$bill_change' and activity='1' and DATE(date)='$date'";
+$heads=$_POST['heads'];
+if ($heads=='all')
+{
+	$cod=' ';
+}
+ else{
+	 $cod=" AND code_type='$heads' ";
+ }
+$billing="SELECT * from billing where bill_id='$bill_change' and activity='1' and DATE(date)='$date' $cod";
 	  $bills=sqlStatement($billing);
 	  $bill=sqlFetchArray($bills);
 	  $authuser=$_SESSION["authUser"];
@@ -204,7 +230,7 @@ $id="SELECT * from billing where bill_id='$bill_change'";
        {
 	         echo( "Please Enter the Proper Bill Number!" );
           }else{	
-			sqlStatement("update billing set date='$datechange', user='".$_SESSION['authUserID']."' where DATE(date)='$date' and bill_id='$bill_change' and encounter='".$bill['encounter']."' and activity=1");
+			sqlStatement("update billing set date='$datechange', user='".$_SESSION['authUserID']."' where DATE(date)='$date' and bill_id='$bill_change' and encounter='".$bill['encounter']."' and activity=1 $cod");
 			/* while($billed= sqlFetchArray($bills))
 
 			{
