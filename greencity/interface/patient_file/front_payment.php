@@ -1188,7 +1188,7 @@ function coloring()
 function CheckVisible(MakeBlank)
  {//Displays and hides the check number text box.
    if(document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='check_payment' ||
-   	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='card_payment' '|| 
+   	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='card_payment'|| 
       document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='neft'||
 	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='imps')
    {
