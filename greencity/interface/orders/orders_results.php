@@ -505,7 +505,7 @@ while ($row = sqlFetchArray($res)) {
     if ($review_status == "received") continue;
   }
 
-  $selects = "pt2.procedure_type, pt2.procedure_code, pt2.units AS pt2_units,pt2.notes_test AS notes_test, " .
+ $selects = "pt2.procedure_type, pt2.procedure_code, pt2.units AS pt2_units,pt2.notes_test AS notes_test, " .
     "pt2.range AS pt2_range, pt2.procedure_type_id AS procedure_type_id, " .
     "pt2.name AS name, pt2.description, pt2.seq AS seq, " .
     "ps.procedure_result_id, ps.result_code AS result_code, ps.result_text, ps.abnormal, ps.result, " .
@@ -513,11 +513,10 @@ while ($row = sqlFetchArray($res)) {
 
    // procedure_type_id for order:
   $pt2cond = "pt2.parent in( SELECT t1.procedure_type_id Grandparent
-   FROM procedure_type AS t1
-   LEFT JOIN procedure_type AS t2 ON t2.parent= t1.procedure_type_id
-   LEFT JOIN procedure_type AS t3 ON t3.parent = t2.procedure_type_id
-   LEFT JOIN procedure_type AS t4 ON t4.parent = t3.procedure_type_id 
-   where t1.parent=$order_type_id ) AND " .
+   FROM procedure_type AS t1 
+   where t1.parent=$order_type_id or parent in 
+                                (SELECT procedure_type_id from procedure_type where parent=$order_type_id or parent 
+                                in (SELECT procedure_type_id from procedure_type where parent=$order_type_id)) ) AND " .
     "(pt2.procedure_type LIKE 'res%' OR pt2.procedure_type LIKE 'rec%')";
 	
 	$pt3cond = "pt2.parent = $order_type_id AND " .
