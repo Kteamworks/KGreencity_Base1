@@ -119,6 +119,7 @@ require_once($GLOBALS['srcdir'].'/acl.inc');
 }
 function InsertEventFull()
  {
+
 	global $new_multiple_value,$provider,$event_date,$duration,$recurrspec,$starttime,$endtime,$locationspec;
 	// =======================================
 	// multi providers case
