@@ -24,6 +24,9 @@
 //           Paul Simon K <paul@zhservices.com> 
 //
 // +------------------------------------------------------------------------------+
+require_once(dirname(__FILE__) . '/patient_tracker.inc.php');
+require_once(dirname(__FILE__) .'/patient.inc');
+
 //===============================================================================
 //This section handles the events of payment screen.
 //===============================================================================
@@ -306,6 +309,7 @@ function check_event_exist($eid)
 // insert an event
 // $args is mainly filled with content from the POST http var
 function InsertEvent($args,$from = 'general') {
+
   $pc_recurrtype = '0';
   if ($args['form_repeat']) {
     $pc_recurrtype = $args['recurrspec']['event_repeat_on_freq'] ? '2' : '1';
@@ -313,7 +317,8 @@ function InsertEvent($args,$from = 'general') {
   $form_pid = empty($args['form_pid']) ? '' : $args['form_pid'];
 
 	if($from == 'general'){
-    return sqlInsert("INSERT INTO openemr_postcalendar_events ( " .
+
+    $pc_eid = sqlInsert("INSERT INTO openemr_postcalendar_events ( " .
 			"pc_catid, pc_multiple, pc_aid, pc_pid, pc_title, pc_time, pc_hometext, " .
 			"pc_informant, pc_eventDate, pc_endDate, pc_duration, pc_recurrtype, " .
 			"pc_recurrspec, pc_startTime, pc_endTime, pc_alldayevent, " .
@@ -325,6 +330,59 @@ function InsertEvent($args,$from = 'general') {
 			$args['starttime'],$args['endtime'],$args['form_allday'],$args['form_apptstatus'],$args['form_prefcat'],
 			$args['locationspec'],(int)$args['facility'],(int)$args['billing_facility'])
 		);
+
+            manage_tracker_status($args['event_date'],$args['starttime'],$pc_eid,$form_pid,$_SESSION['authUser'],$args['form_apptstatus'],$args['form_room']);
+            $GLOBALS['temporary-eid-for-manage-tracker'] = $pc_eid; //used by manage tracker module to set correct encounter in tracker when check in
+            
+			
+			$pn=getPatientData($form_pid, "phone_cell");
+	        $pn_no=$pn['phone_cell'];
+
+			$fname=getPatientData($form_pid, "fname");
+	        $fname=$fname['fname'];
+			$user = 'kavaii';
+			$password = '12345';
+			$sender_id = 'KAVAII';//helloz welcom FAPcop abhiii'hiiiii
+			$sender = $pn_no;//9673776599 9320491970
+			
+			$msg = 'Appointment Confirmed with Dr. ';
+			$prv= $args['form_provider'];
+			$ures = sqlStatement("SELECT username, fname, lname,phonecell FROM users WHERE " .
+			"authorized != 0 AND active = 1 and id = '$prv' ORDER BY lname, fname");
+			$urow=sqlFetchArray($ures);
+			$prvname= $urow['fname']." ".$urow['lname']." ";
+			$sender2=$urow['phonecell'];
+			$msg.=$prvname;
+			$msg.=$args['starttime'];
+			$msg.=' hrs on ';
+			$msg.=$args['event_date'];
+			$priority = 'sdnd';
+			$sms_type = 'normal';
+			$msg2="You have an Appointment with ";
+			$msg2.=$fname;
+			//$data = array('user'=>$user, 'pass'=>$password, 'sender'=>$sender_id, 'phone'=>$sender, 'text'=>$msg,  'stype'=>$sms_type);//'priority'=>$priority,
+			$data='user='.$user.'&pass='.$password.'&sender='.$sender_id.'&phone='.$sender.'&text='.$msg.'&stype='.$sms_type.'&priority=sdnd'; 
+			$data2='user='.$user.'&pass='.$password.'&sender='.$sender_id.'&phone='.$sender2.'&text='.$msg2.'&stype='.$sms_type.'&priority=sdnd'; 
+			$ch = curl_init('http://bhashsms.com/api/sendmsg.php?'.$data);
+			//echo var_dump($data);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			//echo var_dump($ch);
+			try {
+			$response = curl_exec($ch);
+			//echo var_dump($ch);
+			curl_close($ch);
+			//echo var_dump($response);
+			//echo 'Message has been sent.';
+			}catch(Exception $e){
+			echo 'Message: ' .$e->getMessage();
+			}
+ 
+ 
+ 
+            return $pc_eid;
+
 	}elseif($from == 'payment'){
 		sqlStatement("INSERT INTO openemr_postcalendar_events ( " .
 			"pc_catid, pc_multiple, pc_aid, pc_pid, pc_title, pc_time, " .
