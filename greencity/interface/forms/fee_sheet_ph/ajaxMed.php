@@ -66,8 +66,9 @@ echo $data;
  
 if($_POST['id'] && $_POST['action']=='med')
 {
+	 $exp = date('Y-m-d', strtotime('+1 month'));
 $id=$_POST['id'];
-$sql=mysqli_query($conn,"SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id')");
+$sql=mysqli_query($conn,"SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'");
 //$sql=mysqli_query($con,"SELECT batch FROM drugs WHERE drug_id = '$id'");
 
 while($row=mysqli_fetch_array($sql))
@@ -95,6 +96,31 @@ echo $data;
 
 }
 }
+
+if($_POST['id'] && $_POST['action']=='expdate')
+{
+	 $exp = date('Y-m-d', strtotime('+1 month'));
+$id=$_POST['id'];
+$sql=mysqli_query($conn,"SELECT expdate FROM drugs WHERE name = (select name from drugs where drug_id = '$id')limit 1");
+//$sql=mysqli_query($con,"SELECT batch FROM drugs WHERE drug_id = '$id'");
+
+while($row=mysqli_fetch_array($sql))
+{
+
+$data=$row['expdate'];
+$data1= substr($data,0,7);
+//echo '<input type="text" value="'.$id.'">';
+echo $data1;
+//echo $data;
+
+}
+}
+
+
+
+
+
+
 if($_POST['id'] && $_POST['action']=='medRate')
 {
 $id=$_POST['id'];

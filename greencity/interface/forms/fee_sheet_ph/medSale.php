@@ -27,17 +27,26 @@ $returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_enco
  if ($GLOBALS['concurrent_layout'] && isset($_GET['set_pid'])) {
   include_once("$srcdir/pid.inc");
   setpid($_GET['set_pid']);
+  $gchid = $_GET['set_pid'];
  }
  $user=$_SESSION['authUser'];
 $prescription_id=$encounter;
 $inventory_id=111;
  $tmp1 = sqlQuery("SELECT id from users WHERE username='$user'");
  $user_id=$tmp1['id'];
+ //$conn = mysqli_connect('localhost', 'root','','greencity');
+ include_once('dbconnect.php');
 
 //sqlQuery("UPDATE patient_data SET pricelevel='standard' where pid=$pid");  
- 
+ $tmpid=sqlQuery("select max(id) as id from billing "); 
+ $tmpid1=sqlQuery("select max(sequence_no) as id1 from ar_activity "); 
+ $_SESSION['maxId1']=$tmpid1['id1']; 
+ $_SESSION['maxId']=$tmpid['id'];
 if (isset($_POST['submit_val'])) {
  $gch=$_POST['gch'];
+  $subtotal= $_POST['old_price'];
+ $discounts=$_SESSION['dcnt']=$_POST['discount'];
+ $discount = ($discounts/100)*$subtotal;
  $patient=$_POST['patname'];
  $encounter=$_SESSION['visit']=$_POST['visit'];
  $pid=$_SESSION['patId']=$_POST['pid'];
@@ -55,6 +64,9 @@ $values = mysql_real_escape_string($value);
 } */
 
 sqlQuery("UPDATE form_encounter SET provider_id='4',supervisor_id='0' where pid='$pid' and encounter='$ecnounter'"); 
+sqlQuery("insert into ar_activity(pid,encounter,code_type,post_time,adj_amount,memo)values('$pid','$encounter','Pharmacy Charge',NOW(),'$discount','Discount')"); 
+
+
 $j=0;
 foreach($_POST['name'] as $selected){
 		
@@ -62,6 +74,7 @@ foreach($_POST['name'] as $selected){
 		 $batch= $_POST['batch'][$j];
 		 $qty = $_POST['qty'][$j];
 		 $price = $_POST['price'][$j];
+		 $expdate = $_POST['expdate'][$j];
 		  $fee = $price * $qty ;
 		
 		
@@ -76,12 +89,18 @@ foreach($_POST['name'] as $selected){
         $res =sqlQuery("SELECT * FROM `codes` WHERE `code_type`=11 and code=(select name from drugs where drug_id=$selected)");
   
      $servicegrp_id = $res['code_type'];
-	 $code = $res['code']; 
+	 
+	 $cod = $res['code']; 
+	 $code=str_replace("'", "", $cod);
+     //$code=mysqli_real_escape_string($conn,$res['code']); 
 	 $service_id=$res['service_id'];
-	 $code_text = $res['code_text'];
+	 $cod_text = $res['code_text'];
+	 $code_text=str_replace("'", "", $cod_text);
     
   
 		
+		
+   $expupdate = sqlInsert("update drugs set expdate='$expdate-28'  where drug_id=$selected ");		
 		
 
 		
@@ -89,9 +108,7 @@ foreach($_POST['name'] as $selected){
  values
  (NOW(),'$encounter', '$servicegrp_id', '$service_id', 'Pharmacy Charge', '$code' ,'$code_text', '$pid','1','$user_id','Default','$qty','$fee',1,1)");
  
- $pharmacy = sqlInsert("insert into pharmacy_sale (medicine,batch,price,quantity,amount,pid,encounter)
- values
- ('$code', '$batch', '$price', '$qty', '$fee','$pid','$encounter')");
+ 
 		
 	
  $drug_id = sqlInsert("INSERT INTO drug_sales(drug_id, inventory_id, prescription_id, pid, user, sale_date, quantity, fee,encounter)
@@ -109,6 +126,7 @@ $j++;
 header('location:../../patient_file/front_payment_pharmacy.php');
 
 }
+
   ?>
   
  <!DOCTYPE html>
@@ -122,6 +140,7 @@ header('location:../../patient_file/front_payment_pharmacy.php');
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/stylesheet.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<script src="js/jquery.js"></script>
 		<script src="../dist/js/standalone/selectize.js"></script>
 		<script src="js/index.js"></script>
@@ -140,10 +159,10 @@ header('location:../../patient_file/front_payment_pharmacy.php');
 
  $(document).ready(function(){
 	 
-	 $("#gchid").change(function()
+	 $("#pname").focus(function()
 {
 	
-var id=$(this).val();
+var id=$("#gchid").val();
 var dataString = 'id='+ id;
 
 $.ajax
@@ -231,6 +250,19 @@ $("#<?php echo 'price'.$a ?>").val(html);
 
 } 
 });
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMed.php",
+data: dataString+"&action=expdate",
+cache: false,
+success: function(html)
+{
+$("#<?php echo 'expdate'.$a ?>").val(html);
+
+} 
+});
 });
 
 
@@ -264,16 +296,10 @@ $(document).on("focus", "#<?php echo 'sum'.$a ?>", function() {
     var p = $("#<?php echo 'price'.$a ?>").val();
 	var q = $("#<?php echo 'qty'.$a ?>").val();
 	var sum = (+p)*(+q);
-	
-	
-	$("#<?php echo 'sum'.$a ?>").val(sum);
+	$("#<?php echo 'sum'.$a ?>").val(sum.toFixed(2));
 	
 });
-
-
-
-
-		 
+	 
 	 <?php $a++; } ?>		 
 		 
 		 
@@ -304,16 +330,29 @@ $(document).on('keypress', 'input', function(e) {
 });
 
 
-
-
-
-
 $(document).on("focus", ".total", function() {
     var sum = 0;
     $(".sum").each(function(){
         sum += +$(this).val();
+		
     });
-    $(".total").val(sum);
+    $(".total").val(sum.toFixed(2));
+});
+
+$(document).on("focus", ".net", function() {
+//    var sum = $(".total").val();
+//	var dis= $(".discount").val();
+//	var net =  (+sum)-(+dis)
+//    $(".net").val(net);
+				var oldPrice = document.getElementsByName("old_price")[0].value;
+			var discountPrct = document.getElementsByName("discount")[0].value;	
+			if (!isNaN(oldPrice) && !isNaN(discountPrct)) {
+				//var discount = (oldPrice / 100) * discountPrct;
+				var count = (discountPrct / 100) * oldPrice;
+				var discount = oldPrice - count;
+				if (discount > 0)
+					document.getElementsByName("new_price")[0].value = discount.toFixed(2);
+			}
 });
 
 
@@ -321,7 +360,7 @@ $(document).on("focus", ".total", function() {
 </script>
 
 
-
+<body>
 <form method="post" action="">
 
 
@@ -330,29 +369,30 @@ $(document).on("focus", ".total", function() {
 	  
      
 
-<div class="container col-sm-10">
+<div class="container-fluid" style="    margin-top: 20px;">
     <div class="row">
-		<div class="col-md-10">
+		<div class="col-md-9">
 		<table class="table table-bordered table-fixed" id="tab_logic">
 		<tr><th>ID</th><th>Patient Name</th><th>Visit ID</th><th>Pid</th><tr>
-		<tr><td><input type="text" style="text-align:left;" id='gchid' name='gch'  value="" class="form-control"/></td>
-		<td><input type="text" style="text-align:left;" id='pname' name='patname'  value="" class="form-control"/></td>
-		<td><input type="text" style="text-align:left;" id='visitid' name='visit'  value="" class="form-control"/></td>
-		<td><input type="text" style="text-align:left;" id='pid' name='pid'  value="" class="form-control"/></td>
+		<tr><td><input type="text" style="text-align:left;" id='gchid' name='gch'  value="<?php echo $gchid ?>" class="form-control" required/></td>
+		<td><input type="text" style="text-align:left;" id='pname' name='patname'  value="" class="form-control" required/></td>
+		<td><input type="text" style="text-align:left;" id='visitid' name='visit'  value="" class="form-control" required/></td>
+		<td><input type="text" style="text-align:left;" id='pid' name='pid'  value="" class="form-control" required/></td>
 		
 		</tr>
 		</table>
 			<table class="table table-bordered table-fixed" id="tab_logic">
 				<thead>
 					<tr class="danger">
-						<th class="text-left col-sm-1">
-							S.No.
-						</th>
+						
 						<th class="text-left col-sm-3">
 							Medicine
 						</th>
 						<th class="text-left col-sm-2">
 							Batch
+						</th>
+						<th class="text-left col-sm-2">
+							Expiry Date
 						</th>
 						<th class="text-right col-sm-2">
 							Price
@@ -360,7 +400,7 @@ $(document).on("focus", ".total", function() {
 						<th class="text-right col-sm-1">
 							Quantity
 						</th>
-						<th class="text-right col-sm-1">
+						<th class="text-right col-sm-2">
 							Amount
 						</th>
 					</tr>
@@ -370,8 +410,8 @@ $(document).on("focus", ".total", function() {
 
 			<?php 
 			//include_once('dbconnect.php');
-			$conn = mysqli_connect('localhost', 'root','','greencity');
-			 $qry = "SELECT name, drug_id  FROM drugs"; 
+			$exp = date('Y-m-d', strtotime('+1 month'));
+			 $qry = "SELECT name, drug_id, expdate  FROM drugs where expdate > '$exp' and totalStock > 1"; 
 			  $result = mysqli_query($conn, $qry);
 			$i=1;
 			while ($jarray = mysqli_fetch_array($result))
@@ -393,9 +433,7 @@ $(document).on("focus", ".total", function() {
 			
 			while($i<=15){ ?>
 					<tr id='addr0'>
-						<td>
-						<?php echo $i; ?>
-						</td>
+						
 						<td>
 						<div>
 				<div>
@@ -439,12 +477,18 @@ $(document).on("focus", ".total", function() {
 					</td>
                         
 						    <td>
- <select class="form-control" name="batch[]"  id="<?php echo 'batch'.$i?>">
+                       <select class="form-control" name="batch[]"  id="<?php echo 'batch'.$i?>">
     
        
-    </select>
+                           </select>
  
- </td>
+                          </td>
+						  
+						  <td>
+						<input type="text"  id='<?php echo 'expdate'.$i ?>' name='expdate[]' pattern='[0-9]{4}-(0[1-9]|1[012])' placeholder='YYYY-MM' value="" class="form-control"/>
+						</td>
+						  
+						  
                           						
  					       <td>
 						<input type="text" style="text-align:right;" id='<?php echo 'price'.$i ?>' name='price[]'  value="" class="form-control"/>
@@ -471,16 +515,40 @@ $(document).on("focus", ".total", function() {
 <div class="col-sm-2">
 
 
- <table>
- <tr class="affix">
- <th class="danger">Total Amount:</th>
+ <table class="affix">
+ <tbody>
+ <tr>
+ <th class="danger">Subtotal:</th>
  <td>
- <input type="text" style="text-align:right;" class="form-control total"  name="" value=""  />
+ <input type="number" style="text-align:right;" class="form-control total" onkeydown="updateNewPrice()" step='0.01'  name="old_price" value=""  /></td>
+ </tr>
+ <tr>
+ <th class="danger">Discount:</th>
+ <td>
+<input type="number" style="text-align:right;" class="form-control discount" onkeydown="updateNewPrice()" name="discount" value="" placeholder="%" /></td>
+ </tr>
+ <tr>
+ <th class="danger">Total:</th>
+ <td>
+<input type="number" style="text-align:right;" class="form-control net" step='0.01'   name="new_price" value=""  />
  </td>
  </tr>
+</tbody>
  </table>
-</div><br><br><br><br><br><br><br><br><br>
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit"  class="btn btn-primary affix" name="submit_val" value="Take Payment" />
+  <input type="submit"  class="btn btn-primary affix" name="submit_val" value="Take Payment" style="margin: 10% 6%;" />
+ 
+</div>
  </div></div>
  </form>
+  <script>
+$('input,select').keydown( function(e) {
+        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+        if(key == 13) {
+            e.preventDefault();
+            var inputs = $(this).closest('form').find(':input:visible');
+            inputs.eq( inputs.index(this)+ 1 ).focus();
+        }
+    });
+ </script>
+ </body>
  </html>

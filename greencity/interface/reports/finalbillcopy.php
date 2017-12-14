@@ -418,13 +418,29 @@ $rateplan=$patdata['rateplan'];
 					//}
                     echo "<td class='text'>". text($b['code_type'])."</td>\n";
 					$code= $b['code_text'];
-					if(strpos($code,DR)!==false)
+					 $enc1=$_SESSION['encounter'];
+                if (strpos($code,DR) !== false) {
+                //$des = '(Consultation)';
+			    $ipop=sqlQuery("select encounter_ipop from form_encounter where encounter='$enc1' ");
+				$ipopcheck=$ipop[encounter_ipop];
+				if (strpos($ipopcheck,IP) !== false) {
+				$specialty=sqlQuery("select specialty from users where username='$code' ");
+				$des=' ('.$specialty['specialty'].')';
+				}else{
+					$des = '(Consultation)';
+				}
+  }
+			 echo "  <td class='billcell'>$strike1" . text($code).$des  . "$strike2</td>\n";		
+					
+					
+					
+					/* if(strpos($code,DR)!==false)
 					{
 						echo "<td class='text'>".Consultation. "</td>";
 					}
 					else {
 					echo "<td class='text'>".text($b['code_text'].' '.$b['notecodes']) . "</td>";
-					}
+					} */
 					echo "<td class='text' align='right'>" .text(oeFormatMoney($rate)) . "</td>";
 			        echo "<td class='text' align='right'>" .text($b['units']) . "</td>";
                     echo "<td class='text' align='right'>";

@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.2, created on 2017-01-23 14:34:56
+<?php /* Smarty version 2.6.2, created on 2017-06-08 11:47:03
          compiled from C:/xampp/htdocs/greencity/templates/documents/general_upload.html */ ?>
 <?php require_once(SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xampp/htdocs/greencity/templates/documents/general_upload.html', 6, false),)), $this); ?>
@@ -114,4 +114,6 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xa
 : <?php echo $this->_tpl_vars['file']->revision; ?>
 <br><br>
 		</div>
-	<?php endforeach; unset($_from); endif;  endif; ?>
+	<?php endforeach; unset($_from); endif; ?>
+<?php endif; ?>
+

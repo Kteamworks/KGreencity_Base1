@@ -151,7 +151,7 @@ if (isset($_GET['formseq'])) echo '&formseq=' . $_GET['formseq'];
     "procedure_type LIKE 'ord' AND " .
     "activity = 1 AND " .
     "(procedure_code LIKE ? OR name LIKE ?) " .
-    "ORDER BY seq, procedure_code";
+    "ORDER BY name";
 
   // echo "<!-- $query $labid $search_term -->\n"; // debugging
 

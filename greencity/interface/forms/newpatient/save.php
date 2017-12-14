@@ -100,7 +100,7 @@ $nexturl = $normalurl;
 if ($mode == 'new')
 {
 	$encounter = generate_id();
-	sqlStatement("UPDATE patient_data SET visit_status='0', doctor='$provider_id' WHERE pid='$pid'");
+	sqlStatement("UPDATE patient_data SET visit_status=0, doctor=$provider_id WHERE pid=$pid");
     addForm($encounter, "New Patient Encounter",
     sqlInsert("INSERT INTO form_encounter SET " .
       "date = '" . add_escape_custom($date) . "', " .

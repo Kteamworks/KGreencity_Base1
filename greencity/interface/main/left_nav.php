@@ -1311,6 +1311,9 @@ if($newcrop_user_role['newcrop_user_role']!='erxmidlevelPrescriber'){ ?>
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
 	  	  <?php genMiscLink('RTop','fin','0',xl('Referal Patients'),'main/finder/r_dynamic_finder.php'); ?>
 	  <?php genMiscLink('RTop','fin','0',xl('In Patients'),'main/finder/p_dynamic_finder_ip.php'); ?>
+	  <?php //genMiscLink('RTop','rep','0',xl('Clinical History'),'reports/clinicalHistory.php'); ?>
+	  <?php genMiscLink('RTop','rep','0',xl('IP Schdule'),'reports/timeSchduler.php'); ?>
+	  <?php genMiscLink('RTop','rep','0',xl('Nurse Station'),'reports/nurseStation.php'); ?>
 	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_tp_dynamic_finder.php'); ?>
 	   <?php } elseif($newcrop_user_role['newcrop_user_role']=='erxdoctor') { ?>
 	  
@@ -1399,6 +1402,7 @@ if (!empty($reg)) {
 		<li><a class="collapsed" id="manageimg" ><span><?php xl('Manage','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Vouchers'), 'reports/editvoucjers.php'); ?>
+		<?php genMiscLink('RTop','rop','0',xl('Doctors Share'), 'reports/doctors_share.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Receipts'), 'reports/editreceipts.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Discharge Clearance '), 'reports/discharge_clearence_copy.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Voucher Copy '), 'reports/voucher_copy.php'); ?>
@@ -1421,7 +1425,8 @@ if (!empty($reg)) {
 		<?php genMiscLink('RTop','rep','0',xl('Patients By Sub Category'), 'reports/subCatstatistics.php'); ?>
 		<?php genMiscLink('RTop','rep','0',xl('Referral Patients'), 'reports/refPatient.php'); ?>
 		<?php genMiscLink('RTop','rep','0',xl('Registered Patients'), 'reports/RegPat.php'); ?>
-		<?php genMiscLink('RTop','rep','0',xl('Visits'), 'reports/visit.php'); ?>
+		
+		<?php genMiscLink('RTop','adm','0',xl('Visit'),'drugs/visit.php'); ?>
 		
 		  
         </ul>    
@@ -1441,8 +1446,8 @@ if (!empty($reg)) {
       <?php genMiscLink('RBot','cod','2',xl('Billing Sheet'),'patient_file/encounter/load_form.php?formname=fee_sheet'); ?>
       <?php //if ($GLOBALS['use_charges_panel']) genTreeLink('RBot','cod',xl('Charges')); ?>
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
-	  <!--<!--?php genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher.php?framed=1'); ?> -->
-	  <?php // genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher1.php?framed=1'); ?> 
+	  <?php genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher.php?framed=1'); ?> 
+	  <?php  genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher1.php?framed=1'); ?> 
 	  <?php genMiscLink('RTop','voc','0',xl('Expenditure Voucher'),'reports/General_Voucher.php?framed=1'); ?> 
       <?php genMiscLink('RBot','pay','2',xl('Payment'),'patient_file/front_payment.php'); ?>
 	  <?php genMiscLink('RBot','pay','2',xl('Payment IP'),'patient_file/front_payment_test.php'); ?>
@@ -1584,7 +1589,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
       <?php
 	  // Changed the target URL from practice settings -> Practice Settings - Pharmacy... Dec 09,09 .. Visolve ... This replaces empty frame with Pharmacy window
 	  if (acl_check('admin', 'practice' )) genMiscLink('RTop','adm','0',xl('Practice'),'../controller.php?practice_settings&pharmacy&action=list'); ?>
-      <?php if (acl_check('admin', 'superbill')) genTreeLink('RTop','sup',xl('Codes')); ?>
+      <?php if (acl_check('admin', 'super')) genTreeLink('RTop','sup',xl('Codes')); ?>
       <?php if (acl_check('admin', 'super'    )) genMiscLink('RTop','adm','0',xl('Layouts'),'super/edit_layout.php'); ?>
       <?php if (acl_check('admin', 'super'    )) genMiscLink('RTop','adm','0',xl('Lists'),'super/edit_list.php'); ?>
       <?php if (acl_check('admin', 'acl'      )) genMiscLink('RTop','adm','0',xl('ACL'),'usergroup/adminacl.php'); ?>
@@ -1707,6 +1712,8 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
   ?>
       <li><a class="collapsed_lv2"><span><?php xl('Financial','e') ?></span></a>
         <ul>
+		
+		 <?php genMiscLink('RTop','adm','0',xl('Doctor Share'),'drugs/show.php'); ?>
 		 <?php genMiscLink('RTop','rep','0',xl('Doctors By IP/OP'),'reports/salesdocipop.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Lab Report'),'reports/LabStatistics.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Sales'),'reports/sales_by_item.php'); ?>

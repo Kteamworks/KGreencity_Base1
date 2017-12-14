@@ -374,19 +374,31 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		
 		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
 	  */
-	    $query="select code_type,sum(fee) as DTOPD,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
+	      $query="select code_type,sum(fee) as DTOPD,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
          ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter  and b.fee>1 and b.code_type='Doctor Charges' and billed=1 and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'" ;
+		
 		$res = sqlStatement($query); 
 		 $row = sqlFetchArray($res);
+		 
+		 $Nquery="select sum(fee) as DTOPD,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
+         ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter and b.code='US00004'  and b.fee>1 and b.code_type='Doctor Charges' and billed=1 and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'" ;
+		$Nres = sqlStatement($Nquery); 
+		 $Nrow = sqlFetchArray($Nres);
+		 $NDTOPD=$Nrow['DTOPD'];
+		 
 		 $DTCT="OPD";
-		 $DTOPD=$row['DTOPD'];
+		 $DTOPD=$row['DTOPD'] - $NDTOPD ;
+		 if($DTOPD <0)
+			 $DTOPD=0;
 		 $query2="select sum(fee) LT from billing b where code_type='Lab Test' and activity=1 and billed=1 and b.fee>1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
 		 $res2 = sqlStatement($query2); 
+		
 		 $row2 = sqlFetchArray($res2);
+		
 		 $LTCT="LAB";
 		 $LT=$row2['LT'];
 		 
-		 $query3="select sum(fee) XR from billing b where code_type='Services' and  code='X - RAY' and b.fee>1 and activity=1 and billed=1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
+		 $query3="select sum(fee) XR from billing b where code_type='Services' and b.fee>1 and activity=1 and billed=1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
 		 $res3 = sqlStatement($query3); 
 		 $row3 = sqlFetchArray($res3);
 		 $XRCT="X-RAY";
@@ -396,8 +408,8 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		 $query4="select sum(fee) RG from billing b where code_type='ward charges' and code like '% Registration' and activity=1 and billed=1 and b.fee>1 and   b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
 		 $res4 = sqlStatement($query4); 
 		 $row4 = sqlFetchArray($res4);
-		 $RGCT="Registration Charges";
-		 $RG=$row4['RG'];
+		 //$RGCT="Registration Charges";
+		// $RG=$row4['RG'];
 		 
 		 
 		 $query4="select sum(fee) SC from billing b where code_type in ('scans','Scans') and activity=1 and billed=1 and b.fee>1 and b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
@@ -666,8 +678,25 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   <td class="detail"><B>
    <?php echo "Total"; ?>
   </td>
+  <?php $card="select sum(amount1 + amount2) as card from payments where dtime >='$from_date 00:00:00' and dtime <='$to_date 23:59:59' and method='card_payment'";
+		 $rescard = sqlStatement($card);
+		 $card1 = sqlFetchArray($rescard);
+            
+		 
+	$cash="select sum(amount1 + amount2) as cash from payments where dtime >='$from_date 00:00:00' and dtime <='$to_date 23:59:59' and method='cash'";
+		 $rescash = sqlStatement($cash);
+		 $cash1 = sqlFetchArray($rescash);	
+          			  
+		 
+	
+ ?>
   <td class="right" >
-   <?php bucks($Tamount); ?>
+   <?php bucks($Tamount);
+   if(empty($card1['card']));
+     $card1='0';
+	 if(empty($cash1['cash']));
+     $cash1='0';
+//echo ' ='. $card1['card'].'(Card) +'.$cash1['cash'].'(Cash)';   ?>
   </td>
   <td class="right" >
    <?php  ?>
@@ -687,7 +716,8 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
   </td>
   </tr>
   
-  
+ 
+
   
   <tr></tr>
   <tr bgcolor="#f12ddd">
@@ -695,7 +725,10 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <?php echo "Grand Total"; ?>
   </td>
   <td class="right" >
-   <?php $Eamount=$Tamount-$expamt; bucks($Eamount); ?>
+   <?php $Eamount=$Tamount-$expamt; bucks($Eamount);
+    
+
+   ?>
   </td>
   <td class="right" >
    <?php  ?>

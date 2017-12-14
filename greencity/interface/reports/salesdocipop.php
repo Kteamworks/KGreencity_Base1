@@ -57,7 +57,8 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
   </td>
   <td class="detail" colspan="3">
-   <?php if ($_POST['form_details']) echo xl('Total for') . ' '; echo display_desc($product); ?>
+   <?php if ($_POST['form_details']) echo xl('Total');?>
+   <?php if ($_POST['form_details']) echo xl('Total');?>
   </td>
   <td align="right">
    <?php echo $productqty; ?>
@@ -156,7 +157,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
    <?php echo $qty; ?>
   </td>
   <td align="right">
-   <?php echo bucks($catpayout); ?>
+  <input type='text' value = '<?php echo bucks($catpayout); ?>' >
   </td>
   <td align="right">
    <?php echo bucks($rowamount-$catpayout) ; ?>
@@ -413,7 +414,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
       $res = sqlStatement($query);
       while ($row = sqlFetchArray($res)) {
         thisLineItem($row['pid'], $row['encounter'],
-          $row['IPOP'], $row['code'] . ' ' . $row['code_text'],
+          $row['IPOP'], $row['code1'] . ' ' . $row['code_text'],
           substr($row['date'], 0, 10), $row['units'], $row['payout'],$row['fee'], $row['invoice_refno']);
       }
       //

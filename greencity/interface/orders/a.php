@@ -309,7 +309,7 @@ $form_provider = empty($_POST['form_provider']) ? '' : intval($_POST['form_provi
 
  <tr class='head'>
   <td><?php echo xlt('Name'       ); ?></td>
-  <td><?php echo xlt('ID'         ); ?></td>
+  <td><?php echo xlt('Order ID'         ); ?></td>
   <td><?php echo xlt('Date'       ); ?></td>
   <td><?php echo xlt('ID'         ); ?></td>
   <td><?php echo xlt('Code'       ); ?></td>

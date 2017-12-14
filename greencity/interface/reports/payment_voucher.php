@@ -358,14 +358,15 @@ if($_POST['form_save'])
 		$catid='';
 		$head="IP Consultation Charges";
 	}
-$qr="select username from users where id='".$pr."'";
+$qr="select username,id from users where id='".$pr."'";
 $q=sqlStatement($qr);
 
 $rs=sqlFetchArray($q);
 $rse=$rs['username'];
+$rse1=$rs['id'];
 
 
- 	$qry="UPDATE billing set voucherpaid_YN='1'  where code_text='".$rse."'and billed='1' and code_type='Doctor Charges' AND " ."date >=  ? AND date <= ?";
+ 	$qry="UPDATE billing set voucherpaid_YN='1'  where provider_id='".$rse1."'and billed='1'  AND " ."date >=  ? AND date <= ?";
 		array_push($sqlBindArray,"$from_date 00:00:00","$to_date 23:59:59");
 	$r1=sqlStatement($qry,$sqlBindArray);
 	$posted_date=$today;
@@ -505,10 +506,10 @@ echo "".text($rse)."</td>";
 <td>Remarks:</td>
 </tr>
 <tr> </tr>
-<tr height="30">
+<!--<tr height="30">
 <td>Payment Mode:<?php echo text($paymode)?></td>
 <td align="right">Reference No:</td>
-</tr>
+</tr>-->
 <tr> </tr>
 <tr> </tr>
 <tr> </tr>
@@ -530,7 +531,7 @@ echo "".text($rse)."</td>";
 
   if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
 	  
-	if (empty($_POST['form_des'])) {
+	/*if (empty($_POST['form_des'])) {
 		//$this->load->helper('url');
 		echo "<script>";
 		//"  window.location.href = '" . base_url() ."";
@@ -538,7 +539,7 @@ echo "".text($rse)."</td>";
 		//echo "location.href='" . base_url() ."";
 		echo "exit()";
 		echo "</script>";
-	}
+	} */
     $rows = array();
     $from_date = $form_from_date;
     $to_date   = $form_to_date;
@@ -652,10 +653,11 @@ Pay To:
 
 <?php 
 $pr=$_POST['form_provider'];
-$qr="select username from users where id='".$pr."'";
+$qr="select username,id from users where id='".$pr."'";
 $q=sqlStatement($qr);
 
 $rs=sqlFetchArray($q);
+$rse1=$rs['id'];
 $rse=$rs['username'];
 echo "".text($rse)."</td>";
 
@@ -715,8 +717,9 @@ echo "".text($rse)."</td>";
 	{
 		$vocquery.="AND fe.pc_catid!=10";
 	} 
-	//$vocquery="select sum(payout) as payout from billing where code_text='".$rse."'and billed='1' and code_type='Doctor Charges' AND activity=1 AND voucherpaid_YN!=1 AND " .
-    //    "date >=  ? AND date <= ? ";
+	//echo "select sum(payout) as payout from billing where provider_id='".$rse1."'and billed='1'  AND activity=1 AND voucherpaid_YN!=1";
+	$vocquery="select sum(payout) as payout from billing where provider_id='".$rse1."'and billed='1' AND activity=1 AND voucherpaid_YN!=1 AND " .
+        "date >  ? AND date <= ? ";
 		array_push($sqlBindArray,"$from_date 00:00:00","$to_date 23:59:59");
 	$res=sqlStatement($vocquery,$sqlBindArray);
 	

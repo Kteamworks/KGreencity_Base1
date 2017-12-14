@@ -79,7 +79,7 @@ function contraceptionClass($code_type, $code) {
   }
   return $contra;
 }
-
+  $_SESSION['encounter']=$encounter;
 // This writes a billing line item to the output page.
 //
 function echoLine($lino,$codetype, $code, $modifier, $ndc_info='',
@@ -301,9 +301,17 @@ $gbfa=sqlFetchArray($grpbillq); */
 		echo "  <td class='billcell' align='center'><input type='text' name='bill[".attr($lino)."][referral]' " .
         "value='" . htmlspecialchars($referral, ENT_QUOTES) . "' size='8' /></td>\n";
   }
-  
+  $enc1=$_SESSION['encounter'];
   if (strpos($code_text,DR) !== false) {
-                $des = '(Consultation)';
+                //$des = '(Consultation)';
+			    $ipop=sqlQuery("select encounter_ipop from form_encounter where encounter='$enc1' ");
+				$ipopcheck=$ipop[encounter_ipop];
+				if (strpos($ipopcheck,IP) !== false) {
+				$specialty=sqlQuery("select specialty from users where username='$code_text' ");
+				$des=' ('.$specialty['specialty'].')';
+				}else{
+					$des = '(Consultation)';
+				}
   }
   echo "  <td class='billcell'>$strike1" . text($code_text).$des  . "$strike2</td>\n";
     
@@ -430,7 +438,7 @@ function genProviderSelect($selname, $toptext, $default=0, $disabled=false) {
   $res = sqlStatement($query);
   echo "   <select name='" . attr($selname) . "'";
   if ($disabled) echo " disabled";
-  echo ">\n";
+  echo " required>\n";
   echo "    <option value=''>" . text($toptext) . "\n";
   while ($row = sqlFetchArray($res)) {
     $provid = $row['id'];

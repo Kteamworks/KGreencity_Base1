@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.2, created on 2016-10-24 12:02:16
+<?php /* Smarty version 2.6.2, created on 2017-05-25 11:34:09
          compiled from C:/xampp/htdocs/greencity/templates/prescription/general_edit.html */ ?>
 <?php require_once(SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xampp/htdocs/greencity/templates/prescription/general_edit.html', 95, false),array('function', 'amcCollect', 'C:/xampp/htdocs/greencity/templates/prescription/general_edit.html', 115, false),array('function', 'html_select_date', 'C:/xampp/htdocs/greencity/templates/prescription/general_edit.html', 136, false),array('function', 'html_options', 'C:/xampp/htdocs/greencity/templates/prescription/general_edit.html', 142, false),array('function', 'html_radios', 'C:/xampp/htdocs/greencity/templates/prescription/general_edit.html', 227, false),)), $this); ?>
@@ -401,4 +401,4 @@ function CheckRequired(objID) {
 '; ?>
 
 
-</html>
+</html>

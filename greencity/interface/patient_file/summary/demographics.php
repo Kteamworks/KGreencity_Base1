@@ -149,6 +149,7 @@ function image_widget($doc_id,$doc_catg)
         echo "<div id='printb' > <table id=tid background='id1.jpg'  width='330' height='100'><tr>";
         echo $to_url;
         echo "</tr></table> </div>";
+		
 }
 
 // Determine if the Vitals form is in use for this site.
@@ -165,6 +166,7 @@ $insco_name = "";
 if ($result3['provider']) {   // Use provider in case there is an ins record w/ unassigned insco
   $insco_name = getInsuranceProvider($result3['provider']);
 }
+
 ?>
 <html>
 
@@ -741,6 +743,7 @@ expand_collapse_widget($widgetTitle, $widgetLabel, $widgetButtonLabel,
 		//Debit the patient balance from insurance balance
 		$insurancebalance = get_patient_balance($pid, true) - $patientbalance;
 	   $totalbalance=$patientbalance + $insurancebalance;
+	   $_SESSION['totalbalance'] = $totalbalance;
  if ($GLOBALS['oer_config']['ws_accounting']['enabled']) {
  // Show current balance and billing note, if any.
   echo "<table border='0'><tr><td>" .

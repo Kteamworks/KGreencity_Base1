@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.2, created on 2016-07-15 12:12:35
+<?php /* Smarty version 2.6.2, created on 2017-06-08 11:46:54
          compiled from C:/xampp/htdocs/greencity/templates/documents/general_list.html */ ?>
 <?php require_once(SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xampp/htdocs/greencity/templates/documents/general_list.html', 14, false),)), $this); ?>
@@ -47,4 +47,4 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'xl', 'C:/xa
 
 </div>
 </body>
-</html>
+</html>

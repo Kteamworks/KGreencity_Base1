@@ -409,7 +409,7 @@ if ($form_batch) {
  <tr class='head'>
   <td colspan='2'><?php echo $form_batch ? xl('Patient') : xl('Order'); ?></td>
   <td colspan='4'><?php xl('Report','e'); ?></td>
-  <td colspan='7'><?php xl('Results and','e'); ?> <span class='reccolor''>
+  <td colspan='8'><?php xl('Results and','e'); ?> <span class='reccolor''>
    <?php  xl('Recommendations','e'); ?></span></td>
  </tr>
 
@@ -427,6 +427,7 @@ if ($form_batch) {
   <td><?php xl('Units', 'e'); ?></td>
   <td><?php xl('Range','e'); ?></td>
   <td><?php xl('Sent Outside','e'); ?></td>
+  <td><?php xl('Comment','e'); ?></td>
  </tr>
 
 <?php 
@@ -505,7 +506,7 @@ while ($row = sqlFetchArray($res)) {
   else {
     if ($review_status == "received") continue;
   }
-
+ 
   $selects = "pt2.procedure_type, pt2.procedure_code, pt2.units AS pt2_units, " .
     "pt2.range AS pt2_range, pt2.procedure_type_id AS procedure_type_id, " .
     "pt2.name AS name, pt2.description, pt2.seq AS seq, " .
@@ -532,7 +533,7 @@ while ($row = sqlFetchArray($res)) {
   // This union emulates a full outer join. The idea is to pick up all
   // result types defined for this order type, as well as any actual
   // results that do not have a matching result type.
- $query= "(SELECT $selects FROM procedure_type AS pt2 " .
+$query= "(SELECT $selects FROM procedure_type AS pt2 " .
     "LEFT JOIN procedure_result AS ps ON $pscond AND $joincond " .
     "WHERE ( case when $pt2cond!=0 then $pt2cond else $pt3cond end  )" .
     ") UNION (" .
@@ -704,10 +705,18 @@ while ($row = sqlFetchArray($res)) {
     echo "<input type='hidden' name='form_line[$lino]' " .
       "value='$order_id:$order_seq:$report_id:$result_id' />";
     echo "</td>\n";
+	
+	
 
    echo "  <td>";
     echo generate_select_list("form_result_lab[$lino]", 'proc_res_abnormal',
       $result_lab, xl(''), ' ', 'cellselect'); 
+    echo "</td>\n";
+	
+	 echo "  <td class='bold' style='cursor:pointer' " .
+      "onclick='extShow($lino, this)' align='center' " .
+      "title='" . xl('Click here to view/edit more details') . "'>";
+    echo "&nbsp;?&nbsp;";
     echo "</td>\n";
 
     echo " </tr>\n";

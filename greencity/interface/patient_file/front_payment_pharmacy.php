@@ -43,6 +43,8 @@ else {
     $enddate = $_POST['end'];
 }
 //Patient related stuff
+$tmpid=$_SESSION['maxId'];
+$tmpid1=$_SESSION['maxId1'];
 if ($_POST["form_patient"])
 $form_patient = isset($_POST['form_patient']) ? $_POST['form_patient'] : '';
 //$form_pid = isset($_POST['form_pid']) ? $_POST['form_pid'] : '';
@@ -295,12 +297,12 @@ $insurance1=sqlFetchArray($insurance);
 
 
 
-$billingdate=sqlStatement("select max(date) as d from billing  where encounter='".$encounter11."'");
+$billingdate=sqlStatement("select max(date) as d from billing  where encounter='".$e."'");
 $billdate=sqlFetchArray($billingdate);
 
 
 
-$insurance2=sqlStatement("select * from billing_activity_final where encounter='".$encounter11."'");
+$insurance2=sqlStatement("select * from billing_activity_final where encounter='".$e."'");
 $insurance2=sqlFetchArray($insurance2);
 $authno=$insurance2['auth_no'];
 $age=$patdata['age'];
@@ -381,8 +383,8 @@ $rateplan=$patdata['rateplan'];
 			//echo "<td class='bold' width='10%'>".xlt('UOM')."</td>";
 			echo "<td class='bold' width='10%' align='right'>".xlt('Rate')."</td>";
 			echo "<td class='bold' width='10%' align='right'>".xlt('Qty')."</td>";
-			echo "<td class='bold' width='10%' align='right'>".xlt('Tax Code')."</td>";
-			echo "<td class='bold' width='10%' align='right'>".xlt('Tax Amt')."</td>";
+			echo "<td class='bold' width='10%' align='right'>".xlt('GST %')."</td>";
+			echo "<td class='bold' width='10%' align='right'>".xlt('GST Amt')."</td>";
 			//echo "<td class='bold' width='10%' align='right'>".xlt('Payable Total Amt')."</td>";
             echo "<td class='bold' width='10%' align='right'>".xlt('Amount')."</td></tr><tr style='border-bottom: 1px solid #000;'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
 			echo "</b>";
@@ -392,28 +394,36 @@ $rateplan=$patdata['rateplan'];
             //foreach ($patient as $be) {
 
                 $ta = split(":",$patient);
-                $billing = getPatientBillingEncounterPharm($pids[$iCounter],$ta[1]);
-
+                //$billing = getPatientBillingEncounterPharm($pids[$iCounter],$ta[1]);
+                $billing=sqlStatement("select * from billing where pid=$form_pid and encounter=$e and id>$tmpid");
                 $billings[] = $billing;
 				
 				$item_code=null;
 				//$sub_total=sqlStatement("SELECT sum(fee) as fees,code_type,count(code_type) as c  from billing where encounter='".$encounter."' group by code_type ");
                 
-				foreach ($billing as $b)				
+				//foreach ($billing as $b)
+				
+				
+				 $memo="Discount";
+                   // $discount=0;
+                  $discount = sqlQuery("SELECT SUM(adj_amount) AS adjustments FROM ar_activity WHERE memo='$memo' and pid = '$form_pid' and encounter='$e' and sequence_no > $tmpid1") ;
+	                                         
+									  
+				  echo $totaldis=$discount['adjustments'];
+				
+				
+                 while($b=sqlFetchArray($billing))				
 				{
+					
 				    //Discount
-					 $memo="Discount";
-                    $discount=0;
-                    $discount = sqlQuery("SELECT SUM(adj_amount) AS adjustments FROM ar_activity WHERE " .
-	                                          "memo=? and pid = ? and encounter= ? ",array($memo,$form_pid,$encounter11));
-					$totaldis=$discount['adjustments'];
+					
 					
 					//$subtotal=0;
                     // grab the date to reformat it in the output
                     $bdate = strtotime($b['date']);
 					$ct=$b['code_type'];
 					
-					$counta=sqlStatement("SELECT max(date) d,sum(fee) as st ,code_type,notecodes,count(code_type) as c from billing where activity='1' and encounter='".$encounter11."' and code_text not in ('INSURANCE DIFFERENCE AMOUNT','REGISTRATION CHARGES','INSURANCE CO PAYMENT') and code_type='".$ct."'");
+					$counta=sqlStatement("SELECT max(date) d,sum(fee) as st ,code_type,notecodes,count(code_type) as c from billing where activity='1' and encounter='".$e."' and code_text not in ('INSURANCE DIFFERENCE AMOUNT','REGISTRATION CHARGES','INSURANCE CO PAYMENT') and code_type='".$ct."'");
 					
 					//b['code_text']!=''
 					$cc=sqlFetchArray($counta);
@@ -435,7 +445,9 @@ $rateplan=$patdata['rateplan'];
 					$drugdetails=sqlStatement("select * from drugs where name='".$drugid."'");
 					$d=sqlFetchArray($drugdetails);
 					$rate=$b['fee']/$b['units'];
-					$vatamount=($d['vat']*$d['mrp'])/100;
+					//echo $d['mrp']."</br>";
+					$vatamount=($b['units']*($d['vat']*$d['PricePerUnit'])/100);
+				    $totalvat = $vatamount + $totalvat;
 					if($b['code_type']=='Pharmacy Charge'){
                     echo "<tr>";
                    
@@ -473,14 +485,26 @@ $rateplan=$patdata['rateplan'];
             // Calculate the copay for the encounter
             $copays = getPatientCopay($pids[$iCounter],$ta[1]);
 
-			$re=sqlQuery("select approved_amt,rec_amt from billing_activity_final where encounter=?",array($encounter11));
+			$re=sqlQuery("select approved_amt,rec_amt from billing_activity_final where encounter=?",array($e));
 			$approved_amt=$re['approved_amt'];
 			$ins_due=$approved_amt-$re['rec_amt'];
            
 //		   echo "<tr style='border-top: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
-	//	   echo "<tr style='border-bottom: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
+	//   echo "<tr style='border-bottom: 1px solid #000;'><td colspan=6>&nbsp; </td></tr>";
 			//echo "<tr style='border-top: 1px solid #000;'><td>&nbsp; </td></tr>";
-            echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>".xlt('Bill Amount:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($total + abs($copays)) . "</td></tr>";
+			 echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>&nbsp&nbsp"."</td><td class='text' align='right'></td></tr>";
+			 echo "<tr><td class='bold' colspan=4 style='text-align:right'>".xlt('SGST :')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney(($totalvat)/2) . "</td>";
+			$sgst = oeFormatMoney(($totalvat)/2);
+			$cgst = oeFormatMoney(($totalvat)/2);
+            echo "<td class='bold' colspan=4 style='text-align:right'>".xlt('SubTotal:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($total + abs($copays)) . "</td></tr>";
+			echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=4 style='text-align:right'>".xlt('CGST :')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney(($totalvat)/2 ). "</td>";
+			
+			echo "<td class='bold' colspan=4 style='text-align:right'>".xlt('Discount:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($totaldis) . "</td></tr>";
+			
+			 
+			 echo "<tr ><td class='bold' colspan=4 style='text-align:right'>".xlt('Total GST :')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($sgst + $cgst) . "</td>";
+			
+			echo "<td class='bold' colspan=4 style='text-align:right'>".xlt('Amount:')."&nbsp&nbsp"."</td><td class='text' align='right'>" . oeFormatMoney($total - $totaldis + abs($copays)) . "</td></tr>";
 			//echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>".xlt('Primary Sponsor Amount:')."&nbsp&nbsp"."</td><td //class='text' align='right'>" . oeFormatMoney($approved_amt) . "</td></tr>";
 			
 			
@@ -503,7 +527,7 @@ $rateplan=$patdata['rateplan'];
              */
 			  $inres = sqlStatement("SELECT user,dtime,amount1,amount2,receipt_id,method FROM payments WHERE " .
           "pid = ? AND encounter = ?  AND activity=1  " .
-      "ORDER BY dtime", array($form_pid,$encounter11) );
+      "ORDER BY dtime", array($form_pid,$e) );
     while ($inrow = sqlFetchArray($inres)) {
       $payer = empty($inrow['payer_type']) ? 'Pt' : ('Ins' . $inrow['payer_type']);
       $charges -= sprintf('%01.2f', $inrow['amount1']);

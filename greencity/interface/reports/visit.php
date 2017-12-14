@@ -1,583 +1,271 @@
 <?php
-// Copyright (C) 2006-2010 Rod Roark <rod@sunsetsystems.com>
+
+ // Copyright (C) 2006-2011 Rod Roark <rod@sunsetsystems.com>
+ //
+ // This program is free software; you can redistribute it and/or
+ // modify it under the terms of the GNU General Public License
+ // as published by the Free Software Foundation; either version 2
+ // of the License, or (at your option) any later version.
+
+$sanitize_all_escapes  = true;
+$fake_register_globals = false;
+
+ require_once("../globals.php");
+ require_once("$srcdir/acl.inc");
+ require_once("drugs.inc.php");
+ require_once("$srcdir/options.inc.php");
+ require_once("$srcdir/formdata.inc.php");
+ require_once("$srcdir/htmlspecialchars.inc.php");
+
+ $alertmsg = '';
+ $drug_id = $_REQUEST['drug'];
+ $info_msg = "";
+ $tmpl_line_no = 0;
+
+ if (!acl_check('admin', 'drugs')) die(xlt('Not authorized'));
+
+// Format dollars for display.
 //
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-
-// This is a report of sales by item description.  It's driven from
-// SQL-Ledger so as to include all types of invoice items.
-
-require_once("../globals.php");
-require_once("$srcdir/patient.inc");
-require_once("$srcdir/sql-ledger.inc");
-require_once("$srcdir/acl.inc");
-require_once("$srcdir/formatting.inc.php");
-require_once "$srcdir/options.inc.php";
-require_once "$srcdir/formdata.inc.php";
-
 function bucks($amount) {
-  if ($amount) echo oeFormatMoney($amount);
+  if ($amount) {
+    $amount = sprintf("%.2f", $amount);
+    if ($amount != 0.00) return $amount;
+  }
+  return '';
 }
 
-function display_desc($desc) {
-  if (preg_match('/^\S*?:(.+)$/', $desc, $matches)) {
-    $desc = $matches[1];
+// Write a line of data for one template to the form.
+//
+function writeTemplateLine($selector, $dosage, $period, $quantity, $refills, $prices, $taxrates) {
+  global $tmpl_line_no;
+  ++$tmpl_line_no;
+
+  echo " <tr>\n";
+  echo "  <td class='tmplcell drugsonly'>";
+  echo "<input type='text' name='form_tmpl[$tmpl_line_no][selector]' value='" . attr($selector) . "' size='8' maxlength='100'>";
+  echo "</td>\n";
+  echo "  <td class='tmplcell drugsonly'>";
+  echo "<input type='text' name='form_tmpl[$tmpl_line_no][dosage]' value='" . attr($dosage) . "' size='6' maxlength='10'>";
+  echo "</td>\n";
+  echo "  <td class='tmplcell drugsonly'>";
+  generate_form_field(array(
+    'data_type'   => 1,
+    'field_id'    => 'tmpl[' . $tmpl_line_no . '][period]',
+    'list_id'     => 'drug_interval',
+    'empty_title' => 'SKIP'
+    ), $period);
+  echo "</td>\n";
+  echo "  <td class='tmplcell drugsonly'>";
+  echo "<input type='text' name='form_tmpl[$tmpl_line_no][quantity]' value='" . attr($quantity) . "' size='3' maxlength='7'>";
+  echo "</td>\n";
+  echo "  <td class='tmplcell drugsonly'>";
+  echo "<input type='text' name='form_tmpl[$tmpl_line_no][refills]' value='" . attr($refills) . "' size='3' maxlength='5'>";
+  echo "</td>\n";
+  foreach ($prices as $pricelevel => $price) {
+    echo "  <td class='tmplcell'>";
+    echo "<input type='text' name='form_tmpl[$tmpl_line_no][price][" . attr($pricelevel) . "]' value='" . attr($price) . "' size='6' maxlength='12'>";
+    echo "</td>\n";
   }
-  return $desc;
+  $pres = sqlStatement("SELECT option_id FROM list_options " .
+    "WHERE list_id = 'taxrate' ORDER BY seq");
+  while ($prow = sqlFetchArray($pres)) {
+    echo "  <td class='tmplcell'>";
+    echo "<input type='checkbox' name='form_tmpl[$tmpl_line_no][taxrate][" . attr($prow['option_id']) . "]' value='1'";
+    if (strpos(":$taxrates", $prow['option_id']) !== false) echo " checked";
+    echo " /></td>\n";
+  }
+  echo " </tr>\n";
 }
 
-function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transdate, $qty,$payout, $amount, $irnumber='') {
-  global $product, $category, $producttotal, $productqty, $cattotal, $catqty,$catpayout,$grandhospayout,$granddocpayout, $grandtotal, $grandqty,$totcatpayout;
-  global $productleft, $catleft,$catsubpayout;
+// Translation for form fields used in SQL queries.
+//
 
-  $invnumber = $irnumber ? $irnumber : "$patient_id.$encounter_id";
-  $rowamount = sprintf('%01.2f', $amount);
-  $catpayout= sprintf('%01.2f', $payout);
-  if (empty($rowcat)) $rowcat = 'None';
-  $rowproduct = $description;
-  if (! $rowproduct) $rowproduct = 'Unknown';
 
-  if ($product != $rowproduct || $category != $rowcat) {
-    if ($product) {
-      // Print product total.
-      if ($_POST['form_csvexport']) {
-        if (! $_POST['form_details']) {
-          echo '"' . display_desc($category) . '",';
-          echo '"' . display_desc($product)  . '",';
-          echo '"' . $productqty             . '",';
-          echo '"'; bucks($producttotal); echo '"' . "\n";
-        }
-      }
-      else {
-?>
- <!--<tr bgcolor="#ddddff">
-  <td class="detail">
-   <!--?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
-  </td>
-  <td class="detail" colspan="3">
-   <!--?php if ($_POST['form_details']) echo xl('Total for') . ' '; echo display_desc($product); ?>
-  </td>
-  <td align="right">
-   <!--?php echo $productqty; ?>
-  </td>
-   <td align="right">
-   <!--?php echo  bucks($catsubpayout); ?>
-  </td>
-   <td align="right">
-   <!--?php echo bucks($producttotal-$catsubpayout); ?>
-  </td>
-  <td align="right">
-   <!--?php bucks($producttotal); ?>
-  </td>
- </tr> -->
-<?php
-      } // End not csv export
-    }
-    $producttotal = 0;
-    $productqty = 0;
-	$catsubpayout=0;
-    $product = $rowproduct;
-    $productleft = $product;
-  }
+if (isset($_POST['submit'])) {
+	
+	$_SESSION['from']= $from = $_POST['FromDate'];
+	$_SESSION['to'] =$to = $_POST['toDate'];
+	$cat=$_POST['category'];
+	/*$list = sqlStatement("SELECT b.date,b.fee, b.pid, b.encounter, b.code_type, b.code, b.units,
+        b.code_text, fe.date, fe.facility_id, fe.invoice_refno,b.payout,substring(fe.encounter_ipop,1,2)IPOP
+        FROM billing AS b 
+        JOIN code_types AS ct ON ct.ct_key = b.code_type 
+        JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter 
+        
+        WHERE b.servicegrp_id=8 and b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT')
+        AND b.activity = 1 AND b.fee > 0 AND substring(fe.encounter_ipop,1,2) = 'IP' AND
+        b.date >= '$from 00:00:00' AND b.date <= '$to 23:59:59' order by b.pid");
+		*/
+		$list = sqlStatement("select distinct b.bill_id, fe.* from form_encounter fe join billing b
+        on fe.encounter=b.encounter
+        where b.date>='$from 00:00:00' and b.date<='$to 23:59:59' and substring(encounter_ipop,1,2) = '$cat'");
+}
 
-  if ($category != $rowcat) {
-    if ($category) {
-      // Print category total.
-      if (!$_POST['form_csvexport']) {
+
+
+if (isset($_POST['submit_form'])) {
+
+ $j=0;
+	foreach($_POST['patient'] as $selected){
+   
+   //echo $patient= $_POST['patient'][$j];
+    $doctor= $_POST['doctor'][$j];
+   	$fee= $_POST['fee'][$j];
+    $payout= $_POST['payout'][$j];
+    $hospital= $_POST['hospital'][$j];
+    $pid1= $_POST['pid'][$j];
+    $encounter1= $_POST['encounter'][$j];
+	
+   
+  sqlQuery("Update billing set payout= $payout where pid='$pid1' and encounter='$encounter1' and code_text='$doctor' "); 
+   
+   
+	$j++;
+	}
+	}
 ?>
 
-<tr bgcolor="#E5E4E2">
-  <td class="detail">
-   &nbsp;
-  </td>
-  <td class="detail" colspan="5">
-  
-  </td>
-  
- </tr> 
-<?php
-      } // End not csv export
-    }
-    $cattotal = 0;
-    $catqty = 0;
-    $category = $rowcat;
-    $catleft = $category;
-	//$totcatpayout=0;
-  }
 
-  if ($_POST['form_details']) {
-    if ($_POST['form_csvexport']) {
-      echo '"' . display_desc($category ) . '",';
-      echo '"' . display_desc($product  ) . '",';
-      echo '"' . oeFormatShortDate(display_desc($transdate)) . '",';
-      echo '"' . display_desc($invnumber) . '",';
-	  
-      echo '"' . display_desc($qty      ) . '",';
-	  echo '"' . bucks($catpayout      ) . '",';
-	  echo '"' . bucks($rowamount-$catpayout      ) . '",';
-      echo '"'; bucks($rowamount); echo '"' . "\n";
-    }
-    else {
-?>
 
- <tr>
-  <td class="detail">
-   <?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
-  </td>
-  <td class="detail" >
-   <?php echo display_desc($productleft); ?>
-  </td>
-  <td align="right">
-   <?php echo oeFormatShortDate($transdate); ?>
-  </td>
-  <td align="right">
-  
-  <?php  $tmp = sqlQuery("SELECT fname,lname FROM patient_data WHERE " .
-            "pid = '$patient_id' ".
-            ""); 
-			$name=$tmp['fname'].' '.$tmp['lname'];?>
-   <a href='../patient_file/pos_checkout.php?ptid=<?php echo $patient_id; ?>&enc=<?php echo $encounter_id; ?>'>
-   <?php echo $name ?></a>
-  </td>
- 
-  <td align="right">
-  <!-- <?php bucks($rowamount); ?>-->
-  </td>
- </tr>
-<?php
+<!DOCTYPE html>
 
-    } // End not csv export
-  } // end details
-  $producttotal += $rowamount;
-  $catsubpayout += $catpayout; 
-  $cattotal     += $rowamount;
-  $grandtotal   += $rowamount;
-  $totcatpayout += $catpayout;
-  $productqty   += $qty;
-  $catqty       += $qty;
-  $grandqty     += $qty;
-  $grandhospayout+=$totcatpayout;
-} // end function
-
-  if (! acl_check('acct', 'rep')) die(xl("Unauthorized access."));
-
-  $INTEGRATED_AR = $GLOBALS['oer_config']['ws_accounting']['enabled'] === 2;
-
-  if (!$INTEGRATED_AR) SLConnect();
-
-  $form_from_date = fixDate($_POST['form_from_date'], date('Y-m-d'));
-  $form_to_date   = fixDate($_POST['form_to_date']  , date('Y-m-d'));
-  $form_facility  = $_POST['form_facility'];
-  $docuser  = $_POST['doc'];
-  
-
-  if ($_POST['form_csvexport']) {
-    header("Pragma: public");
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Content-Type: application/force-download");
-    header("Content-Disposition: attachment; filename=sales_by_item.csv");
-    header("Content-Description: File Transfer");
-    // CSV headers:
-    if ($_POST['form_details']) {
-      echo '"Category",';
-      echo '"Item",';
-      echo '"Date",';
-      echo '"Bill No.",';
-     // echo '"Qty",';
-	 // echo '"Doctor Chrg",';
-	 // echo '"Hospital Chrg",';
-     // echo '"Amount"' . "\n";
-    }
-    else {
-      echo '"Category",';
-      echo '"Item",';
-      echo '"Qty",';
-	  echo '"Doctor Chrg",';
-	  echo '"Hospital Chrg",';
-      echo '"Total"' . "\n";
-    }
-  } // end export
-  else {
-?>
 <html>
-<head>
-<?php html_header_show();?>
-<style type="text/css">
-/* specifically include & exclude from printing */
-@media print {
-    #report_parameters {
-        visibility: hidden;
-        display: none;
-    }
-    #report_parameters_daterange {
-        visibility: visible;
-        display: inline;
-    }
-    #report_results {
-       margin-top: 30px;
-    }
-}
-
-/* specifically exclude some from the screen */
-@media screen {
-    #report_parameters_daterange {
-        visibility: hidden;
-        display: none;
-    }
-}
-</style>
-
-<script
-  src="https://code.jquery.com/jquery-2.2.4.min.js"
-  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-  crossorigin="anonymous"></script>
-<script language="JavaScript">
-$(document).ready(function(){
-//$("tr td:nth-child(5)").css("display","none");
-//$("tr td:nth-child(6)").css("display","none");
-//$("tr td:nth-child()").css("display","none");
-
-
-});
-</script>
-
-
-
-
-
-
-
-<title><?php xl('Doctor Charges IP & OP','e') ?></title>
-</head>
-
-<body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' class="body_top">
-
-<span class='title'><?php xl('Patients Visit','e'); ?>  <?php xl('','e'); ?></span>
-
-<form method='post' action='visit.php' id='theform'>
-
-<div id="report_parameters">
-<input type='hidden' name='form_refresh' id='form_refresh' value=''/>
-<input type='hidden' name='form_csvexport' id='form_csvexport' value=''/>
-<table>
- <tr>
-  <td width='630px'>
-	<div style='float:left'>
-
-	<table class='text'>
-		<tr>
-			<!--<td class='label'>
-				<!--?php xl('Facility','e'); ?>:
-			</td>
-		<!--	<td>
-			<!--?php dropdown_facility(strip_escape_custom($form_facility), 'form_facility', true); ?>
-			</td> -->
-			<td class='label'>
-			   <?php xl('From','e'); ?>:
-			</td>
-			<td>
-			   <input type='text' name='form_from_date' id="form_from_date" size='10' value='<?php echo $form_from_date ?>'
-				onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
-			   <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
-				id='img_from_date' border='0' alt='[?]' style='cursor:pointer'
-				title='<?php xl('Click here to choose a date','e'); ?>'>
-			</td>
-			<td class='label'>
-			   <?php xl('To','e'); ?>:
-			</td>
-			<td>
-			   <input type='text' name='form_to_date' id="form_to_date" size='10' value='<?php echo $form_to_date ?>'
-				onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' title='yyyy-mm-dd'>
-			   <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
-				id='img_to_date' border='0' alt='[?]' style='cursor:pointer'
-				title='<?php xl('Click here to choose a date','e'); ?>'>
-			</td>
-			
-			 <?php $qdoc = "SELECT id, username, fname, lname FROM users WHERE authorized != 0 AND active = 1"; 
-			 $redoc= sqlStatement($qdoc); ?>
-			
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Selectize.js Demo</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" media="all" href="jsDatePick_ltr.min.css" />
 		
-			
-			
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-			   <input type='checkbox' name='form_details'<?php  if ($form_details) echo ' checked'; ?> checked>
-			   <?php  xl('Details','e'); ?>
-			</td>
-		</tr>
-	</table>
-
-	</div>
-
-  </td>
-  <td align='left' valign='middle' height="100%">
-	<table style='border-left:1px solid; width:100%; height:100%' >
-		<tr>
-			<td>
-				<div style='margin-left:15px'>
-					<a href='#' class='css_button' onclick='$("#form_refresh").attr("value","true"); $("#form_csvexport").attr("value",""); $("#theform").submit();'>
-					<span>
-						<?php xl('Submit','e'); ?>
-					</span>
-					</a>
-
-					<?php if ($_POST['form_refresh'] || $_POST['form_csvexport']) { ?>
-					<a href='#' class='css_button' onclick='window.print()'>
-						<span>
-							<?php xl('Print','e'); ?>
-						</span>
-					</a>
-					<a href='#' class='css_button' onclick='$("#form_refresh").attr("value",""); $("#form_csvexport").attr("value","true"); $("#theform").submit();'>
-						<span>
-							<?php xl('CSV Export','e'); ?>
-						</span>
-					</a>
-					<?php } ?>
-				</div>
-			</td>
-		</tr>
-	</table>
-  </td>
- </tr>
-</table>
-
-</div> <!-- end of parameters -->
-
-<?php
- if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
-?>
-<div id="report_results">
-<table >
- <thead>
+       
+        
+	</head>
   
-  <th align="left">
-   <?php xl('S.NO.','e'); ?>
-  </th>
+
+<form method="post" action="">
+    <div class="container col-sm-12">
+    <div class="row">
+		<div class="col-md-10">
+		<table class="table table-bordered table-fixed" id="tab_logic">
+		<tr><th>From</th><th>To</th><th>Category</th><th></th><tr>
+		<tr><td><input type="text" style="text-align:left;" id="inputField1" name="FromDate"  value="<?php echo $_SESSION['from']; ?>" class="form-control"  />
+		
+        </td>
+		<td><input type="text" id="inputField2"  name="toDate" value="<?php echo $_SESSION['to']; ?>" class="form-control"/></td>
+		
+		
+		<td><select name='category' class='form-control'>
+		     <option value="IP">IP</option>
+			 <option value="OP">OP</option>
+		</select>
+		</td>
+		<td><input type="submit" style="text-align:left;"  name='submit' class="form-control"/></td>
+		</tr>
+		</table>
+		
+		
+		</form>
+		
+		
+		<script type="text/javascript" src="jsDatePick.min.1.3.js"></script>
+		<script type="text/javascript">
+		window.onload = function(){
+		new JsDatePick({
+			useMode:2,
+			target:"inputField1",
+			dateFormat:"%Y-%m-%d"
+		
+		});
+		
+		new JsDatePick({
+			useMode:2,
+			target:"inputField2",
+			dateFormat:"%Y-%m-%d"
+		
+		});
+	};
+
+	</script>
+	
+		
+		
+<form method="post" action="">
+		
+			<table class="table table-bordered table-fixed" id="tab_logic">
+				<thead>
+					<tr class="danger">
+						<th class="text-left col-sm-1">
+							S.No.
+						</th>
+						<th class="text-left col-sm-2">
+							Patient Name
+						</th>
+						
+						<th class="text-left col-sm-2">
+							Date
+						</th>
+						
+						
+						<th class="text-left col-sm-2">
+							Bill No
+						</th>
+						
+						
+					</tr>
+				</thead>
+				
+				<tbody>
+
+			<?php 
+			
+			$i=1;
+			
+            $rowCount = count($rows);
   
-  <th align="left">
-   <?php xl('Visit','e'); ?>
-  </th>
+                
+			while($list1 = sqlFetchArray($list)){ 
+			 $patId = $list1['pid'];
+			
+			$patient = sqlQuery("select title,fname from patient_data where pid= $patId");
+			 
+			?>
+					<tr>
+						<td>
+						<?php echo $i; ?>
+						</td>
+						<td>
+                           <input type='text' name='patient[]' value='<?php echo $patient['title'].' '.$patient['fname']; ?>' style="height:2em;border:1px solid white;" readonly>
+			
+					
+				
+					</td>
+					
+					 <td>
+                        <input type='text' name='cat[]' value='<?php echo $list1['date'];   ?>' style="height:2em;border:1px solid white;" readonly>
+ </td>
+  <td>
+                        <a href="doctorshare.php?id=<?php echo $list1['bill_id']; ?>"><input type='text' name='cat[]' value='<?php echo $list1['bill_id'];   ?>' style="height:2em;border:1px solid white;" readonly></a>
+ </td>
  
- <th align="right">
-   <?php xl('Date','e'); ?>
-  </th>
-   <th align="right">
-   <?php xl('Patient Name','e'); ?>
-  </th>
  
-  <!--<th align="left">
-   <?php xl('Referred To','e'); ?>
-  </th>-->
- </thead>
-<?php
-  } // end not export
-  }
-  if ($_POST['form_refresh'] || $_POST['form_csvexport']) {
-    $from_date = $form_from_date;
-    $to_date   = $form_to_date;
+					
+                        
+						
+						<input type='hidden' name='pid[]' value='<?php echo $list1['pid'];  ?>'>
+						<input type='hidden' name='encounter[]' value='<?php echo $list1['encounter'];  ?>'>
+						
+						
+					</tr>
+					<?php $i++; }  ?>
+					
+					<tr><td colspan='4' align='center'><input type='submit' name='submit_form' value='Save'></td></tr>
+                  
+				</tbody>
+			</table>
+			</form>
+		</div>
+ </div></div>
 
-    $category = "";
-    $catleft = "";
-    $cattotal = 0;
-    $catqty = 0;
-    $product = "";
-    $productleft = "";
-    $producttotal = 0;
-    $productqty = 0;
-    $grandtotal = 0;
-    $grandqty = 0;
-    $totcatpayout=0;
-	$catsubpayout=0;
-    if ($INTEGRATED_AR) {
-		
-		
-		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
-		
-			  $query = "SELECT  * FROM form_encounter a,patient_data b,billing d
-where a.pid=d.pid and a.encounter=d.encounter and a.encounter_ipop like 'OP%'  and d.code_type in('Doctor charges','lab test','scans') and
-a.pid=b.pid and activity=1  and  a.date >= '$from_date 00:00:00' AND a.date <= '$to_date 23:59:59' group by d.encounter" ;
-		 
-		
-      if ($form_facility) {
-       // $query .= " AND fe.facility_id = '$form_facility'";
-      }
-     // $query .= " ORDER BY date desc";
-      //group by fe.encounter_ipop,b.code_text,fe.encounter 
-        //    ORDER BY b.code, IPOP
-      $res = sqlStatement($query);
-	  $i=1;
-      while ($row = sqlFetchArray($res)) {
-		  
-		  $des = $row['code_text'];
-		  
-		  if (strpos($des,DR) !== false) {
-                $des = 'Consultation';
-  }
-		  
-        thisLineItem($row['pid'], $row['encounter'],
-          $i, $row['code1'] . ' ' . $des,
-          substr($row['date'], 0, 10), $row['units'], $row['payout'],$row['fee'], $row['invoice_refno']);
-		  $i++;
-      }
-      //
-      /* $query = "SELECT s.sale_date, s.fee, s.quantity, s.pid, s.encounter, " .
-        "d.name, fe.date, fe.facility_id, fe.invoice_refno " .
-        "FROM drug_sales AS s " .
-        "JOIN drugs AS d ON d.drug_id = s.drug_id " .
-        "JOIN form_encounter AS fe ON " .
-        "fe.pid = s.pid AND fe.encounter = s.encounter AND " .
-        "fe.date >= '$from_date 00:00:00' AND fe.date <= '$to_date 23:59:59' " .
-        "WHERE s.fee != 0"; */
-      // If a facility was specified.
-      if ($form_facility) {
-        $query .= " AND fe.facility_id = '$form_facility'";
-      }
-      //$query .= " ORDER BY d.name, fe.date, fe.id";
-      //
-    /*   $res = sqlStatement($query);
-      while ($row = sqlFetchArray($res)) {
-        thisLineItem($row['pid'], $row['encounter'], xl('Products'), $row['name'],
-          substr($row['date'], 0, 10), $row['quantity'], $row['fee'], $row['invoice_refno']);
-      } */
-    }
-    else {
-      $query = "SELECT ar.invnumber, ar.transdate, " .
-        "invoice.description, invoice.qty, invoice.sellprice " .
-        "FROM ar, invoice WHERE " .
-        "ar.transdate >= '$from_date' AND ar.transdate <= '$to_date' " .
-        "AND invoice.trans_id = ar.id " .
-        "ORDER BY invoice.description, ar.transdate, ar.id";
-      $t_res = SLQuery($query);
-      if ($sl_err) die($sl_err);
-      for ($irow = 0; $irow < SLRowCount($t_res); ++$irow) {
-        $row = SLGetRow($t_res, $irow);
-        list($patient_id, $encounter_id) = explode(".", $row['invnumber']);
-        // If a facility was specified then skip invoices whose encounters
-        // do not indicate that facility.
-        if ($form_facility) {
-          $tmp = sqlQuery("SELECT count(*) AS count FROM form_encounter WHERE " .
-            "pid = '$patient_id' AND encounter = '$encounter_id' AND " .
-            "facility_id = '$form_facility'");
-          if (empty($tmp['count'])) continue;
-        }
-        thisLineItem($patient_id, $encounter_id, '', $row['description'],
-          $row['transdate'], $row['qty'], $row['sellprice'] * $row['qty']);
-      } // end for
-    } // end not $INTEGRATED_AR
-
-    if ($_POST['form_csvexport']) {
-      if (! $_POST['form_details']) {
-        echo '"' . display_desc($product) . '",';
-        echo '"' . $productqty            . '",';
-        echo '"'; bucks($producttotal); echo '"' . "\n";
-      }
-    }
-    else {
-?>
-
- <!--<tr bgcolor="#ddddff">
-  <td class="detail">
-   <!--?php echo display_desc($catleft); $catleft = "&nbsp;"; ?>
-  </td>
-  <td class="detail" colspan="3">
-   <!--?php if ($_POST['form_details']) echo xl('Total for') . ' '; echo display_desc($product); ?>
-  </td>
-  <td align="right">
-   <!--?php echo $productqty; ?>
-  </td>
-  <td align="right">
-   <!--?php //echo $productqty; ?>
-  </td>
-  <td align="right">
-   <!--?php //echo $productqty; ?>
-  </td>
-  <td align="right">
-   <!--?php bucks($producttotal); ?>
-  </td>
- </tr> -->
-
- <!--<tr bgcolor="#ffdddd">
-  <td class="detail">
-   &nbsp;
-  </td>
-  <td class="detail" colspan="3">
-   <!--?php echo xl('Total for category') . ' '; echo display_desc($category); ?>
-  </td>
-  <td align="right">
-   <!--?php echo $catqty; ?>
-  </td>
-  <td align="right" >
-   <!--?php echo bucks($totcatpayout); ?>
-  </td>
-  <td align="right" >
-   <!--?php echo bucks($cattotal-$totcatpayout); ?>
-  </td>
-  <td align="right">
-   <!--?php bucks($cattotal); ?>
-  </td>
- </tr> -->
-
-<!--<tr>
-  <td class="detail" colspan="4">
-   <!--?php xl('Grand Total','e'); ?>
-  </td>
-  <td align="right" >
-   <!--?php echo $grandqty; ?>
-  </td>
-  <td align="right" >
-   <!--?php  ?>
-  </td>
-  <td align="right" >
-   <!--?php //echo $grandqty; ?>
-  </td>
-  <td align="right">
-   <!--?php bucks($grandtotal); ?>
-  </td>
- </tr> -->
-
-<?php
-
-    } // End not csv export
-  }
-  if (!$INTEGRATED_AR) SLClose();
-
-  if (! $_POST['form_csvexport']) {if($_POST['form_refresh']){
-?>
-
-</table>
-</div> <!-- report results -->
-<?php } else { ?>
-<div class='text'>
- 	<?php echo xl('Please input search criteria above, and click Submit to view results.', 'e' ); ?>
-</div>
-<?php } ?>
-
-</form>
-
-</body>
-
-<!-- stuff for the popup calendar -->
-<link rel='stylesheet' href='<?php echo $css_header ?>' type='text/css'>
-<style type="text/css">@import url(../../library/dynarch_calendar.css);</style>
-<script type="text/javascript" src="../../library/dynarch_calendar.js"></script>
-<?php include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); ?>
-<script type="text/javascript" src="../../library/dynarch_calendar_setup.js"></script>
-<script type="text/javascript" src="../../library/js/jquery.1.3.2.js"></script>
-
-<script language="Javascript">
- Calendar.setup({inputField:"form_from_date", ifFormat:"%Y-%m-%d", button:"img_from_date"});
- Calendar.setup({inputField:"form_to_date", ifFormat:"%Y-%m-%d", button:"img_to_date"});
-</script>
-
-
-
-
-</html>
-<?php
-  } // End not csv export
-?>
+ </html>

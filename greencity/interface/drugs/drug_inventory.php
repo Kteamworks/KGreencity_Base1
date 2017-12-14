@@ -176,7 +176,7 @@ function dosort(orderby) {
   </th>
   
   <th style="text-align:right">
-   <?php echo xlt('Vat'); ?>
+   <?php echo xlt('GST'); ?>
   </th>
   
   <th style="text-align:right">

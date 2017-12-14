@@ -253,6 +253,12 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 	 {
               $catshow = 'Consultation';
 	 }
+	 
+	 else if($qry1['code_type']=='Pharmacy Charge')
+	 {
+              $catshow = 'Pharmacy';
+	 }
+	 
 	 else {
 		 $catshow = $qry1['code_type'];
 	 }

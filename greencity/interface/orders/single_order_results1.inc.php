@@ -91,6 +91,14 @@ function generate_order_report($orderid, $input_form=false, $genstyles=true) {
 	  
 	  $j++;
 	  }
+	     echo "<script language='JavaScript'>\n";
+
+
+   echo "window.close();\n";
+    
+  
+  echo "</script>\n";
+  exit();
   }
   
   

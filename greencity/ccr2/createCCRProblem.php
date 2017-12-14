@@ -114,6 +114,7 @@
 		$e_Problem->appendChild($e_TreatmentGvn);
 
 		$e_Text = $ccr->createElement('Text', $row3['treatmentgiven']);
+		
 		$e_TreatmentGvn->appendChild($e_Text);
 		
 		
@@ -198,6 +199,7 @@
 		$e_HealthStatus->appendChild(sourceType($ccr, $sourceID));
 	
 	} while ($row3 = sqlFetchArray($result3));
+
 	//}
 
 	// complex type should go in different find and should be included in createCCR.php

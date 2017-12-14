@@ -128,7 +128,7 @@ $out = array(
   "iTotalDisplayRecords" => $iFilteredTotal,
   "aaData"               => array()
 );
-$query = "SELECT $sellist FROM patient_data where opd=1 ";
+$query = "SELECT $sellist FROM patient_data where opd=1 order by genericname1 desc ";
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
   // Each <tr> will have an ID identifying the patient.
