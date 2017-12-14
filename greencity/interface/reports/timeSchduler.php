@@ -230,7 +230,7 @@ if(isset($_POST['submit'])){
 	  <div id='div1'>
         <div class="modal-header">
          
-          <h4 class="modal-title">Medication Summary</h4>
+          <h4 class="modal-title">Medication Summary of <?php echo $pname['fname'];  ?></h4>
         </div>
         <div  class="modal-body">
 		
@@ -239,10 +239,11 @@ if(isset($_POST['submit'])){
 		<table class="table table-striped  table-condensed table-responsive">
     <thead>
       <tr class='active'>
-	    <th>Name</th>
+	    
+		<th>Services</th>
         <th>Date</th>
         <th>Time</th>
-        <th>Services</th>
+        
 		<th>Result</th>
 		
 		
@@ -258,18 +259,18 @@ if(isset($_POST['submit'])){
 	
 	 ?>
 	 
-      <tr class='info'>
+      <tr>
 	  <?php  $dated=date('d-M-y',strtotime($listResult1['updatedTime'])); 
 	         $tym=date('h:i:s A',strtotime($listResult1['updatedTime'])); 
                  
 	  ?>
 	  
 	  
-        <td class="table-active"><?php echo $pname['fname']; ?></td>
-	   
+       
+	   <td class="table-active"><?php echo $listResult1['service']; ?></td>
 		<td class="table-active"><?php echo $dated; ?></td>
 		<td class="table-active"><?php echo $tym; ?></td>
-		<td class="table-active"><?php echo $listResult1['service']; ?></td>
+		
 		<td class="table-active"><?php echo $listResult1['result'];   ?></td>
 		
 		

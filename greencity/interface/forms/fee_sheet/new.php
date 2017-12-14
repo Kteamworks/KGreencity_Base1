@@ -12,6 +12,7 @@ $sanitize_all_escapes=true;
 require_once("../../globals.php");
 require_once("$srcdir/acl.inc");
 require_once("$srcdir/api.inc");
+require_once("$srcdir/forms.inc");
 require_once("codes.php");
 require_once("../../../custom/code_types.inc.php");
 require_once("../../drugs/drugs.inc.php");
@@ -670,6 +671,46 @@ if (!$alertmsg && ($_POST['bn_save'] || $_POST['bn_save_close'])) {
 	  {
       addBilling($encounter,$ct,$service_id, $code_type, $code, $code_text, $pid, $auth,
       $provid, $modifier, $units, $fee, $ndc_info, $justify, 0, $notecodes,$payout,$referral,$modifier);
+	 	  	   if($code_type=="Lab Test")
+  {
+	  $query4=sqlStatement("select form_id from forms where form_name='Lab Investigation' and encounter='".$encounter."' and deleted=0 ");
+	  $query5=sqlFetchArray($query4);
+	  if($query5['form_id']==null)
+	  {
+	  $query=sqlStatement("select form_id from forms where form_name='Lab Investigation' order by form_id desc limit 1");
+	  $query1=sqlFetchArray($query);
+	  $formid =$query1['form_id']+1;
+	 $provider= $_SESSION['authUserID'];
+	 $query3 = "INSERT INTO procedure_order(date_ordered,provider_id,lab_id,date_collected,order_status,patient_id,encounter_id) VALUES(NOW(),$provider,1,NOW(),'pending',$pid,$encounter)";
+     $formid= sqlInsert($query3);
+	 
+     addForm($encounter, "Lab Investigation", $formid, "procedure_order", $pid, $userauthorized);
+	 $poseq = sqlInsert("INSERT INTO procedure_order_code SET ".
+      "procedure_order_id = ?, " .
+      "diagnoses = ?, " .
+      "procedure_code = (SELECT procedure_code FROM procedure_type WHERE name =? and procedure_type='ord' ), " .
+      "procedure_name = ?",
+      array($formid,'', $code, $code));
+	 }else
+	 {
+		$proc_code= sqlStatement("SELECT procedure_code FROM procedure_type WHERE name ='".$code."' and procedure_type='ord'");
+		$proc_code1=sqlFetchArray($proc_code);
+		if($proc_code1 != null)
+		{
+	 $formid=$query5['form_id'];
+  $poseq = sqlInsert("INSERT INTO procedure_order_code SET ".
+      "procedure_order_id = ?, " .
+      "diagnoses = ?, " .
+      "procedure_code = (SELECT procedure_code FROM procedure_type WHERE name =? and procedure_type='ord' ), " .
+      "procedure_name = ?",
+      array($formid,'', $code, $code));
+		}
+		else
+		{
+			
+		}
+	 }
+  }
 	  }
 	  sqlQuery("Update billing_main_copy set total_charges=total_charges + ? where encounter=?",array($fee,$encounter));   
 	

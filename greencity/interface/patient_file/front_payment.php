@@ -685,9 +685,24 @@ $enc1=sqlFetchArray($enc);
 $provider=$enc1['provider_id'];
 $row1 = sqlStatement("SELECT * from users where id='".$provider."'");
 $row2=  sqlFetchArray($row1);
-$age=$patdata['age'];
-$age_months=$patdata['age_months'];
-$age_days=$patdata['age_days'];
+$dob = strtotime($patdata['DOB']);
+$current_time = time();
+$age_years = date('Y',$current_time) - date('Y',$dob);
+$age_months = date('m',$current_time) - date('m',$dob);
+$age_days = date('d',$current_time) - date('d',$dob);
+if ($age_days<0) {
+    $days_in_month = date('t',$current_time);
+    $age_months--;
+    $age_days= $days_in_month+$age_days;
+}
+
+if ($age_months<0) {
+    $age_years--;
+    $age_months = 12+$age_months;
+}
+$age=$age_years;
+$age_months=$age_months;
+$age_days=$age_days;
 ?>
 
 <table border='0' style="width:100%">
@@ -704,14 +719,14 @@ $age_days=$patdata['age_days'];
  <?php
 if($age!=0)
 	{
-	echo "<td>" . xlt('Age/Gender') . ": " . text($patdata['age']) ." ".xlt('Years')." , ".text($patdata['sex']). "</td>";
+	echo "<td>" . xlt('Age/Gender') . ": " . text($age) ." ".xlt('Years')." , ".text($patdata['sex']). "</td>";
 	}else
 	if($age_months!=0)
 	{
-	echo "<td>" . xlt('Age/Gender') . ": " . text($patdata['age_months']) ." ".xlt('Months')." , ".text($patdata['sex']). "</td>";
+	echo "<td>" . xlt('Age/Gender') . ": " . text($age_months) ." ".xlt('Months')." , ".text($patdata['sex']). "</td>";
 	}else
 	{
-		echo "<td >" . xlt('Age/Gender') . ": " . text($patdata['age_days']) ." ".xlt('Days')." , ".text($patdata['sex']). "</td>";
+		echo "<td >" . xlt('Age/Gender') . ": " . text($age_days) ." ".xlt('Days')." , ".text($patdata['sex']). "</td>";
 	}?>
  </tr>
  <tr>
@@ -799,23 +814,38 @@ $row3=sqlFetchArray($row32);
 $approve=sqlStatement("SELECT * from billing_activity_final where encounter='".$encounter."'");
 $approved=sqlFetchArray($approve);
 $approved_amt=$approved['approved_amt'];
-$age=$patdata['age'];
-$age_months=$patdata['age_months'];
-$age_days=$patdata['age_days'];
+$dob = strtotime($patdata['DOB']);
+$current_time = time();
+$age_years = date('Y',$current_time) - date('Y',$dob);
+$age_months = date('m',$current_time) - date('m',$dob);
+$age_days = date('d',$current_time) - date('d',$dob);
+if ($age_days<0) {
+    $days_in_month = date('t',$current_time);
+    $age_months--;
+    $age_days= $days_in_month+$age_days;
+}
+
+if ($age_months<0) {
+    $age_years--;
+    $age_months = 12+$age_months;
+}
+$age=$age_years;
+$age_months=$age_months;
+$age_days=$age_days;
     
     echo "<table border=1 rules=cols style='width:100%'>";
 	echo "<tr><td  style='padding-right: 100px;font-size:14px;' >" . xlt('Name') . ": <b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".text($patdata['title']) ."  " . text($patdata['fname']) . "  " .text($patdata['mname']) ." ".text($patdata['lname']) . "</b></td>";
 	echo "<td style='padding-right: ;font-size:14px;'  >" . xlt('Bill No') . ":&nbsp&nbsp&nbsp&nbsp&nbsp " . text($billid['bill_id']) . "</td>";
 	if($age!=0)
 	{
-	echo "<tr><td  style='padding-right: 100px;font-size:14px;' >" . xlt('Age/Gender') . ": " . text($patdata['age']) ." ".xlt('Years')." , ".text($patdata['sex']). "</td>";
+	echo "<tr><td  style='padding-right: 100px;font-size:14px;' >" . xlt('Age/Gender') . ": " . text($age) ." ".xlt('Years')." , ".text($patdata['sex']). "</td>";
 	}else
 	if($age_months!=0)
 	{
-	echo "<tr><td  style='padding-right: 100px;font-size:14px;' >" . xlt('Age/Gender') . ": " . text($patdata['age_months']) ." ".xlt('Months')." , ".text($patdata['sex']). "</td>";
+	echo "<tr><td  style='padding-right: 100px;font-size:14px;' >" . xlt('Age/Gender') . ": " . text($age_months) ." ".xlt('Months')." , ".text($patdata['sex']). "</td>";
 	}else
 	{
-		echo "<tr><td  style='padding-right: 100px;font-size:14px;' >" . xlt('Age/Gender') . ": " . text($patdata['age_days']) ." ".xlt('Days')." , ".text($patdata['sex']). "</td>";
+		echo "<tr><td  style='padding-right: 100px;font-size:14px;' >" . xlt('Age/Gender') . ": " . text($age_days) ." ".xlt('Days')." , ".text($patdata['sex']). "</td>";
 	}
 	/* if($add1!=null)
 	{
@@ -1175,7 +1205,9 @@ function coloring()
 function CheckVisible(MakeBlank)
  {//Displays and hides the check number text box.
    if(document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='check_payment' ||
-   	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='card_payment'  )
+   	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='card_payment'|| 
+      document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='neft'||
+	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='imps')
    {
 	document.getElementById('check_number').disabled=false;
    }
@@ -1191,7 +1223,9 @@ function validate()
   top.restoreSession();
   issue='no';
    if(((document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='check_payment' ||
-   	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='card_payment') &&
+   	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='card_payment'||
+	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='neft' ||
+	  document.getElementById('form_method').options[document.getElementById('form_method').selectedIndex].value=='imps') &&
 	   document.getElementById('check_number').value=='' ))
    {
     alert("<?php echo addslashes( xl('Please Fill the Check/Ref Number')) ?>");
