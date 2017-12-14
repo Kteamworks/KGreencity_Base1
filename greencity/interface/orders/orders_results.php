@@ -178,8 +178,7 @@ if ($_POST['form_submit'] && !empty($_POST['form_line'])) {
       "provider_id = '" . add_escape_custom($provider_id) . "'"); */
 	
 	$encounter=$GLOBALS['encounter'];
-   sqlStatement("UPDATE procedure_order set order_status='complete' where encounter_id='".$encounter."'");
-	
+    sqlStatement("UPDATE procedure_order set order_status='complete' where encounter_id='".$encounter."'");
 }
 ?>
 <html>
@@ -470,7 +469,7 @@ else {
   "FROM procedure_order AS po " .
   "$joins " .
   "WHERE po.patient_id = '$pid' AND po.encounter_id= '$encounter' AND $where " .
-  " group by order_type_id ORDER BY $orderby";
+  "ORDER BY $orderby";
 }
 
 $res = sqlStatement($query);
@@ -506,8 +505,13 @@ while ($row = sqlFetchArray($res)) {
   else {
     if ($review_status == "received") continue;
   }
+<<<<<<< HEAD
  
   $selects = "pt2.procedure_type, pt2.procedure_code, pt2.units AS pt2_units, " .
+=======
+
+ $selects = "pt2.procedure_type, pt2.procedure_code, pt2.units AS pt2_units,pt2.notes_test AS notes_test, " .
+>>>>>>> origin/master
     "pt2.range AS pt2_range, pt2.procedure_type_id AS procedure_type_id, " .
     "pt2.name AS name, pt2.description, pt2.seq AS seq, " .
     "ps.procedure_result_id, ps.result_code AS result_code, ps.result_text, ps.abnormal, ps.result, " .
@@ -515,11 +519,10 @@ while ($row = sqlFetchArray($res)) {
 
    // procedure_type_id for order:
   $pt2cond = "pt2.parent in( SELECT t1.procedure_type_id Grandparent
-   FROM procedure_type AS t1
-   LEFT JOIN procedure_type AS t2 ON t2.parent= t1.procedure_type_id
-   LEFT JOIN procedure_type AS t3 ON t3.parent = t2.procedure_type_id
-   LEFT JOIN procedure_type AS t4 ON t4.parent = t3.procedure_type_id 
-   where t1.parent=$order_type_id ) AND " .
+   FROM procedure_type AS t1 
+   where t1.parent=$order_type_id or parent in 
+                                (SELECT procedure_type_id from procedure_type where parent=$order_type_id or parent 
+                                in (SELECT procedure_type_id from procedure_type where parent=$order_type_id)) ) AND " .
     "(pt2.procedure_type LIKE 'res%' OR pt2.procedure_type LIKE 'rec%')";
 	
 	$pt3cond = "pt2.parent = $order_type_id AND " .
@@ -550,6 +553,7 @@ $query= "(SELECT $selects FROM procedure_type AS pt2 " .
     $restyp_name      = empty($rrow['name'            ]) ? '' : $rrow['name'];
     $restyp_units     = empty($rrow['pt2_units'       ]) ? '' : $rrow['pt2_units'];
     $restyp_range     = empty($rrow['pt2_range'       ]) ? '' : $rrow['pt2_range'];
+	$notes_test     = empty($rrow['notes_test'       ]) ? '' : $rrow['notes_test'];
     $res_seq          = empty($rrow['seq'       ]) ? '' : $rrow['seq'];
     $result_id        = empty($rrow['procedure_result_id']) ? 0 : ($rrow['procedure_result_id'] + 0);
     $result_code      = empty($rrow['result_code'     ]) ? $restyp_code : $rrow['result_code'];
@@ -559,7 +563,7 @@ $query= "(SELECT $selects FROM procedure_type AS pt2 " .
     $result_result    = empty($rrow['result'          ]) ? '' : $rrow['result'];
     $result_units     = empty($rrow['units'           ]) ? $restyp_units : $rrow['units'];
     $result_facility  = empty($rrow['facility'        ]) ? '' : $rrow['facility'];
-    $result_comments  = empty($rrow['comments'        ]) ? '' : $rrow['comments'];
+    $result_comments  = empty($rrow['comments'        ]) ? $notes_test : $rrow['comments'];
     $result_range     = empty($rrow['range'           ]) ? $restyp_range : $rrow['range'];
     $result_status    = empty($rrow['result_status'   ]) ? '' : $rrow['result_status'];
 
