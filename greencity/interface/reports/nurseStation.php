@@ -55,6 +55,20 @@ $dmy= date('Y-m-d');
 $list1 = sqlStatement("SELECT  * FROM `ipschdule` where result='' and dated<='$dmy' order by dated");
 
 $listResult = sqlStatement("SELECT  * FROM `ipschdule` where result!=''");
+$totalMedBill = sqlStatement("SELECT pid,encounter, sum(fee) as fees from ipschdule where activity = 1 group by encounter");
+ $p = 0;
+while($totalMBill = sqlFetchArray($totalMedBill)){
+	
+	 $totalBillingValue = $totalMBill['fees'];
+     $BillingPid = $totalMBill['pid'];
+	 $billingEncounter = $totalMBill['encounter'];
+	$updateBilling = sqlQuery("update billing set fee='$totalBillingValue' where pid = $BillingPid and encounter = $billingEncounter and code = 'MEDICINE CHARGES' and activity=1");
+	
+	
+$p++;	
+}
+
+
 /*----------------------------------date time comparision---------------------------------------------------------*/
 date_default_timezone_set('Asia/Kolkata');
 $time = date('H:i');
@@ -87,9 +101,14 @@ foreach($_POST['id'] as $selected) {
 	//echo "update ipschdule set result='$result',updatedTime='$time' where encounter=$visit and service='$id'";
 	//exit;
 	
-	$clinical = sqlQuery("update ipschdule set result='$result',updatedTime='$time' where ID='$id'");
+	$clinical = sqlQuery("update ipschdule set result='$result',updatedTime='$time', activity=1 where ID='$id'");
+	
+	
 	
    $j++; }
+   
+   
+   
   header('Location:nurseStation.php');
 }
 
@@ -131,7 +150,7 @@ foreach($_POST['id'] as $selected) {
 		<th>Date</th>
         <th>Time</th>
         <th>Services</th>
-		<th>Result</th>
+		<th>Value / Comment</th>
 		
 		
       </tr>
@@ -194,8 +213,8 @@ foreach($_POST['id'] as $selected) {
 	
 	<?php $i=1;
 	 while($listResult1=sqlFetchArray($listResult))  { 
-	  $patID1 = $list2['pid'];
-	         $pname1 = sqlQuery("SELECT  * FROM `patient_data` where pid='$patID'");
+	  $patID1 = $listResult1['pid'];
+	         $pname1 = sqlQuery("SELECT  * FROM `patient_data` where pid='$patID1'");
 	
 	 ?>
 	 

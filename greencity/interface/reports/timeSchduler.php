@@ -77,10 +77,30 @@ $listResult = sqlStatement("SELECT  * FROM `ipschdule` where pid=$pid and  resul
 if(isset($_POST['submit'])){
 	$hours = $_POST['hours'];
 	 $days = $_POST['days'];
-	 $newDays = date('Y-m-d', strtotime($time. " + {$days} days"));  
+	 $newDays = date('Y-m-d', strtotime($time. " + {$days} days")); 
 
 	 $tym = $_POST['service_time'];
-	 $service= $_POST['service'];
+	 $med = $_POST['medicine'];
+	
+	 $service = $_POST['service'];
+	 $check = sqlQuery("select count(Service) as chk from ip_services where Service = '$service'");
+	 $chk1 = $check['chk'];
+	 if($chk1 < 1){
+		 $addService = sqlInsert("insert into ip_services(Service) 
+		            values('$service')");	
+	 }
+	
+	 if($service=='Medicine'){
+		 
+		 $service = $med;
+	 }
+		
+	
+	
+		
+	 
+	 $fee = sqlQuery("select PricePerUnit from drugs where name = '$service' limit 1");
+	 $fees = $fee['PricePerUnit'];
 	
  	  $noOfHrs = $days*24 ;
 	  $times= $noOfHrs/$hours;
@@ -94,7 +114,22 @@ if(isset($_POST['submit'])){
 		
 		
   $medication = sqlInsert("insert into medication_schduling(pid,encounter,ward,bed,service,dated,frequency,days) 
-		            values('$pid','$encounter','$ward','$bed','$service','$dt','$hours','$days')");		
+		            values('$pid','$encounter','$ward','$bed','$service','$dt','$hours','$days')");	
+
+					
+	$chkMed = sqlQuery("select count(code) as chkMed from billing where encounter = '$encounter' and code='MEDICINE CHARGES' and activity=1");
+	
+	
+	 $chkMed1 = $chkMed['chkMed']; 
+	 if($chkMed1 < 1){
+		
+		$addmedical_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee) 
+		          values('$pid','$encounter','$dt','Services','MEDICINE CHARGES','MEDICINE CHARGES','1','0')");	
+	 }
+					
+				
+					
+  						
 		
 	
 	
@@ -126,8 +161,8 @@ if(isset($_POST['submit'])){
 		
 		
 		
-		$Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated) 
-		            values('$pid','$encounter','$ward','$bed','$t','$service','$date')");
+		$Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated,fee) 
+		            values('$pid','$encounter','$ward','$bed','$t','$service','$date','$fees')");
 					
 		 
 	
@@ -168,9 +203,32 @@ if(isset($_POST['submit'])){
 	document.body.innerHTML = restorePage;
 	location.reload(true);
 	//location.href = "timeSchduler.php";
-	
-	
 	}
+	
+	 
+	 function set_medicine() {
+	var sel = $('#serviceName').val();
+	if(sel=='Medicine'){
+	 $(".hidemedicine").css("display","");
+	}
+	else{
+                $(".hidemedicine").css("display","none");
+            }
+  
+ }
+ 
+	$(document).ready(function()
+{
+	
+	$('#toggle_doc').click(function() { 
+	
+$('#input_dr > input').attr("disabled",false);
+	$(this).find('i').toggleClass('fa-plus-circle fa-minus-circle');
+	$('#select_dr, #input_dr').toggle();
+
+   });
+});
+	
 	
 	
 	
@@ -241,6 +299,7 @@ if(isset($_POST['submit'])){
       <tr class='active'>
 	    
 		<th>Services</th>
+		
         <th>Date</th>
         <th>Time</th>
         
@@ -315,12 +374,67 @@ if(isset($_POST['submit'])){
 
 <!--------------------------------------------------------------------------------------------------------->
 
- <div class="form-group">
-      <label for="email">Service</label>
+ <div class="form-group" >
+      <label for="service">Service</label>
+	  <a href="#" id='toggle_doc' title="Service Not listed? Add Service"><i class="fa fa-plus-circle"></i></a>
+	  <div class="form-group" id='select_dr'>
+	  
+	  
+        <select class="form-control" onchange='set_medicine()' id="serviceName"  name="service">
+		<option value="">Select</option>
+		 <?php
+          $serviceList = sqlStatement("select * from ip_services order by Service");
+		  while($serviceList1 = sqlFetchArray($serviceList)){
+			  
+	  ?>
+        <option value="<?php echo $serviceList1['Service'];   ?>"> <?php echo $serviceList1['Service'];  ?></option>
+		  <?php  }  ?>	
+              </select>
+	  
+    
+	  </div>
+	  
+	  
+    </div>
+	
+	
+	
+	<!--------------------------------------------------------------------------------------------------------->
+
+<div class="form-group" id='input_dr' style="display:none">
+     
+      <input type="text" class="form-control" name="service" required disabled >
+	  
+	  </div>
+	   
+	
+<!------------------------------------------------------------------------------------------------------------>	
+	<div class="form-group hidemedicine" style="display:none">
+      <label for="email">Medicine List</label>
 	  <div class="form-group">
-      <input type="text" class="form-control"  placeholder="Service" name="service">
+	  
+	 
+
+        <select class="form-control" name="medicine">
+		<option value="">Select</option>
+		 <?php
+          $medList = sqlStatement("select * from drugs order by name");
+		  while($medList1 = sqlFetchArray($medList)){
+			  
+	  ?>
+        <option value="<?php echo $medList1['name'];   ?>"> <?php echo $medList1['name'];  ?></option>
+		  <?php  }  ?>	
+              </select>
+	  
+     
 	  </div>
     </div>
+	
+<!--------------------------------------------------------------------------------------------------------------->	
+
+
+	
+	
     <div class="form-group">
       <label for="pwd">Time</label>
       <input type="time" class="form-control" id="pwd" placeholder="Enter password" name="service_time">
