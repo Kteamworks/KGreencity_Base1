@@ -76,26 +76,60 @@ $listResult = sqlStatement("SELECT  * FROM `ipschdule` where pid=$pid and  resul
 
 if(isset($_POST['submit'])){
 	$hours = $_POST['hours'];
+	 $dt = date('Y-m-d');
+	if(empty($hours))
+	{
+		 $hours = 24; 
+	}
+	
 	 $days = $_POST['days'];
+	 if(empty($days))
+	 {
+		  $days = 1;
+	 }
 	 $newDays = date('Y-m-d', strtotime($time. " + {$days} days")); 
 
-	 $tym = $_POST['service_time'];
-	 $med = $_POST['medicine'];
+	  $tym = $_POST['service_time'];
+	 
+	 
+	 $med = $_POST['medicine']; 
+	 $genServ = $_POST['generalService']; 
+	 $speServ = $_POST['specialService']; 
 	
-	 $service = $_POST['service'];
-	 $check = sqlQuery("select count(Service) as chk from ip_services where Service = '$service'");
+	
+	$service1 = $_POST['service'];
+	 
+	
+	
+	 
+	
+	/* $check = sqlQuery("select count(Service) as chk from ip_services where Service = '$service'");
 	 $chk1 = $check['chk'];
 	 if($chk1 < 1){
 		 $addService = sqlInsert("insert into ip_services(Service) 
 		            values('$service')");	
-	 }
+	 } */
 	
-	 if($service=='Medicine'){
+	if($service1=='Medicine'){
 		 
-		 $service = $med;
+		  $service = $med; 
+   }
+	else if($service1=='Special Services'){
+		 $service = $speServ; 
+		 
+		 $serv_id = sqlQuery("select service_id from codes where code = '$service'");
+		 $speSreId = $serv_id['service_id'];
+		 
+	$service_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id) 
+		          values('$pid','$encounter','$dt','Services','$service','$service','1','0','$speSreId')");	 
 	 }
-		
+	// else if($service1=='General Services'){
+		else $service= $genServ;
+	 
+	// else{} */
+
 	
+
 	
 		
 	 
@@ -104,9 +138,9 @@ if(isset($_POST['submit'])){
 	
  	  $noOfHrs = $days*24 ;
 	  $times= $noOfHrs/$hours;
-	  $dt = date('Y-m-d');
+	 
 	  
-    $dateTime =  $dt.' '.$tym;
+     $dateTime =  $dt.' '.$tym;
 	  
 	  
 	    date_default_timezone_set('Asia/Kolkata');
@@ -120,11 +154,12 @@ if(isset($_POST['submit'])){
 	$chkMed = sqlQuery("select count(code) as chkMed from billing where encounter = '$encounter' and code='MEDICINE CHARGES' and activity=1");
 	
 	
+	
 	 $chkMed1 = $chkMed['chkMed']; 
 	 if($chkMed1 < 1){
 		
-		$addmedical_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee) 
-		          values('$pid','$encounter','$dt','Services','MEDICINE CHARGES','MEDICINE CHARGES','1','0')");	
+		$addmedical_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id) 
+		          values('$pid','$encounter','$dt','Services','MEDICINE CHARGES','MEDICINE CHARGES','1','0','SRV001274')");	
 	 }
 					
 				
@@ -144,8 +179,7 @@ if(isset($_POST['submit'])){
 		
 		$time = $newTime;
 		$t = substr($time,11);
-		
-		
+	
 		
 		 $date= substr($time,0,10);
 		 if($date >= $newDays)
@@ -160,10 +194,15 @@ if(isset($_POST['submit'])){
         $newTime = date('Y-m-d H:i', strtotime($time. " + {$addedTime} hours"));
 		
 		
-		
+		if($service1=='Special Services'){
+           $Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated,fee,activity,result) 
+		            values('$pid','$encounter','$ward','$bed','$t','$service','$date','$fees','1','Completed')");
+
+		}
+		else{ 
 		$Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated,fee) 
 		            values('$pid','$encounter','$ward','$bed','$t','$service','$date','$fees')");
-					
+		}		
 		 
 	
 		
@@ -210,12 +249,46 @@ if(isset($_POST['submit'])){
 	var sel = $('#serviceName').val();
 	if(sel=='Medicine'){
 	 $(".hidemedicine").css("display","");
+	 $(".hideitem").css("display",'');
 	}
 	else{
-                $(".hidemedicine").css("display","none");
-            }
-  
+              $(".hidemedicine").css("display","none");
+			  
+      	 }
+	
+	if(sel=='Special Services'){
+	 $(".hideservice").css("display","");
+	 $(".hideitem").css("display",'none');
+	 
+	 
+	}
+	else{
+              $(".hideservice").css("display","none");
+			  
+      	      }
+	
+	
+	if(sel=='General Services'){
+	 $(".hideGenService").css("display","");
+	 $(".hideitem").css("display",'');
+	 
+	}
+	else{
+          $(".hideGenService").css("display","none");
+			  
+      	      }
+	
  }
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
 	$(document).ready(function()
 {
@@ -227,16 +300,14 @@ $('#input_dr > input').attr("disabled",false);
 	$('#select_dr, #input_dr').toggle();
 
    });
+   
+   
 });
 	
 	
+    
 	
 	
-
-
-	
-	
-  
   </script>
   
   
@@ -380,20 +451,18 @@ $('#input_dr > input').attr("disabled",false);
 	  <div class="form-group" id='select_dr'>
 	  
 	  
-        <select class="form-control" onchange='set_medicine()' id="serviceName"  name="service">
+        <select class="form-control" onchange='set_medicine()' id="serviceName" name='service'>
 		<option value="">Select</option>
-		 <?php
-          $serviceList = sqlStatement("select * from ip_services order by Service");
-		  while($serviceList1 = sqlFetchArray($serviceList)){
-			  
-	  ?>
-        <option value="<?php echo $serviceList1['Service'];   ?>"> <?php echo $serviceList1['Service'];  ?></option>
-		  <?php  }  ?>	
+		<option value="General Services">General Services</option>
+		<option value="Special Services">Special Services</option>
+		<option value="Medicine">Medicines</option>
+		
+			
               </select>
 	  
     
 	  </div>
-	  
+	  <?php echo $nameErr;  ?>
 	  
     </div>
 	
@@ -403,7 +472,7 @@ $('#input_dr > input').attr("disabled",false);
 
 <div class="form-group" id='input_dr' style="display:none">
      
-      <input type="text" class="form-control" name="service" required disabled >
+      <input type="text" class="form-control" id='input_ser' name="service" required disabled >
 	  
 	  </div>
 	   
@@ -431,25 +500,76 @@ $('#input_dr > input').attr("disabled",false);
     </div>
 	
 <!--------------------------------------------------------------------------------------------------------------->	
+<div class="form-group hideservice" style="display:none">
+      <label for="Service">Service List</label>
+	  <div class="form-group">
+	  
+	 
+
+        <select class="form-control" name="specialService">
+		<option value="">Select</option>
+		 <?php
+          $serList = sqlStatement("SELECT id,code,code_text,code_type,service_id FROM codes WHERE active=1 AND code_type=6 ORDER BY id,code");
+		  while($serList1 = sqlFetchArray($serList)){
+			  
+	  ?>
+        <option value="<?php echo $serList1['code']; ?>"> <?php echo $serList1['code_text'];  ?></option>
+		  <?php  }  ?>	
+              </select>
+	  
+     
+	  </div>
+    </div>
+<!--------------------------------------------------------------------------------------------------------------->	
+
+<!--------------------------------------------------------------------------------------------------------------->	
+<div class="form-group hideGenService" style="display:none">
+      <label for="List">Services List</label>
+	  <div class="form-group">
+	  
+	 
+
+        <select class="form-control"  name="generalService">
+		<option value="">Select</option>
+		 <?php
+          $serviceList = sqlStatement("select * from ip_services order by Service");
+		  while($serviceList1 = sqlFetchArray($serviceList)){
+			  
+	  ?>
+        <option value="<?php echo $serviceList1['Service'];   ?>"> <?php echo $serviceList1['Service'];  ?></option>
+		  <?php  }  ?>	
+              </select>
+	  
+     
+	  </div>
+    </div>
+<!----------------------------------------------------------------------------------------------------------------->	
+	
 
 
 	
 	
     <div class="form-group">
-      <label for="pwd">Time</label>
-      <input type="time" class="form-control" id="pwd" placeholder="Enter password" name="service_time">
+	<?php
+	date_default_timezone_set('Asia/Kolkata');
+   $tym=date('G:i');
+	
+        
+	?>
+      <label for="time">Time</label>
+      <input type="time" class="form-control" id="pwd" value='<?php echo $tym;  ?>' placeholder="Enter password" name="service_time">
     </div>
 	
-	<div class="form-group">
+	<div class="form-group hideitem">
       <label for="pwd">Repetition Time</label>
-      <input type="number" class="form-control"  min='0' max='24' placeholder="Hours" name="hours">
+      <input type="number" class="form-control"  min='0' max='24' value='' placeholder="Hours"  name="hours">
 	  
 	  </div>
 	
 	
-	<div class="form-group">
+	<div class="form-group hideitem">
       <label for="pwd">Days</label>
-      <input type="number" class="form-control"  placeholder="No. of days " name="days">
+      <input type="number" class="form-control"   placeholder="No. of days" value='' id='days' name="days">
     </div>
     
     <button type="submit" name='submit' class="btn btn-default">Add</button>

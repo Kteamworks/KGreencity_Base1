@@ -54,6 +54,7 @@ $dmy= date('Y-m-d');
 
 $list1 = sqlStatement("SELECT  * FROM `ipschdule` where result='' and dated<='$dmy' order by dated");
 
+
 $listResult = sqlStatement("SELECT  * FROM `ipschdule` where result!=''");
 $totalMedBill = sqlStatement("SELECT pid,encounter, sum(fee) as fees from ipschdule where activity = 1 group by encounter");
  $p = 0;
@@ -63,6 +64,7 @@ while($totalMBill = sqlFetchArray($totalMedBill)){
      $BillingPid = $totalMBill['pid'];
 	 $billingEncounter = $totalMBill['encounter'];
 	$updateBilling = sqlQuery("update billing set fee='$totalBillingValue' where pid = $BillingPid and encounter = $billingEncounter and code = 'MEDICINE CHARGES' and activity=1");
+	
 	
 	
 $p++;	
@@ -78,13 +80,26 @@ $addedTime=1;
 /*----------------------------------------------------------------------------------------------------------------*/
 
 if(isset($_POST['submit'])){
-	
+
 	$j=0;
 foreach($_POST['id'] as $selected) {
-
-          
-	
-		  $result = $_POST['result'][$j];
+        
+         $res = $_POST['res'][$j]; 
+	   if(!empty($res)){
+		   $result = $res;
+	   }
+	   else {
+		     $result = $_POST['result'][$j];   
+	   }
+	   
+	   
+	   
+		 //echo  $result = $_POST['result'][$j]; exit;
+		 // if(empty($result)){
+			  //echo 'abhilash'; exit;
+		   //   $result = $_POST['res'][$j];
+		//  }
+		 
 		 // print_r($result);
 		 
 		  $id = $_POST['id'][$j];
@@ -101,11 +116,12 @@ foreach($_POST['id'] as $selected) {
 	//echo "update ipschdule set result='$result',updatedTime='$time' where encounter=$visit and service='$id'";
 	//exit;
 	
+	
+	//echo "update ipschdule set result='$result',updatedTime='$time', activity=1 where ID='$id'"; exit;
 	$clinical = sqlQuery("update ipschdule set result='$result',updatedTime='$time', activity=1 where ID='$id'");
 	
 	
-	
-   $j++; }
+   $j++; } 
    
    
    
@@ -127,7 +143,15 @@ foreach($_POST['id'] as $selected) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="<?php echo $css_header;?>" type="text/css">
+  <link rel="stylesheet" href="<?php echo $css_header;?>" type="text/css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 <audio id="xyz" src="alert_tones.mp3" preload="auto"></audio>
 </head>
 
@@ -150,7 +174,9 @@ foreach($_POST['id'] as $selected) {
 		<th>Date</th>
         <th>Time</th>
         <th>Services</th>
-		<th>Value / Comment</th>
+		<th>Value / Status </th>
+		<th></th>
+		
 		
 		
       </tr>
@@ -201,13 +227,41 @@ foreach($_POST['id'] as $selected) {
 		<td class="table-active"><?php echo $dated; ?></td>
 		<td class="table-active"><?php echo $tym; ?></td>
 		<td class="table-active"><?php echo $list2['service']; ?></td>
-		<td class="table-active"><input type='text'  name='result[]' ></td>
+		<!--<td class="table-active"><input type='text'  name='result[]' ></td>-->
+		<td id="<?php echo 'select_dr'.$i ?>">
+		  <select name='result[]' class="form-control">
+              <option value="">Pending</option>
+			  <option value="Completed">Completed</option>
+          </select></td>
+	   <td class="form-group" id="<?php echo 'input_dr'.$i ?>" style="display:none">
+	 <input type="text" name="res[]" class='form-control' disabled="disabled" style="width: 100%" >
+	 </td>
+	    <td><a href="#" id="<?php echo 'toggle_doc'.$i ?>" title="Add Result"><i class="fa fa-plus-circle"></i></a></td>
+		
 		
 		<input type='hidden' value='<?php echo $list2['encounter']; ?>' name='visit[]'>
 		<input type='hidden' value='<?php echo $list2['ID']; ?>' name='id[]'>
-        
 	
       </tr>  
+	  
+	  <script language="JavaScript">
+
+
+$(document).ready(function()
+{
+	
+	$('#<?php echo "toggle_doc".$i ?>').click(function() { 
+	
+		
+$('#<?php echo "input_dr".$i ?> > input').attr("disabled",false);
+	$(this).find('i').toggleClass('fa-plus-circle fa-minus-circle');
+	$('#<?php echo "select_dr".$i ?>, #<?php echo "input_dr".$i ?>').toggle();
+
+   });
+	
+});
+</script>	  
+	  
 	<?php $i++; } ?> 
 	
 	
@@ -231,6 +285,7 @@ foreach($_POST['id'] as $selected) {
 		<td class="table-active"><?php echo $tym; ?></td>
 		<td class="table-active"><?php echo $listResult1['service']; ?></td>
 		<td class="table-active"><?php echo $listResult1['result'];   ?></td>
+		<td></td>
 		
 		
         

@@ -145,7 +145,9 @@ if (isset($_GET['formseq'])) echo '&formseq=' . $_GET['formseq'];
 <?php
   $search_term = '%' . $_REQUEST['search_term'] . '%';
 
-  $query = "SELECT id,code,code_text,code_type " .
+  
+  
+ $query = "SELECT id,code,code_text,code_type " .
     "FROM codes WHERE " .
     " active=? AND " .
     "code_type=6 AND " .
