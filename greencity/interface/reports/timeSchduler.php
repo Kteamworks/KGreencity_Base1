@@ -75,6 +75,8 @@ $listResult = sqlStatement("SELECT  * FROM `ipschdule` where pid=$pid and  resul
 
 
 if(isset($_POST['submit'])){
+	
+	
 	$hours = $_POST['hours'];
 	 $dt = date('Y-m-d');
 	if(empty($hours))
@@ -118,10 +120,12 @@ if(isset($_POST['submit'])){
 		 $service = $speServ; 
 		 
 		 $serv_id = sqlQuery("select service_id from codes where code = '$service'");
+		 $price =  sqlQuery("select pr_price from prices where pr_level = 'standard' and pr_id = (select id from codes where code_text = '$service')");
+		 $service_price = $price['pr_price'];
 		 $speSreId = $serv_id['service_id'];
 		 
-	$service_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id) 
-		          values('$pid','$encounter','$dt','Services','$service','$service','1','0','$speSreId')");	 
+	$service_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id,servicegrp_id,groupname,authorized,billed,bill_date) 
+		          values('$pid','$encounter','$dt','Services','$service','$service','1','$service_price','$speSreId','6','Default','1','0','$dateTime')");	 
 	 }
 	// else if($service1=='General Services'){
 		else $service= $genServ;
@@ -158,8 +162,8 @@ if(isset($_POST['submit'])){
 	 $chkMed1 = $chkMed['chkMed']; 
 	 if($chkMed1 < 1){
 		
-		$addmedical_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id) 
-		          values('$pid','$encounter','$dt','Services','MEDICINE CHARGES','MEDICINE CHARGES','1','0','SRV001274')");	
+		$addmedical_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id,servicegrp_id,groupname,authorized,billed,bill_date) 
+		          values('$pid','$encounter','$dt','Services','MEDICINE CHARGES','MEDICINE CHARGES','1','0','SRV001162','6','Default','1','0','$dateTime')");	
 	 }
 					
 				
@@ -195,13 +199,13 @@ if(isset($_POST['submit'])){
 		
 		
 		if($service1=='Special Services'){
-           $Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated,fee,activity,result) 
-		            values('$pid','$encounter','$ward','$bed','$t','$service','$date','$fees','1','Completed')");
+           $Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated,fee,activity,result,updatedTime) 
+		            values('$pid','$encounter','$ward','$bed','$t','$service','$date','$fees','1','Completed','$t')");
 
 		}
 		else{ 
-		$Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated,fee) 
-		            values('$pid','$encounter','$ward','$bed','$t','$service','$date','$fees')");
+		$Nurse = sqlInsert("insert into ipschdule(pid,encounter,ward,bed,tym,service,dated,fee,updatedTime) 
+		            values('$pid','$encounter','$ward','$bed','$t','$service','$date','$fees','$t')");
 		}		
 		 
 	
@@ -249,32 +253,38 @@ if(isset($_POST['submit'])){
 	var sel = $('#serviceName').val();
 	if(sel=='Medicine'){
 	 $(".hidemedicine").css("display","");
+	 $("#reqMed").attr("required","required");
 	 $(".hideitem").css("display",'');
 	}
 	else{
               $(".hidemedicine").css("display","none");
+			  $("#reqMed").attr("required",false);
 			  
       	 }
 	
 	if(sel=='Special Services'){
 	 $(".hideservice").css("display","");
+	 $("#reqSpe").attr("required","required");
 	 $(".hideitem").css("display",'none');
 	 
 	 
 	}
 	else{
               $(".hideservice").css("display","none");
+			  $("#reqSpe").attr("required",false);
 			  
       	      }
 	
 	
 	if(sel=='General Services'){
 	 $(".hideGenService").css("display","");
+	 $("#reqGen").attr("required","required");
 	 $(".hideitem").css("display",'');
 	 
 	}
 	else{
           $(".hideGenService").css("display","none");
+		  $("#reqGen").attr("required",false);
 			  
       	      }
 	
@@ -447,11 +457,11 @@ $('#input_dr > input').attr("disabled",false);
 
  <div class="form-group" >
       <label for="service">Service</label>
-	  <a href="#" id='toggle_doc' title="Service Not listed? Add Service"><i class="fa fa-plus-circle"></i></a>
+	  <!--<a href="#" id='toggle_doc' title="Service Not listed? Add Service"><i class="fa fa-plus-circle"></i></a>-->
 	  <div class="form-group" id='select_dr'>
 	  
 	  
-        <select class="form-control" onchange='set_medicine()' id="serviceName" name='service'>
+        <select class="form-control" onchange='set_medicine()' id="serviceName" name='service' required>
 		<option value="">Select</option>
 		<option value="General Services">General Services</option>
 		<option value="Special Services">Special Services</option>
@@ -484,7 +494,7 @@ $('#input_dr > input').attr("disabled",false);
 	  
 	 
 
-        <select class="form-control" name="medicine">
+        <select class="form-control" name="medicine" id='reqMed'>
 		<option value="">Select</option>
 		 <?php
           $medList = sqlStatement("select * from drugs order by name");
@@ -506,7 +516,7 @@ $('#input_dr > input').attr("disabled",false);
 	  
 	 
 
-        <select class="form-control" name="specialService">
+        <select class="form-control" name="specialService" id='reqSpe'>
 		<option value="">Select</option>
 		 <?php
           $serList = sqlStatement("SELECT id,code,code_text,code_type,service_id FROM codes WHERE active=1 AND code_type=6 ORDER BY id,code");
@@ -529,7 +539,7 @@ $('#input_dr > input').attr("disabled",false);
 	  
 	 
 
-        <select class="form-control"  name="generalService">
+        <select class="form-control"  name="generalService" id = 'reqGen'>
 		<option value="">Select</option>
 		 <?php
           $serviceList = sqlStatement("select * from ip_services order by Service");
@@ -569,7 +579,7 @@ $('#input_dr > input').attr("disabled",false);
 	
 	<div class="form-group hideitem">
       <label for="pwd">Days</label>
-      <input type="number" class="form-control"   placeholder="No. of days" value='' id='days' name="days">
+      <input type="number" class="form-control"   placeholder="No. of days" value='' min='0' id='days' name="days">
     </div>
     
     <button type="submit" name='submit' class="btn btn-default">Add</button>
