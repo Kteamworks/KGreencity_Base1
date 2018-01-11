@@ -49,12 +49,7 @@ $form_patient = isset($_POST['form_patient']) ? $_POST['form_patient'] : '';
 $form_pid= $_SESSION["pid"];
 if ($form_patient == '' ) $form_pid =  $_SESSION["pid"];
 //if ($form_patient == '' ) $form_pid = '';
-if(($encounter==0)||($encounter=='')){ 
-	
- echo ("<script>alert('Please select visit')
-window.location.href='../main/finder/p_dynamic_finder_ip.php';
-</script>"); 
-}
+
 
 $patient=sqlQuery("select * from t_form_admit where pid=$pid and encounter=$encounter");
 $pname=sqlQuery("select fname,sex,age from patient_data where pid=$pid");
@@ -64,11 +59,26 @@ $count=sqlQuery("select count(*) as count from medication_schduling where pid=$p
 
 $listResult = sqlStatement("SELECT  * FROM `ipschdule` where pid=$pid and  result!=''");
 
+$ward = $patient['admit_to_ward'];
+if(empty($ward)){
+	 echo ("<script>alert('Please select IP visit')
+window.location.href='../main/finder/p_dynamic_finder_ip.php';
+</script>"); 
+}
+
+
+/*if(($encounter==0)||($encounter=='')){ 
+	
+ echo ("<script>alert('Please select visit')
+window.location.href='../main/finder/p_dynamic_finder_ip.php';
+</script>"); 
+}*/
+
 
 
 //$list1 = sqlStatement("SELECT  * FROM `nurseIP`");
 
- $ward = $patient['admit_to_ward'];
+ //$ward = $patient['admit_to_ward'];
  $bed = $patient['admit_to_bed'];
 
   
@@ -124,8 +134,8 @@ if(isset($_POST['submit'])){
 		 $service_price = $price['pr_price'];
 		 $speSreId = $serv_id['service_id'];
 		 
-	$service_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id,servicegrp_id,groupname,authorized,billed,bill_date) 
-		          values('$pid','$encounter','$dt','Services','$service','$service','1','$service_price','$speSreId','6','Default','1','0','$dateTime')");	 
+	$service_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id,servicegrp_id,groupname,authorized,billed,bill_date,payout) 
+		          values('$pid','$encounter','$dt','Services','$service','$service','1','$service_price','$speSreId','6','Default','1','0','$dateTime','0')");	 
 	 }
 	// else if($service1=='General Services'){
 		else $service= $genServ;
@@ -162,8 +172,8 @@ if(isset($_POST['submit'])){
 	 $chkMed1 = $chkMed['chkMed']; 
 	 if($chkMed1 < 1){
 		
-		$addmedical_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id,servicegrp_id,groupname,authorized,billed,bill_date) 
-		          values('$pid','$encounter','$dt','Services','MEDICINE CHARGES','MEDICINE CHARGES','1','0','SRV001162','6','Default','1','0','$dateTime')");	
+		$addmedical_charges = sqlInsert("insert into billing(pid,encounter,date,code_type,code,code_text,activity,fee,service_id,servicegrp_id,groupname,authorized,billed,bill_date,payout) 
+		          values('$pid','$encounter','$dt','Services','MEDICINE CHARGES','MEDICINE CHARGES','1','0','SRV001162','6','Default','1','0','$dateTime','0')");	
 	 }
 					
 				
@@ -319,11 +329,7 @@ $('#input_dr > input').attr("disabled",false);
 	
 	
   </script>
-  
-  
-  
-  
-
+ 
 </head>
 <body>
 <form name='' method='POST' action=''>
@@ -337,6 +343,7 @@ $('#input_dr > input').attr("disabled",false);
 		<th>Age</th>
         <th>Ward</th>
         <th>Bed</th>
+		<th>Note</th>
 		<th>Detail</th>
 		</tr>
 		
@@ -346,14 +353,13 @@ $('#input_dr > input').attr("disabled",false);
 		<td><?php echo $pname['age'];?></td>
 		<td><?php echo $patient['admit_to_ward'];?></td>
         <td><?php echo $patient['admit_to_bed'];?></td>
+		<td><a href="patient_note.php?id=<?php echo $encounter; ?>">Note</a></td>
 		<td><button type="button"  data-toggle="modal" data-target="#myModal">Click Here</button> </td>
 		</tr>
 		
 	
 </table>
 </div>
-
-
 
 <div class="container col-md-offset-10">
  
@@ -433,19 +439,7 @@ $('#input_dr > input').attr("disabled",false);
   </div>
   
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!---------------------------------------------------------------modal------------------------------------------------------------->
 
 
 

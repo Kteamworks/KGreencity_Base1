@@ -308,7 +308,7 @@ function openNewTopWindow(pid) {
 		<li><a href="#">Delete</a></li>
 		<li><a href="#">Provisional Bill</a></li>
 		<li><a href="#">Discounts</a></li>
-		 <li><a href="#">Refunds</a></li>
+		<li><a href="#">Refunds</a></li>
 		<li><a href="#">Payments</a></li>
 	</ul>
 </div>
