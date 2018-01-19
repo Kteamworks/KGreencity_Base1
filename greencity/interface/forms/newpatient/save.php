@@ -106,6 +106,7 @@ if ($mode == 'new')
       "date = '" . add_escape_custom($date) . "', " .
       "onset_date = '" . add_escape_custom($onset_date) . "', " .
       "reason = '" . add_escape_custom($reason) . "', " .
+	  "user = '" . add_escape_custom($_SESSION['authUser']) . "', " .
       "facility = '" . add_escape_custom($facility) . "', " .
       "pc_catid = '" . add_escape_custom($pc_catid) . "', " .
 	   "type = '" . add_escape_custom($type) . "', " .
