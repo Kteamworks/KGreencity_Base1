@@ -111,6 +111,9 @@ foreach ($aColumns as $colname) {
   $sellist .= ", ";
   if ($colname == 'name') {
     $sellist .= "lname, fname, mname";
+  } else if($colname== 'provider'){
+    $sellist .="a.provider_id";
+	
   }
   else
   {
@@ -180,7 +183,6 @@ $query = "SELECT  $sellist FROM form_encounter a,patient_data b,billing d,openem
 }
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
-	
   // Each <tr> will have an ID identifying the patient.
 $refdoc = $row['referral_source'];
 		$qry_usr = sqlQuery("SELECT * FROM users where user_id=?",array($refdoc));
@@ -192,7 +194,16 @@ $refdoc = $row['referral_source'];
       if ($row['lname']) $name .= $row['lname'];
       if ($row['mname']) $name .= ' ' . $row['mname'];
       $arow[] = $name;
-    }
+    }else if($colname=='provider'){
+	$providerid=$row['provider_id'];
+	$rsq=sqlStatement("select username from users where id='".$providerid."'");
+	  $prname=sqlFetchArray($rsq);
+	  $prname= $prname['username'];
+	    
+		$provider=$prname;
+	  
+	$arow[] = $provider;
+	}
 	
     else if ($colname == 'DOB' || $colname == 'regdate' || $colname == 'ad_reviewed' || $colname == 'userdate1') {
       $arow[] = oeFormatShortDate($row[$colname]);

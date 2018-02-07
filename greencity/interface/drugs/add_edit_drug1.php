@@ -302,12 +302,12 @@ else {
   </td>
  </tr>
  
-  <tr>
+ <!-- <tr>
   <td valign='top' nowrap><b><?php echo xlt('In Stock'); ?>:</b></td>
   <td>
    <input type='text' size='40' name='instock' maxlength='80' value='<?php echo attr($row['inStock']) ?>' style='width:100%' />
   </td>
- </tr>
+ </tr> -->
  
   <tr>
   <td valign='top' nowrap><b><?php echo xlt('Batch'); ?>:</b></td>
@@ -320,27 +320,26 @@ else {
   <tr>
   <td valign='top' nowrap><b><?php echo xlt('Quantity'); ?>:</b></td>
   <td>
-   <input type='text' size='40' name='qty' maxlength='80' value='<?php echo attr($row['quantity']) ?>' style='width:100%' />
+   <input type='number' size='40' name='qty' maxlength='80' value='<?php echo attr($row['quantity']) ?>' style='width:100%' />
   </td>
  </tr>
  
-  <tr>
+  <!--<tr>
   <td valign='top' nowrap><b><?php echo xlt('Free'); ?>:</b></td>
   <td>
    <input type='text' size='40' name='free' maxlength='80' value='<?php echo attr($row['free']) ?>' style='width:100%' />
   </td>
- </tr>
- 
+ </tr>-->
  <tr>
   <td valign='top' nowrap><b><?php echo xlt('Pack'); ?>:</b></td>
   <td>
-   <input type='text' size='40' name='pack' maxlength='80' value='<?php echo attr($row['pack']) ?>' style='width:100%' />
+   <input type='number' size='40' name='pack' maxlength='80' value='<?php echo attr($row['pack']) ?>' style='width:100%' />
   </td>
  </tr>
 
  
   <tr>
-  <td valign='top' nowrap><b><?php echo xlt('Date'); ?>:</b></td>
+  <td valign='top' nowrap><b><?php echo xlt('Expiry Date'); ?>:</b></td>
   <td>
    <input type='text' size='40' name='date' maxlength='80' value='<?php echo attr($row['expdate']) ?>' style='width:100%' />
   </td>
@@ -354,34 +353,34 @@ else {
   </td>
  </tr>
  
- <tr>
+ <!--<tr>
   <td valign='top' nowrap><b><?php echo xlt('Trade Price'); ?>:</b></td>
   <td>
    <input type='text' size='40' name='trade' maxlength='80' value='<?php echo attr($row['tradePrice']) ?>' style='width:100%' />
   </td>
- </tr>
+ </tr>-->
  
  
- <tr>
+ <!--<tr>
   <td valign='top' nowrap><b><?php echo xlt('Discount'); ?>:</b></td>
   <td>
    <input type='text' size='40' name='discount' maxlength='80' value='<?php echo attr($row['discount']) ?>' style='width:100%' />
   </td>
- </tr>
+ </tr>-->
  
  <tr>
-  <td valign='top' nowrap><b><?php echo xlt('Vat'); ?>:</b></td>
+  <td valign='top' nowrap><b><?php echo xlt('GST'); ?>:</b></td>
   <td>
    <input type='text' size='40' name='vat' maxlength='80' value='<?php echo attr($row['vat']) ?>' style='width:100%' />
   </td>
  </tr>
  
- <tr>
+ <!--<tr>
   <td valign='top' nowrap><b><?php echo xlt('Net Value'); ?>:</b></td>
   <td>
    <input type='text' size='40' name='total' maxlength='80' value='<?php echo attr($row['totalValue']) ?>' style='width:100%' />
   </td>
- </tr>
+ </tr>-->
 
 </table>
   </td>

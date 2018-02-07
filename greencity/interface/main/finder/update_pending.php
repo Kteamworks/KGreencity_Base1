@@ -27,14 +27,14 @@ th {text-align: left;}
 $encounter = $_GET["encounter"] ? $_GET["encounter"] : $_GET["encounter"];
 $orderid = $_GET["orderid"] ? $_GET["orderid"] : $_GET["orderid"];
 $name = $_GET["name"] ? $_GET["name"] : $_GET["name"];
-if($name=="Sent Outside")
+if($name=="Pending")
 {
 $status="pending";
-sqlStatement("UPDATE procedure_order SET lab=1 WHERE procedure_order_id='".$orderid."'");
-}else if($name=="GCH Lab")
+sqlStatement("UPDATE procedure_order SET order_status='".$status."' WHERE procedure_order_id='".$orderid."'");
+}else if($name=="Cancelled")
 {
 $status="cancelled";
-sqlStatement("UPDATE procedure_order SET lab=0 WHERE procedure_order_id='".$orderid."'");
+sqlStatement("UPDATE procedure_order SET order_status='".$status."' WHERE procedure_order_id='".$orderid."'");
 }else if($name=="Complete")
 {
 $status="complete";

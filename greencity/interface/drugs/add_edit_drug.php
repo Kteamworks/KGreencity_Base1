@@ -1371,20 +1371,23 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
   $new_drug = false;
   if ($drug_id) {
    if ($_POST['form_save']) { // updating an existing drug
-    sqlStatement("UPDATE drugs SET " .
+    $updated_qty = escapedff('qty'); 
+    $mrp_on_pack = escapedff('mrp'); 
+    $units_in_pack = escapedff('pack'); 
+	$updated_stock = $updated_qty*$units_in_pack;
+	$price_per_unit = $mrp_on_pack / $units_in_pack ;
+   
+   sqlStatement("UPDATE drugs SET " .
      "name = '"           . escapedff('name')          . "', " .
      "mfr = '"     . escapedff('mfr')    . "', " .
      "quantity = '"       . escapedff('qty')      . "', " .
      "batch = '"  . escapedff('batch') . "', " .
      "pack = '"      . escapedff('pack')     . "', " .
+	 "PricePerUnit = '". $price_per_unit. "', " .
+	 "totalStock = '". $updated_stock. "', " .
      "expdate = '"           . escapedff('date')          . "', " .
      "mrp = '"           . escapedff('mrp')          . "', " .
-     "tradePrice = '"           . escapedff('trade')          . "', " .
-     "discount = '"          . escapedff('discount')         . "', " .
      "vat = '"     . numericff('vat')    . "', " .
-     "totalValue = '"   . escapedff('total')  . "', " .
-	  "free = '"   . escapedff('free')  . "', " .
-	   "instock = '"   . escapedff('instock')  . "', " .
      "allow_multiple = "  . (empty($_POST['form_allow_multiple' ]) ? 0 : 1) . ", " .
      "allow_combining = " . (empty($_POST['form_allow_combining']) ? 0 : 1) . ", " .
      "active = "          . (empty($_POST['form_active']) ? 0 : 1) . " " .

@@ -95,7 +95,6 @@ while ($row = sqlFetchArray($res)) {
 <!-- this is a 3rd party script -->
 <script type="text/javascript" src="../../../library/js/datatables/extras/ColReorder/media/js/ColReorderWithResize.js"></script>
 
-
 <script language="JavaScript">
 
 $(document).ready(function() {
@@ -348,10 +347,10 @@ function openNewTopWindow(pid) {
 function explode(){
 $("#pt_table tbody tr").each(function(i){
 	var con = i+1;
-    $(this).prepend("<td style='text-align: left'>" + con + "</td>")
+    $(this).prepend("<td style='text-align:center;'>" + con + "</td>")
 });
 $("#pt_table thead tr:nth-child(2)").each(function(i){
-        $(this).prepend("<th width='50'>Sr No</th>")
+        $(this).prepend("<th width='50'>S.No.</th>")
 });
 }
 setTimeout(explode, 2000);

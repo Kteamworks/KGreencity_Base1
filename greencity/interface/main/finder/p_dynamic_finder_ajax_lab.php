@@ -147,9 +147,7 @@ $out = array(
   "aaData"               => array()
 );
 
-$query ="SELECT $sellist FROM form_encounter a,patient_data b,procedure_order c,procedure_order_code d $where where a.pid=b.pid 
-and a.encounter=c.encounter_id and c.lab=0 and c.procedure_order_id=d.procedure_order_id and a.pid=b.pid and a.encounter=c.encounter_id  
-group by a.pid,a.encounter  order by c.procedure_order_id desc  $limit";
+$query ="SELECT $sellist FROM form_encounter a,patient_data b,procedure_order c,procedure_order_code d $where where a.pid=b.pid and a.encounter=c.encounter_id and c.procedure_order_id=d.procedure_order_id  group by a.pid,a.encounter  order by c.procedure_order_id desc  $limit";
 
 $res = sqlStatement($query);
 while ($row = sqlFetchArray($res)) {
@@ -157,22 +155,22 @@ while ($row = sqlFetchArray($res)) {
 	$pid = $row['pid'];
 	$encounter = $row['encounter'];
 	
-	$paid1 = "select billed from billing where pid=$pid and encounter=$encounter
-	and activity = 1 AND fee>1  AND 
-    code_type='Lab Test'";
+	//$paid1 = "select billed from billing where pid=$pid and encounter=$encounter
+	//and activity = 1 AND fee>1  AND 
+   // code_type='Lab Test'";
 	// Each <tr> will have an ID identifying the patient.
 	
-	$billed = sqlStatement($paid1);
-	while($data = sqlFetchArray($billed)) {
-    if($data['billed'] !=1) {
-     $arow = array('DT_RowId' => 'pid_' . $row['pid'],'DT_RowClass' => 'PT_UNBIILLED');
-  }
+	//$billed = sqlStatement($paid1);
+	//while($data = sqlFetchArray($billed)) {
+   // if($data['billed'] !=1) {
+   //  $arow = array('DT_RowId' => 'pid_' . $row['pid'],'DT_RowClass' => 'PT_UNBIILLED');
+ // }
  
-    else {
+  //  else {
 
   $arow = array('DT_RowId' => 'pid_' . $row['pid']);
-  }
-} 
+ // }
+//} 
 	
   //$arow = array('DT_RowId' => 'pid_' . $row['pid']);
  
@@ -204,3 +202,4 @@ while ($row = sqlFetchArray($res)) {
 //
 echo json_encode($out);
 ?>
+

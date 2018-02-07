@@ -147,13 +147,7 @@ $get_provider_name=$provider_name_1['username'];
 //
 if($row2["newcrop_user_role"]=="erxnurse")
 {
-$row = sqlQuery("SELECT COUNT(a.id) AS count FROM form_encounter a,patient_data b,billing d,openemr_postcalendar_categories c 
-where  a.pc_catid=c.pc_catid and a.pid=d.pid and a.encounter=d.encounter and a.pid=b.pid and a.provider_id IN ($X) and a.date='".$today."'
- and a.pc_catid!=12");
- 
- 
- 
- 
+$row = sqlQuery("SELECT COUNT(a.id) AS count FROM form_encounter a,patient_data b,billing d,openemr_postcalendar_categories c where  a.pc_catid=c.pc_catid and a.pid=d.pid and a.encounter=d.encounter and a.pid=b.pid and a.provider_id IN ($X) and a.date='".$today."' and a.pc_catid!=12");
 }
 else
 {

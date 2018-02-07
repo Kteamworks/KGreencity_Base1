@@ -263,7 +263,7 @@ document.location.href = "../../patient_file/summary/demographics.php?set_pid=" 
 		//alert(newpid);
 		 top.restoreSession();
 		document.location.href="../../main/finder/update_pending.php?encounter=" + enc+'&name='+name+'&orderid='+orderid;
-		}else if(name=="Sent Outside")
+		}else if(name=="Cancelled")
 		{
 		top.restoreSession();
 		document.location.href="../../main/finder/update_pending.php?encounter=" + enc+'&name='+name+'&orderid='+orderid;
@@ -300,9 +300,9 @@ function openNewTopWindow(pid) {
 	     <!--<li><a href="#">Sample Collection</a></li>
 		  <li><a href="#">Sample Received</a></li>-->
 	    <li><a href="#">Add Results</a></li>
-		<!--<li><a href="#">GCH Lab</a></li>-->
-		<li><a href="#">Sent Outside</a></li>
-		<!--<li><a href="#">Complete</a></li>
+		<!--<li><a href="#">Pending</a></li>
+		<li><a href="#">Cancelled</a></li>
+		<li><a href="#">Complete</a></li>
 		<li><a href="#">Routed</a></li>-->
 		
 	</ul>
