@@ -93,6 +93,10 @@ else
 	$id="";
 
 
+$pname= sqlQuery("select p.fname,p.genericname1,p.phone_cell from billing b join patient_data p
+on b.pid=p.pid
+where b.bill_id='$id'");
+
 
 //$name=$_REQUEST['date'];
 		$list = sqlStatement("select distinct b.provider_id, b.fee,b.code_text,u.username from billing b
@@ -110,6 +114,10 @@ else
     $code1= $selected;
    	
     $payout= $_POST['payout'][$j];
+	if(empty($payout)){
+		$payout=0;
+		
+	}
     
 	
    
@@ -162,14 +170,33 @@ else
 	</head>
   
 
+		<table class="table table-bordered table-fixed table-responsive">
+		<tr>
+		    <th>Patient Name</th>
+		    <th>GCH ID</th>
+			<th>Mobile No.</th>
+		</tr>
+		<tr>
+			<td><?php echo $pname['fname']; ?> </td>
+			<td><?php echo $pname['genericname1']; ?> </td>
+			<td><?php echo $pname['phone_cell']; ?> </td>
+		</tr>	
 		
+		
+	
+		
+		
+		
+		
+		
+		</table>
 		
 		
 		
 		
 <form method="post" action="">
 		
-			<table class="table table-bordered table-fixed" id="tab_logic">
+			<table class="table table-bordered table-fixed table-responsive" id="tab_logic">
 				<thead>
 					<tr class="danger">
 						<th class="text-left col-sm-1">
@@ -209,6 +236,7 @@ else
             
 			
 			while($list1 = sqlFetchArray($list)){ 
+			
 			// $patId = $list1['pid'];
 			
 			//$patient = sqlQuery("select title,fname from patient_data where pid= $patId");

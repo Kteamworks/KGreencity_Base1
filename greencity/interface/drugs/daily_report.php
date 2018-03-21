@@ -88,48 +88,6 @@ function numericff($name) {
 }
 
 
-if (isset($_POST['submit'])) {
-	
-	$_SESSION['from']= $from = $_POST['FromDate'];
-	$_SESSION['to'] =$to = $_POST['toDate'];
-	$cat=$_POST['category'];
-	/*$list = sqlStatement("SELECT b.date,b.fee, b.pid, b.encounter, b.code_type, b.code, b.units,
-        b.code_text, fe.date, fe.facility_id, fe.invoice_refno,b.payout,substring(fe.encounter_ipop,1,2)IPOP
-        FROM billing AS b 
-        JOIN code_types AS ct ON ct.ct_key = b.code_type 
-        JOIN form_encounter AS fe ON fe.pid = b.pid AND fe.encounter = b.encounter 
-        
-        WHERE b.servicegrp_id=8 and b.code not in ('INSURANCE DIFFERENCE AMOUNT','INSURANCE CO PAYMENT')
-        AND b.activity = 1 AND b.fee > 0 AND substring(fe.encounter_ipop,1,2) = 'IP' AND
-        b.date >= '$from 00:00:00' AND b.date <= '$to 23:59:59' order by b.pid");
-		*/
-		
-		
-		if($cat=='IP'){
-		
-		$list = sqlStatement("select  b.fee,b.code_text,b.provider_id,b.payout,b.voucherpaid_YN, b.bill_id,d.discharge_date dc,b.shared, fe.* from form_encounter fe join billing b
-        on fe.encounter=b.encounter
-        join t_form_admit d
-        on  fe.encounter=d.encounter
-        where d.discharge_date>='$from 00:00:00' and d.discharge_date<='$to 23:59:59' and b.activity=1 and b.billed=1 and substring(encounter_ipop,1,2) = '$cat'
-		order by d.discharge_date");
-		}
-		else{
-			 $list = sqlStatement("select  b.payout,b.voucherpaid_YN,b.bill_id,fe.date dc,b.shared,fe.pid,fe.encounter,b.provider_id, b.fee,b.code_text from form_encounter fe join billing b
-        on fe.encounter=b.encounter
-        where fe.date>='$from 00:00:00' and fe.date<='$to 23:59:59' and b.activity=1 and b.billed=1 and substring(encounter_ipop,1,2) ='$cat'
-		order by fe.date"); 
-		
-
-			
-		}
-		
-		
-		
-}
-
-
-
 if (isset($_POST['submit_form'])) {
 
  $j=0;

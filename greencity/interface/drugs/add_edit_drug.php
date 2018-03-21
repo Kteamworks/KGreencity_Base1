@@ -1422,6 +1422,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		
 		
 		$batch= $_POST['batch'][$j];
+		$schedule= $_POST['schedule'][$j];
 		$medType= $_POST['medType'][$j];
 		//$date= $_POST['date'][$j];
 		$month= $_POST['month'][$j];
@@ -1437,7 +1438,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
 		$trade= $_POST['trade'][$j];
 		$discount= $_POST['discount'][$j];
 		$vat= $_POST['vat'][$j];
-	$mrpa = ($mrp * 100)/(100+$vat);
+	    $mrpa = ($mrp * 100)/(100+$vat);
 	
 		$total= $_POST['total'][$j];
 		$type= $_POST['type'][$j];
@@ -1484,7 +1485,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
  
 	
 			 $drug_id = sqlInsert("INSERT INTO drugs ( " .
-    "name,mfr,inStock,supplier,batch,medType,quantity,medGroup,totalStock,free,date,pack,packType,expdate,mrp,mrpa,PricePerUnit,tradePrice,discount,vat,totalValue,invoice,max_level, form, " .
+    "name,mfr,inStock,supplier,batch,schedule_h,medType,quantity,medGroup,totalStock,free,date,pack,packType,expdate,mrp,mrpa,PricePerUnit,tradePrice,discount,vat,totalValue,invoice,max_level, form, " .
     "size, unit, route, cyp_factor, related_code, " .
     "allow_multiple, allow_combining, active " .
     ") VALUES ( " .
@@ -1493,6 +1494,7 @@ if (($_POST['form_save'] || $_POST['form_delete']) && !$alertmsg) {
     "'" . $instock          . "', " .
 	 "'" .$sup. "', " .
     "'" . $batch    . "', " .
+	 "'" . $schedule    . "', " .
 	 "'" . $medType    . "', " .
     "'" . $qty      . "', " .
 	 "'" . $group      . "', " .
@@ -1800,6 +1802,7 @@ else {
    <!--<th nowrap>New</br>Medicine</th>-->
    <th nowrap>In </br>Stock</th>
    <th  nowrap>Batch </br>Number</th>
+   <th  nowrap>Schedule H</th>
   <th  nowrap>Quantity</th>
   <th  nowrap>Free</th>
   <th  nowrap>Pack</th>
@@ -1940,9 +1943,7 @@ else {
   <option value="Non-Medical">Non-Medical</option>
   <option value="Cosmetics">Cosmetics</option>
    <option value="Surgical">Surgical </option>
-  
-  
-</select> 
+  </select> 
  
   </td>
 
@@ -1953,6 +1954,14 @@ else {
   
   <td>
    <input type='text' name='batch[]'  style="width:80px;height:2em;border:1px solid white;"  value=''  id="<?php echo 'b'.$i?>"/>
+  </td>
+  
+   <td>
+   <select  style="width:100px;height:2em;border:1px solid white;"   name="schedule[]">
+  
+  <option value="0">No</option>
+   <option value="1">Yes </option>
+  </select> 
   </td>
   
   <td>

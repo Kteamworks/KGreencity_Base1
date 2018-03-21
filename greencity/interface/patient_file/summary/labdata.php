@@ -99,6 +99,7 @@ $frow = sqlQuery("SELECT * FROM facility " .
 $result=sqlQuery($spell, array($pid,$encounter) );
 
 
+
 // main db-spell
 //----------------------------------------
 $main_spell  = "SELECT procedure_result.procedure_result_id, procedure_result.result, procedure_result.result_text,  procedure_result.result_code, procedure_result.units, procedure_result.abnormal, procedure_result.range,procedure_result.comments, ";
@@ -237,7 +238,7 @@ if($printable) {
 	echo "<tr><td>" . xlt('Name') . ": <b>" . text($firstname) . "  " . text($lastname) . "</td>";
 	echo "<td>" . xlt('Patient ID') . ":" . text($genericname1) . "</td></tr>";
 	echo "<tr><td>" . xlt('Age/Gender') . ":" . ageCalculator($dob) ." ,". text($Gender)."</td>";
-	echo "<td>" . xlt('Patient Visit ID') . ":" . text($enc1['encounter_ipop']) . "</td></tr>";
+	echo "<td>" . xlt('Reporting Date') . ":" . text($result['thedate']) . "</td></tr>";
 	//echo "<tr><td>" . xlt('Referred') . ":" . text($row2['fname'])  ." ".text($row2['lname']). "</td>"; 
    echo "<td>" . xlt('') . "</td></tr>";
 	echo "</table>";
@@ -320,28 +321,10 @@ echo "<input type='checkbox' name='value_code[]' value=" . attr($rows[$i]['value
            
         }
 		
-        //echo "</td>";
-		/*if($tab == 10) {
-			echo "</td>";
-			$tab=0;
-		}*/
+       
 		
 	}
-	/*while($myrow = sqlFetchArray($query)){
-
-		echo "<input type='checkbox' name='value_code[]' value=" . attr($myrow['value_code']) . " ";
-		if($value_select){
-			if (in_array($myrow['value_code'], $value_select)){ echo "checked='checked' ";}
-		}
-		echo " /> " . text($myrow['value_text']) . "<br />";
-		$value_list[$i][value_code] = $myrow['value_code'];
-		$i++;	
-		$tab++;
-		if($tab == 10) {
-			echo "</td><td>";
-			$tab=0;
-		}	
-	}*/
+	
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";

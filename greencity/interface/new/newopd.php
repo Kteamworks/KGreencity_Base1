@@ -70,6 +70,42 @@ $form_regdate   = $_POST['regdate'  ] ? date('Y-m-d') : date('Y-m-d');
 
 </script>
 
+<script>
+		function lettersOnly() {
+			var charCode = event.keyCode;
+			/*if ((event.keyCode >=65)&&(event.keyCode <=90)) {
+				event.returnValue = false;
+				return false;
+			} */
+			
+			if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8)
+
+                return true;
+            else
+                return false;
+		}
+		
+		
+		function numbersOnly() {
+			var charCode = event.keyCode;
+			/*if ((event.keyCode >=65)&&(event.keyCode <=90)) {
+				event.returnValue = false;
+				return false;
+			} */
+			
+			if (charCode => 48 && charCode <= 57) 
+
+                return true;
+            else
+                return false;
+		}
+		
+		
+		
+	</script>
+
+
+
 </head>
 
 <body class="body_top" onload="javascript:document.new_patient.fname.focus();">
@@ -77,15 +113,15 @@ $form_regdate   = $_POST['regdate'  ] ? date('Y-m-d') : date('Y-m-d');
 <?php if ($GLOBALS['concurrent_layout']) { ?>
 <form name='new_patient' method='post' action="new_patient_save_opd.php"
  onsubmit='return validate()'>
-<span class='title'><?php xl('Add Patient Record','e');?></span>
+
 <?php } else { ?>
 <form name='new_patient' method='post' action="new_patient_save_opd.php"
  target='_top' onsubmit='return validate()'>
 <a class="title" href="../main/main_screen.php" target="_top" onclick="top.restoreSession()">
-<?php xl('Add Patient Record','e');?></a>
+</a>
 <?php } ?>
 
-<br><br>
+
 
 <center>
 
@@ -93,6 +129,7 @@ $form_regdate   = $_POST['regdate'  ] ? date('Y-m-d') : date('Y-m-d');
    <input type='hidden' name='title' value='' />
 <?php } ?>
 
+<h2 align='center' style="background-color:powderblue;">Patient Record </h2>
 <table border='0'>
 
 <?php if (!$GLOBALS['omit_employers']) { ?>
@@ -121,7 +158,7 @@ while ($orow = sqlFetchArray($ores)) {
    <span class='bold'><?php xl('First Name','e');?>: </span>
   </td>
   <td>
-   <input type='entry' size='15' name='fname' value='<?php echo $form_fname; ?>'>
+   <input type='entry' size='15' name='fname' value='<?php echo $form_fname; ?>' onkeypress="return lettersOnly()" required>
   </td>
  </tr>
 
@@ -132,7 +169,7 @@ while ($orow = sqlFetchArray($ores)) {
    <span class='bold'><?php xl('Mobile','e');?>: </span>
   </td>
   <td>
-   <input type='entry' size='15' name='mb' value='<?php echo $form_mb; ?>'>
+   <input type='entry' size='15' name='mb' maxlength="10" value='<?php echo $form_mb; ?>' onkeypress="return numbersOnly()" required>
   </td>
  </tr>
  
@@ -142,7 +179,7 @@ while ($orow = sqlFetchArray($ores)) {
    <span class='bold'><?php xl('Age','e');?>: </span>
   </td>
   <td>
-   <input type='entry' size='15' name='age' value='<?php echo $form_age; ?>'>
+   <input type='number' style="width: 10.5em;" name='age' max='100' value='<?php echo $form_age; ?>' required>
   </td>
  </tr>
 

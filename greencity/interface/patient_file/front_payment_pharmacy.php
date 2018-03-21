@@ -383,7 +383,7 @@ $rateplan=$patdata['rateplan'];
   
 
         print "<div id='superbill_billingdata'>";
-        //print "<h1>".xlt('Billing Information').":</h1>";
+       
         if (count($patient) > 0) {
             $billings = array();
             echo "<table width='100%' style='#000;'>";
@@ -461,7 +461,8 @@ $rateplan=$patdata['rateplan'];
 					$d=sqlFetchArray($drugdetails);
 					$rate=$b['fee']/$b['units'];
 					//echo $d['mrp']."</br>";
-					$vatamount=($b['units']*($d['vat']*$d['PricePerUnit'])/100);
+					
+					$vatamount=($b['units']*($d['vat']*$rate)/100);
 				    $totalvat = $vatamount + $totalvat;
 					if($b['code_type']=='Pharmacy Charge'){
                     echo "<tr>";

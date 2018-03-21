@@ -87,6 +87,13 @@ if(isset($_POST['txtHint']))
 			background-color: #F7BA4B;
 	    		color: #444343;
 		}
+		
+		
+		label {
+         display: none;
+        }
+		
+		
 </style>
 <!--  color background-color code for .menu ul li  #F04D44-->
 <script type="text/javascript" src="../../../library/js/datatables/media/js/jquery.js"></script>
@@ -113,7 +120,7 @@ $(document).ready(function() {
   // http://datatables.net/release-datatables/extras/ColReorder/server_side.html
   "aoColumns": [ <?php echo $coljson; ?> ],
   "aLengthMenu": [ 10, 25, 50, 100 ],
-  "iDisplayLength": <?php echo empty($GLOBALS['gbl_pt_list_page_size']) ? '25' : '25'; ?>,
+  "iDisplayLength": <?php echo empty($GLOBALS['gbl_pt_list_page_size']) ? '100' : '100'; ?>,
   // language strings are included so we can translate them$GLOBALS
   "oLanguage": {
    "sSearch"      : "<?php echo xla('Search all columns'); ?>:",
