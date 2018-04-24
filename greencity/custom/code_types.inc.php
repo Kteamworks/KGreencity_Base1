@@ -531,7 +531,7 @@ function code_set_search($form_code_type,$search_term="",$count=false,$active=tr
             }
       
       // Setup the where clause based on MODE
-      $query.= " WHERE ";
+      $query.= " WHERE active=1 AND ";
       if ($return_only_one) {
           $query .= $table_dot.$code_col." = ? ";
           array_push($sql_bind_array,$search_term);
