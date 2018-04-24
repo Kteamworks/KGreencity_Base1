@@ -92,7 +92,7 @@ if (isset($_POST['submit'])) {
 	
 	$_SESSION['from']= $from = $_POST['FromDate'];
 	$_SESSION['to'] =$to = $_POST['toDate'];
-	$cat=$_POST['category'];
+	//$cat=$_POST['category'];
 	/*$list = sqlStatement("SELECT b.date,b.fee, b.pid, b.encounter, b.code_type, b.code, b.units,
         b.code_text, fe.date, fe.facility_id, fe.invoice_refno,b.payout,substring(fe.encounter_ipop,1,2)IPOP
         FROM billing AS b 
@@ -103,56 +103,18 @@ if (isset($_POST['submit'])) {
         AND b.activity = 1 AND b.fee > 0 AND substring(fe.encounter_ipop,1,2) = 'IP' AND
         b.date >= '$from 00:00:00' AND b.date <= '$to 23:59:59' order by b.pid");
 		*/
+		$list = sqlStatement("select * from payments p join patient_data d
+        on p.pid=d.pid
+        where stage='pharm' and activity=1 and dtime>='$from 00:00:00' and dtime<='$to 23:59:59'");
 		
-		
-		if($cat=='IP'){
-		
-		$list = sqlStatement("select  b.fee,b.code_text,b.provider_id,b.payout,b.voucherpaid_YN, b.bill_id,d.discharge_date dc,b.shared, fe.* from form_encounter fe join billing b
-        on fe.encounter=b.encounter
-        join t_form_admit d
-        on  fe.encounter=d.encounter
-        where d.discharge_date>='$from 00:00:00' and d.discharge_date<='$to 23:59:59' and b.activity=1 and b.billed=1 and substring(encounter_ipop,1,2) = '$cat'
-		order by d.discharge_date");
-		}
-		if($cat=='OP'){
-			
-			
-			
-			 $list = sqlStatement("select  b.payout,b.voucherpaid_YN,b.bill_id,fe.date dc,b.shared,fe.pid,fe.encounter,b.provider_id, b.fee,b.code_text from form_encounter fe join billing b
-        on fe.encounter=b.encounter
-        where fe.date>='$from 00:00:00' and fe.date<='$to 23:59:59' and b.activity=1 and b.billed=1 and substring(encounter_ipop,1,2) ='OP'
-		order by fe.date"); 
-		
-
-			
-		}
-		
-		
-		
+		//$list = sqlStatement("select distinct b.encounter, fe.date,fe.pid,substring(fe.encounter_ipop,1,2) as cat from form_encounter fe join billing b
+       // on fe.encounter=b.encounter
+       // where fe.date>='$from 00:00:00' and fe.date<='$to 23:59:59'");
 }
 
 
 
-if (isset($_POST['submit_form'])) {
 
- $j=0;
-	foreach($_POST['code'] as $selected){
-   
-   //echo $patient= $_POST['patient'][$j];
-    $code1= $selected;
-   	//$fee= $_POST['fee'][$j];
-    $payout= $_POST['payout'][$j]; 
-   // $hospital= $_POST['hospital'][$j];
-    $pid1= $_POST['pid'][$j];
-    $encounter1= $_POST['encounter'][$j];
-	
-	//echo "Update billing set payout= $payout where pid='$pid1' and encounter='$encounter1' and code_text='$code' "; exit;
-  sqlQuery("Update billing set payout= $payout where pid='$pid1' and encounter='$encounter1' and code_text='$code1' "); 
-   
-   
-	$j++;
-	}
-	}
 ?>
 
 
@@ -175,22 +137,18 @@ if (isset($_POST['submit_form'])) {
   
 
 <form method="post" action="">
-    <div class="container col-sm-10">
+    <div class="container col-sm-12">
     <div class="row">
 		<div class="col-md-10">
 		<table class="table table-bordered table-fixed" id="tab_logic">
-		<tr><th>From</th><th>To</th><th>Category</th><th></th><tr>
+		<tr><th>From</th><th>To</th><th></th><tr>
 		<tr><td><input type="text" style="text-align:left;" id="inputField1" name="FromDate"  value="<?php echo $_SESSION['from']; ?>" class="form-control"  />
 		
         </td>
 		<td><input type="text" id="inputField2"  name="toDate" value="<?php echo $_SESSION['to']; ?>" class="form-control"/></td>
 		
 		
-		<td><select name='category' class='form-control'>
-		     <option value="IP">IP</option>
-			 <option value="OP">OP</option>
-		</select>
-		</td>
+		
 		<td><input type="submit" style="text-align:left;"  name='submit' class="form-control"/></td>
 		</tr>
 		</table>
@@ -223,31 +181,27 @@ if (isset($_POST['submit_form'])) {
 		
 <form method="post" action="">
 		
-			<table class="table table-responsive" id="tab_logic">
+			<table class="table table-bordered table-fixed" id="tab_logic">
 				<thead>
 					<tr class="danger">
-						<th class="text-left " style='border:0px solid'>
+						<th class="text-left col-sm-1">
 							S.No.
 						</th>
-						<th class="text-left"style='border:0px solid' >
+						<th class="text-left col-sm-2">
 							Patient Name
 						</th>
-					
-						<th class="text-left" style='border:0px solid'>
-							Bill No
+						
+						<th class="text-left col-sm-2">
+							Date
 						</th>
-						<th class="text-left" style='border:0px solid'>
-							Service
+						
+						<th class="text-right col-sm-2">
+							Amount
 						</th>
-						<th class="text-left" style='border:0px solid'>
-							Doctor
-						</th>
-						<th class="text-left" style='border:0px solid'>
-							Fees
-						</th>
-						<th class="text-left" style='border:0px solid'>
-							Doctor's Share
-						</th>
+						
+						
+						
+						
 						
 					</tr>
 				</thead>
@@ -256,111 +210,56 @@ if (isset($_POST['submit_form'])) {
 
 			<?php 
 			
-			//$j=1;
+			$i=1;
 			
-          //  $doc_info = sqlStatement("select distinct b.provider_id, b.fee,b.code_text,u.username from billing b
-            //    join users u on b.provider_id=u.id 
-            //    where bill_id='$id' and activity=1");
+            $rowCount = count($rows);
   
                 
 			while($list1 = sqlFetchArray($list)){ 
-			$rows[] = $list1;
-			}
-			 $rowCount = count($rows);
-			 
-			 
-			 for ($i = 0; $i < $rowCount; $i++){
-			 
-			 $patId = $rows[$i]['pid'];
-			 $share_done = $rows[$i]['shared'];
-			 $id = $rows[$i]['encounter']; 
-			 
-			 if( $id != $rows[$i+1]['encounter']){
-				 $id = $rows[$i+1]['encounter'];
-				 $style = 'border-bottom:1px solid grey';
-				
-				 
-			 }
-			 else {
-				 $style = 'border-bottom:0px solid grey';
-			 }
-			 
-			 
-			 
+			 $dtime = $list1['dtime'];
+			 $newDate = date("d-m-Y", strtotime($dtime));
+			 $patId = $list1['pid'];
 			
-			$patient = sqlQuery("select title,fname,genericname1 from patient_data where pid= $patId");
-			
+			$patient = sqlQuery("select title,fname from patient_data where pid= $patId");
 			 
 			?>
-			
-					<tr style='<?php echo $style;  ?>'>
-					
-						<td style='border:0px'>
-						<?php// echo $hr;   ?>
-						<?php echo $i+1; ?>
-						
-						
+					<tr>
+						<td>
+						<?php echo $i; ?>
 						</td>
-						
-						<td style='border:0px solid'><font color='grey'>
-                           <input type='text' name='patient[]' value='<?php echo $patient['title'].' '.$patient['fname']; ?>' style="height:2em;border:1px solid white;" readonly></font>
+						<td>
+						<a href="../patient_file/pharmacy_duplicate_bill.php?id=<?php echo $list1['pid']; ?>&visit=<?php echo $list1['encounter']; ?>&bill=<?php echo $list1['bill']; ?>"><?php echo $patient['title'].' '.$patient['fname'];   ?></a>
+                           
+						 <!-- <input type='text' name='patient' value='<?php echo $patient['title'].' '.$patient['fname']; ?>' style="height:2em;border:1px solid white;" readonly>-->
 			
 					
 				
 					</td>
 					
-					
-		            <td style='border:0px solid'>
-                       <a href="" target="popup" onclick="window.open('doctorshare.php?id=<?php echo $rows[$i]['bill_id']; ?>','popup','width=900,height=600'); return false;"><input type='text' name='cat[]' value='<?php echo $rows[$i]['bill_id'];   ?>'
-						style="height:2em;border:1px solid white;" readonly></a>
-                    </td>
- 
-                   
-				  <?php   
-					$code=$rows[$i]['code_text'];
-					
-					if (strpos($code,DR) !== false) {
-					$code= 'Consultation';
-					}
-					
-					 $uid = $rows[$i]['provider_id'];
-					$provider = sqlQuery("select username from users where id='$uid'");
-					
-					
-					
-					?>
-				  
-				
+					 <td>
+                        <input type='text' name='dt' value='<?php echo $newDate;   ?>' style="height:2em;border:1px solid white;" readonly>
+ </td>
  
  
-                       <td style='border:0px solid'>
-                           <input type='text' name='patient[]' value='<?php echo $code; ?>' style="height:2em;border:1px solid white;" readonly>
-			          </td>
-					  
-					  <td style='border:0px solid'>
-                           <input type='text' name='patient[]' value="<?php echo $provider['username']; ?>" style="height:2em;border:1px solid white;" readonly>
-			          </td>
-					  
-					  <td style='border:0px solid'>
-                           <input type='text' name='fee[]' value="<?php echo $rows[$i]['fee']; ?>" style="height:2em;border:1px solid white;" readonly>
-			          </td>
+  <td class='text-right'>
+                        <input type='text' name='amnt' value='<?php echo $list1['amount1'];   ?>' style="text-align:right;height:2em;border:1px solid white;" readonly>
+ </td>
+ 
+ 
 					
-                         <td style='border:0px solid'>
-                        <input type='number' name='payout[]' max="<?php echo $rows[$i]['fee']; ?>" value="<?php echo $rows[$i]['payout']; ?>" style="height:2em;text-align:right">
-                         </td>
+                      
 						
-						<input type='hidden' name='pid[]' value="<?php echo $rows[$i]['pid'];  ?>">
-						<input type='hidden' name='encounter[]' value="<?php echo $rows[$i]['encounter'];  ?>">
 						
-						<input type='hidden' name='code[]' value="<?php echo $rows[$i]['code_text'];  ?>">
 						
 						
 					</tr>
-					
-					<?php //$i++;
-					}  ?>
-					
-					<tr><td colspan='7' align='center'><input type='submit' name='submit_form' value='Save'></td></tr>
+					<?php $i++; }  ?>
+			<?php $Total_value = sqlQuery("select sum(amount1) as sum from payments where stage='pharm' and activity=1 and dtime>='$from 00:00:00' and dtime<='$to 23:59:59'"); 
+                    
+				  
+			?>
+				<tr><th colspan='4' class='text-right'> Total = <?php echo $Total_value['sum'];   ?>  </th>
+                </tr>				
                   
 				</tbody>
 			</table>

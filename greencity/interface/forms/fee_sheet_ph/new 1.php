@@ -28,20 +28,7 @@ $returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_enco
  if ($GLOBALS['concurrent_layout'] && isset($_GET['set_pid'])) {
   include_once("$srcdir/pid.inc");
   setpid($_GET['set_pid']);
-   $gchid = $_GET['set_pid']; 
-  
- 
-  $detail=sqlQuery("select fname,e.pid as ID,e.date, e.encounter as visit from patient_data p Join form_encounter e on p.pid=e.pid 
-                    where genericname1='$gchid' order by e.date desc limit 1");
-					
-					
-
-
-  
-  
-  
-  
-  
+  $gchid = $_GET['set_pid'];
  }
  $user=$_SESSION['authUser'];
 $prescription_id=$encounter;
@@ -189,7 +176,7 @@ header('location:../../patient_file/front_payment_pharmacy.php');
 
  $(document).ready(function(){
 	 
-/*	 $("#pname").focus(function()
+	 $("#pname").focus(function()
 {
 	
 var id=$("#gchid").val();
@@ -239,7 +226,7 @@ $("#pid").val(html);
 
 
 });	
-*/
+
 	 
 	 
 	 
@@ -401,13 +388,13 @@ $(document).on('keypress', 'input', function(e) {
 
 
 $(document).on("focus", ".sum", function() {
-    var summ = 0;
+    var sum = 0;
     $(".sum").each(function(){
-        summ += +$(this).val();
+        sum += +$(this).val();
 		
     });
-    $(".total").val(summ.toFixed(2));
-}); 
+    $(".total").val(sum.toFixed(2));
+});
 
 
 $(document).on("focus", ".total", function() {
@@ -476,10 +463,10 @@ function myFunction() {
 		<div class="col-md-9">
 		<table class="table table-bordered table-fixed" id="tab_logic">
 		<tr><th>ID</th><th>Patient Name</th><th>Visit ID</th><th>Pid</th><tr>
-		<tr><td><input type="text" style="text-align:left;" id='gchid' name='gch'  value="<?php echo $gchid ?>" class="form-control" readonly required/></td>
-		<td><input type="text" style="text-align:left;" id='pname' name='patname'  value="<?php echo $detail['fname']; ?>" class="form-control" readonly required/></td>
-		<td><input type="text" style="text-align:left;" id='visitid' name='visit'  value="<?php echo $detail['visit']; ?>" class="form-control" readonly required/></td>
-		<td><input type="text" style="text-align:left;" id='pid' name='pid'  value="<?php echo $detail['ID']; ?>" class="form-control" readonly required/></td>
+		<tr><td><input type="text" style="text-align:left;" id='gchid' name='gch'  value="<?php echo $gchid ?>" class="form-control" required/></td>
+		<td><input type="text" style="text-align:left;" id='pname' name='patname'  value="" class="form-control" required/></td>
+		<td><input type="text" style="text-align:left;" id='visitid' name='visit'  value="" class="form-control" required/></td>
+		<td><input type="text" style="text-align:left;" id='pid' name='pid'  value="" class="form-control" required/></td>
 		
 		</tr>
 		</table>

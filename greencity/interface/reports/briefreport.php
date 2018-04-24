@@ -374,7 +374,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		
 		//where b.servicegrp_id=c.code_type AND b.activity = 1 AND b.fee != 0 and b.activity=1 and b.servicegrp_id=8 group by b.encounter,b.code_text order by fe.encounter_ipop;
 	  */
-	      $query="select code_type,sum(fee) as DTOPD,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
+	      $query="select code_type,sum(fee) as DTOPD,sum(payout) as pay,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
          ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter  and b.fee>1 and b.code_type='Doctor Charges' and billed=1 and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'" ;
 		
 		$res = sqlStatement($query); 
@@ -387,7 +387,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		 $NDTOPD=$Nrow['DTOPD'];
 		 
 		 $DTCT="OPD";
-		 $DTOPD=$row['DTOPD'] - $NDTOPD ;
+		 $DTOPD=$row['DTOPD'] - $row['pay'] ;
 		 if($DTOPD <0)
 			 $DTOPD=0;
 		 $query2="select sum(fee) LT from billing b where code_type='Lab Test' and activity=1 and billed=1 and b.fee>1 and  b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'";
@@ -420,7 +420,7 @@ function thisLineItem($patient_id, $encounter_id, $rowcat, $description, $transd
 		 
 		 
 		 
-		 $query4="select code,sum(fee) as DO,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
+		 $query4="select code,sum(payout) as DO,case substring(fe.encounter_ipop,1,2) when 'IP' then 'Inpatient'
          ELSE 'Out patient' end  as IPOP from billing b,form_encounter fe where activity=1 and b.encounter=fe.encounter and billed=1  and b.fee>1 and b.code_type='Doctor Charges' and code in ('US00004','US00006') and substring(encounter_ipop,1,2)='OP' AND b.date >= '$from_date 00:00:00' AND b.date <= '$to_date 23:59:59'  GROUP BY CODE";
 		 $res4 = sqlStatement($query4); 
 		 while($row4 = sqlFetchArray($res4))

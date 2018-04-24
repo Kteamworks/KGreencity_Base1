@@ -1434,6 +1434,7 @@ if (!empty($reg)) {
 		
 		<?php genMiscLink('RTop','adm','0',xl('Visit'),'drugs/visit.php'); ?>
 		
+		
 		  
         </ul>    
     </li>
@@ -1527,6 +1528,7 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
  if($newcrop_user_role['newcrop_user_role']=='erxmidlevelPrescriber'){ ?>
   <li><a class="collapsed" id="phrimg" ><span><?php xl('Pharmacy','e') ?></span></a>
     <ul>
+	 <?php genMiscLink('RBot','adm','0',xl('Pharmacy Patient'),'patient_file/pharmacy_patient.php'); ?>
 	 <?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/dynamic_finder_ph.php'); ?>
 	  <?php genTreeLink('RTop','neo',($GLOBALS['full_new_patient_form'] ? xl('OPD') : xl('OPD'))); ?>
 	  <!--<?php genMiscLink('RTop','fin','0',xl('InPatients'),'main/finder/p_dynamic_finder_ip.php'); ?>-->
@@ -1539,6 +1541,8 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
 	 <!-- <?php genMiscLink('RBot','pay','1',xl('Take Payment'),'patient_file/front_payment_pharmacy.php'); ?>-->
 	   <!--<?php genMiscLink('RTop','rep','0',xl('Print Bill'),'reports/custom_report_pharmacy.php'); ?>-->
 	  <?php genMiscLink('RTop','adm','0',xl('Stock Purchase'),'drugs/drug_inventory.php'); ?>
+	   <?php genMiscLink('RTop','adm','0',xl('collection'),'drugs/pharmacy_collection.php'); ?>
+	   <?php genMiscLink('RTop','adm','0',xl('Stock Report'),'drugs/stock_report.php'); ?>
 	  <?php genMiscLink('RTop','rep','0',xl('Daily Reports'),'reports/inventory_transactions.php'); ?>
 	   <?php genMiscLink('RTop','rop','0',xl('Bill Cancel'), 'reports/bill_cancel_pharm.php'); ?>
       <?php // genMiscLink('RTop','adm','0',xl('Dispense Meds'),'patient_file/summary/rx_frameset.php'); ?>

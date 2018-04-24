@@ -53,6 +53,13 @@ if(isset($_REQUEST['visit']))
 else
 	$encounter="";
 $form_pid= $id;
+
+if(isset($_REQUEST['bill']))
+	 $bill=$_REQUEST['bill'];
+else
+	$bill="";
+
+
 if ($form_patient == '' ) $form_pid;
 //if ($form_patient == '' ) $form_pid = '';
 
@@ -329,7 +336,7 @@ $age_months=$age_months;
 $age_days=$age_days;
 $rateplan=$patdata['rateplan'];
 
-    echo "<center><h4>".xlt("Pharmacy Bill")."</h4></center>";
+    echo "<center><h4>".xlt("Duplicate Bill")."</h4></center>";
 	echo "<table border=1 rules=cols style='width:100%'>";
 	
 	echo "<tr><td  style='padding-right: 100px;' >" . xlt('Name') . ": <b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".text($patdata['title']) ."  ". text($patdata['fname']) . "  " . text($patdata['mname'])."  ".text($patdata['lname']) . "</b></td>";
@@ -414,7 +421,7 @@ $rateplan=$patdata['rateplan'];
 
                 $ta = split(":",$patient);
                 //$billing = getPatientBillingEncounterPharm($pids[$iCounter],$ta[1]);
-                $billing=sqlStatement("select * from billing where pid=$form_pid and encounter=$encounter and code_type='Pharmacy Charge'");
+                $billing=sqlStatement("select * from billing where pid=$form_pid and encounter=$encounter and code_type='Pharmacy Charge' and bill='$bill'");
                 $billings[] = $billing;
 				
 				$item_code=null;

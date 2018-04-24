@@ -15,8 +15,7 @@ require_once("$srcdir/patient.inc");
 require_once("$srcdir/billing.inc");
 require_once("$srcdir/report.inc");
 $user =  $_SESSION['authUser'];
-$list = sqlStatement("select p.bill,p.pid,p.encounter,p.dtime,pd.fname,pd.phone_cell,pd.genericname1 from payments p join
-                     patient_data pd on p.pid=pd.pid where p.user='$user' and p.stage='pharm'  order by p.dtime desc" );
+$list = sqlStatement("select fname,lname,genericname1,phone_cell,age from patient_data" );
    
 
 ?>
@@ -56,7 +55,7 @@ $list = sqlStatement("select p.bill,p.pid,p.encounter,p.dtime,pd.fname,pd.phone_
 
 <body class="body_top">
 <form method='post' action=''>
-<h2 align='center' style="background-color:powderblue;">Sale History</h2>	
+
 <table id="example"  class="table table-striped table-responsive" width="100%">
  <thead>
  <tr class='head'>
@@ -69,26 +68,27 @@ $list = sqlStatement("select p.bill,p.pid,p.encounter,p.dtime,pd.fname,pd.phone_
   </th>
   
   <th style="text-align:left">
-   Visit ID
+   Phone Number
+  </th>
+  <th style="text-align:left">
+   Age
   </th>
   
-  <th style="text-align:left">
-   Date
-  </th>
+ 
   
  </tr>
   </thead>
   <tbody>
   <?php  while ($patient_list = sqlFetchArray($list)) { 
   $dtime =  $patient_list['dtime'];
-  //$newDate = date("d-M-Y", strtotime($dtime));
-  $newDate = date("Y-m-d", strtotime($dtime));
+  $newDate = date("d-M-Y", strtotime($dtime));
   ?>
   <tr>
-  <td> <a href="pharmacy_duplicate_bill.php?id=<?php echo $patient_list['pid']; ?>&visit=<?php echo $patient_list['encounter']; ?>&bill=<?php echo $patient_list['bill']; ?>"><?php echo $patient_list['fname'];   ?></a></td>
-  <td><?php echo $patient_list['pid'];   ?></td>
-  <td><?php echo $patient_list['encounter'];   ?></td>
-  <td><?php echo $newDate;   ?></td>
+  <td> <a href="../forms/fee_sheet_ph/medSale.php?set_pid=<?php echo $patient_list['genericname1']; ?>"><?php echo $patient_list['fname']   ?></a></td>
+  <td><?php echo $patient_list['genericname1'];   ?></td>
+  <td><?php echo $patient_list['phone_cell'];   ?></td>
+   <td><?php echo $patient_list['age'];   ?></td>
+ 
   
   </tr>
   <?php   }  ?>

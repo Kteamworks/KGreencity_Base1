@@ -52,7 +52,7 @@ if ($form_patient == '' ) $form_pid =  $_SESSION["pid"];
 
 $dmy= date('Y-m-d');
 
-$list1 = sqlStatement("SELECT  * FROM Revenue where approve=0");
+$list1 = sqlStatement("SELECT  * FROM Revenue where approve=0 order by date desc");
 
 
 $listResult = sqlStatement("SELECT  * FROM Revenue where approve = 1");
@@ -123,12 +123,12 @@ if(isset($_POST['submit'])){
     <thead>
       <tr class='active'>
 	    <th>Date</th>
-        <th>Revenue</th>
+        
 		<th>Payment</th>
         <th>Discount</th>
         <th>Collection</th>
 		<th>Difference</th>
-		<th>Approval</th>
+		<th>Status</th>
 		<th></th>
 		
 		
@@ -154,7 +154,7 @@ if(isset($_POST['submit'])){
 	 
 	  
         <td class="table-active"><?php echo $dated; ?></td>
-	    <td class="table-active"><?php echo $list2['revenue']; ?></td>
+	   
 		<td class="table-active"><?php echo $list2['payment']; ?></td>
 		<td class="table-active"><?php echo $list2['discount']; ?></td>
 		<td class="table-active"><?php echo $list2['collection']; ?></td>
@@ -191,7 +191,7 @@ if(isset($_POST['submit'])){
 	  
 	  
         <td class="table-active"><?php echo $dated; ?></td>
-	    <td class="table-active"><?php echo $listResult1['revenue']; ?></td>
+	    
 		<td class="table-active"><?php echo $listResult1['payment'] ?></td>
 		<td class="table-active"><?php echo$listResult1['discount'] ?></td>
 		<td class="table-active"><?php echo $listResult1['collection']; ?></td>

@@ -181,7 +181,7 @@ $(document).on("focus", "#difference", function() {
 
 <body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' class="body_top">
 
-<span class='title'><?php xl('Report','e'); ?> - <?php xl('Dashboard','e'); ?></span>
+<span class='title'><?php xl('Collection','e'); ?> - <?php xl('Report','e'); ?></span>
 
 <form method='POST' action='' id='theform'>
 
@@ -344,11 +344,11 @@ $(document).on("focus", "#difference", function() {
    } else{?>
 	  
 <tr bgcolor="#ddddff">
-<td class="detail"><b><?php xl('Total Revenue','e'); ?></b></td>
+<!--<td class="detail"><b><?php xl('Total Revenue','e'); ?></b></td>
   <td>
   <input type='number' value='<?php echo $row['REV'] ?>' name='revenue' style="text-align:right; width: 8em;" readonly>
    
-  </td>
+  </td>-->
   </tr>
   <tr bgcolor="#ddddff">
   <td class="detail"><b><?php xl('Payments','e'); ?></b></td>
@@ -360,8 +360,18 @@ $(document).on("focus", "#difference", function() {
  
  <tr bgcolor="#ddddff">
   <td class="detail"><b><?php xl('Discounts','e'); ?></b></td>
+  
+  <?php echo $discount = $row['discounts']; 
+  if($discount=='')
+  { $discount='0.00';}
+ else{
+	 $discount = $row['discounts'];
+ }
+   
+
+  ?>
   <td >
-  <input type='number' value='<?php echo $row['discounts'] ?>' name='discount' style="text-align:right; width: 8em;" readonly>
+  <input type='number' value='<?php echo $discount; ?>' name='discount' style="text-align:right; width: 8em;" readonly>
   
   </td>
   </tr>

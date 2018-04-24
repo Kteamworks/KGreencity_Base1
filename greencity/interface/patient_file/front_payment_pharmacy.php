@@ -424,7 +424,7 @@ $rateplan=$patdata['rateplan'];
                   $discount = sqlQuery("SELECT SUM(adj_amount) AS adjustments FROM ar_activity WHERE memo='$memo' and pid = '$form_pid' and encounter='$e' and sequence_no > $tmpid1") ;
 	                                         
 									  
-				  echo $totaldis=$discount['adjustments'];
+				  $totaldis=$discount['adjustments'];
 				
 				
                  while($b=sqlFetchArray($billing))				
@@ -526,10 +526,14 @@ $rateplan=$patdata['rateplan'];
 			
 			//echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=9 style='text-align:right'>".xlt('Pri Sponsor Due:')."&nbsp&nbsp"."</td><td class='text' //align='right'>" . oeFormatMoney($ins_due) . "</td></tr>";
             //echo "<tr><td class='bold' colspan=5 style='text-align:right'>".xlt('Total:')."&nbsp&nbsp"."</td><td class='text'>" . oeFormatMoney($total) . "</td></tr>";
+			echo "<tr ><td colspan=5 style='text-align:left;font-size:12'>".xlt('')."&nbsp&nbsp"."</td><td class='text' align='right'>" . ' ' . "</td></tr>";
+			echo "<tr ><td colspan=5 style='text-align:left;font-size:12'>".xlt('E & OE,')."&nbsp&nbsp"."</td><td class='text' align='right'>" . ' ' . "</td></tr>";
+			echo "<tr ><td colspan=5 style='text-align:left;font-size:12'>".xlt('GSTIN : 29ATJPK089J3Z2')."&nbsp&nbsp"."</td><td class='text' align='right'>" . ' ' . "</td></tr>";
+			echo "<tr ><td colspan=5 style='text-align:left;font-size:12'>".xlt('PAN : ATJPK0894J')."&nbsp&nbsp"."</td><td class='text' align='right'>" . ' ' . "</td></tr>";
+			echo "<tr ><td colspan=5 style='text-align:left;font-size:12'>".xlt('DL : KA-B03-20-112639-KA-BO3-21-112640')."&nbsp&nbsp"."</td><td class='text' align='right'>" . ' ' . "</td></tr>";
+			
             echo "</table>";
-            echo "<pre>";
-
-            echo "</pre>";
+           
 			 
             echo "<table style='border-top: 1px solid #000;' width='100%'>";
             echo "<b><tr style='border-bottom: 1px solid #000;'>";

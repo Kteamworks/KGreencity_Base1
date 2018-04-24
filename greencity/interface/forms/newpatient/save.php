@@ -85,7 +85,8 @@ if($pc_catid==10)
 if($pc_catid==16)
 {
 	
-	$normalurl = "patient_file/encounter/load_form.php?formname=procedure_order";
+	//$normalurl = "patient_file/encounter/load_form.php?formname=procedure_order";
+	$normalurl = "forms/fee_sheet/new.php";
 
 }
 if($pc_catid==12)
