@@ -57,7 +57,7 @@ $list = sqlStatement("select * from drugs where invoice='$id' and create_date>='
   
 
 <form method="post" action="">
-    <div class="container col-sm-12">
+    <div class="container">
     <div class="row">
 		<div class="col-md-10">
 			
@@ -88,25 +88,37 @@ $list = sqlStatement("select * from drugs where invoice='$id' and create_date>='
 		
 <form method="post" action="">
 		
-			<table class="table table-bordered table-fixed" id="tab_logic">
+			<table class="table table-bordered  table-condensed table-responsive" id="tab_logic">
 				<thead>
 					<tr class="danger">
-						<th class="text-left col-sm-1">
+						<th class="text-left">
 							S.No.
 						</th>
-						<th class="text-left col-sm-2">
-							Invoice No
-						</th>
 						
-						<th class="text-left col-sm-2">
+						
+						<th class="text-left">
 							Medicine 
 						</th>
 						
-						<th class="text-left col-sm-2">
-							Date
+						
+						
+						<th class="text-left">
+							Quantity
 						</th>
 						
-						<th class="text-right col-sm-2">
+						<th class="text-left">
+							Rate
+						</th>
+						
+						<th class="text-left">
+							Discount 
+						</th>
+						
+						<th class="text-left">
+							GST 
+						</th>
+						
+						<th class="text-right">
 							M.R.P.
 						</th>
 						
@@ -139,31 +151,70 @@ $list = sqlStatement("select * from drugs where invoice='$id' and create_date>='
 						<td>
 						<?php echo $i; ?>
 						</td>
-						<td> 
-						 <?php echo $list1['invoice'];   ?>
-			            </td>
+						
 					
 					    <td>
                           <input type='text' name='amnt' value='<?php echo $list1['name'];   ?>' style="height:2em;border:1px solid white;" readonly>
                         </td>
  
  
-                     <td class='text-left'>
+                    <!-- <td class='text-left'>
                         <input type='text' name='amnt' value='<?php echo $newDate;   ?>' style="height:2em;border:1px solid white;" readonly>
-                       </td>
+                       </td>-->
 					   
-					    <td class='text-right'>
+					   <td class='text-left'>
+                          <input type='text' name='amnt' value='<?php echo $list1['quantity'];   ?>' style="text-align:left;height:2em;border:1px solid white;" readonly>
+                        </td>
+						
+						<td class='text-left' >
+                          <input type='text' name='amnt' value='<?php echo $list1['tradePrice'];   ?>' style="text-align:left;height:2em;border:1px solid white;" readonly>
+                        </td>
+						
+						<td class='text-left' >
+                          <input type='text' name='amnt' value='<?php echo $list1['discount'].'%';   ?>' style="text-align:left;height:2em;border:1px solid white;" readonly>
+                        </td>
+						
+						<td class='text-left' >
+                          <input type='text' name='amnt' value='<?php echo $list1['vat'].'%';   ?>' style="text-align:left;height:2em;border:1px solid white;" readonly>
+                        </td>
+					   
+					    <td class='text-right' >
                           <input type='text' name='amnt' value='<?php echo $list1['totalValue'];   ?>' style="text-align:right;height:2em;border:1px solid white;" readonly>
                         </td>
  
 					</tr>
-					<?php $i++; }  ?>
+					
+					<?php  
+					 $rate = $list1['tradePrice'] * $list1['quantity'];
+					 $sale = $sale + $rate;
+                     $dis = ($list1['discount']/100)* $rate ; 
+					 $discount = $discount + $dis  ;
+					 $taxable = $rate - $dis ; 
+					 $gst = ($list1['vat']/100)* $taxable ; 
+					 $GST = $GST + $gst ; 
+					 
+					$i++; } 
+                     
+   ?>
 			<?php $Total_value = sqlQuery("select sum(totalValue) as sum from drugs where create_date>='$date 00:00:00' and create_date<='$date 23:59:59' and invoice = '$id'"); 
                     
 				  
 			?>
-				<tr><th colspan='5' class='text-right'> Total = <?php echo $Total_value['sum'];   ?>  </th>
-                </tr>				
+			    
+				<tr><th colspan='7'  style='border-bottom:0px;' class='text-right' > Sale Value = <?php echo $sale;   ?>  </th>
+                </tr>
+				
+				<tr><th colspan='7'  style='border:0px;' class='text-right' > Discount = <?php echo oeFormatMoney($discount);   ?>  </th>
+                </tr>
+				
+				<tr><th colspan='7'  style='border:0px;' class='text-right' > GST = <?php echo oeFormatMoney($GST);   ?>  </th>
+                </tr>
+				
+				<tr><th colspan='7' style='border:0px' class='text-right' > Total = <?php echo $Total_value['sum'];   ?>  </th>
+                </tr>
+				
+				
+				
                   
 				</tbody>
 			</table>
