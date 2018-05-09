@@ -179,10 +179,18 @@ while ($orow = sqlFetchArray($ores)) {
    <span class='bold'><?php xl('Age','e');?>: </span>
   </td>
   <td>
-   <input type='number' style="width: 10.5em;" name='age' max='100' value='<?php echo $form_age; ?>' required>
+   <input type='number' style="width: 10.5em;" name='age' max='100' min='0' value='<?php echo $form_age; ?>' required>
   </td>
  </tr>
 
+ <tr>
+  <td>
+   <span class='bold'><?php xl('Doctor','e');?>: </span>
+  </td>
+  <td>
+   <input type='entry' size='15' name='dname' value='' onkeypress="return lettersOnly()" required>
+  </td>
+ </tr>
 
 
 <?php if ($GLOBALS['inhouse_pharmacy']) { ?>

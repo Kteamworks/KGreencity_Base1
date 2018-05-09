@@ -1781,7 +1781,7 @@ else {
  <tr>
   <td valign='top' width="20%" nowrap><b><?php echo xlt('Invoice Number'); ?>:</b></td>
   <td>
-   <input type='text' size='10'  name='invoice' value="" maxlength='80' style='width:100%' placeholder="Please Enter Invoice Number" required/>
+   <input type='text' size='10'  name='invoice' value="" maxlength='15' style='width:100%' placeholder="Please Enter Invoice Number" required/>
   </td>
  </tr>
  
@@ -2000,17 +2000,31 @@ else {
  
   <td>
  <select name="year[]" style="width:80px;height:2em;border:1px solid white;"  >
-  <option value="2017">2017</option>
-  <option value="2018">2018</option>
-  <option value="2019">2019</option>
-  <option value="2020">2020</option>
-  <option value="2021">2021</option>
-  <option value="2022">2022</option>
-  <option value="2023">2023</option>
-  <option value="2024">2024</option>
-  <option value="2025">2025</option>
+ <?php $date_year = date('Y'); 
+       $date_str = strtotime($date_year);
+       $new_year = strtotime('+ 1 year', $date_str);
+	   $date_year1 = date('Y', $new_year);
 	  
+	  $new_year2 = strtotime('+ 2 year', $date_str);
+	  $date_year2 = date('Y', $new_year2);
+	  
+	  $new_year3 = strtotime('+ 3 year', $date_str);
+	  $date_year3 = date('Y', $new_year3);
+	  
+	  $new_year4 = strtotime('+ 4 year', $date_str);
+	  $date_year4 = date('Y', $new_year4);
+
+
+ ?>
   
+  <!--<option value="<?php //echo $date_year ; ?>"><?php //	echo $date_year ; ?></option>-->
+  <option value="<?php echo $date_year1 ; ?>"><?php echo $date_year1 ; ?></option>
+  <option value="<?php echo $date_year2 ; ?>"><?php echo $date_year2 ; ?></option>
+  <option value="<?php echo $date_year3 ; ?>"><?php echo $date_year3 ; ?></option>
+  <option value="<?php echo $date_year4 ; ?>"><?php echo $date_year4 ; ?></option>
+ 
+	  
+  </select>
  </td>
   
  

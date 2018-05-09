@@ -58,8 +58,7 @@ $list = sqlStatement("select * from drugs where invoice='$id' and create_date>='
 
 <form method="post" action="">
     <div class="container">
-    <div class="row">
-		<div class="col-md-10">
+   
 			
 		</form>
 		
@@ -220,6 +219,6 @@ $list = sqlStatement("select * from drugs where invoice='$id' and create_date>='
 			</table>
 			</form>
 		</div>
- </div></div>
+	
 
  </html>

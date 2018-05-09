@@ -460,7 +460,7 @@ $i = 0;
 					echo" ";
 				}else
 				{
-				echo "</tr><tr><td class='white-space' colspan='3' style='font-size: 17px'><i>&nbsp;&nbsp;<br/>" . text($myrow['comments']) ."&nbsp;&nbsp;</i></td><br/>";
+				echo "</tr><tr><td class='white-space' colspan='3' style='font-size: 17px'><i>&nbsp;&nbsp;<br/>" . text($myrow['comments']).':' ."&nbsp;&nbsp;</i></td><br/>";
 				}
 				/*echo "<td class='list_item'>" . generate_display_field(array('data_type'=>'1','list_id'=>'proc_unit'),$myrow['units']) . "</td>";
 				echo "<td class='list_log'>"  . text($myrow['date_collected']) . "</td>";

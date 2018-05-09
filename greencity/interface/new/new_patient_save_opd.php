@@ -60,13 +60,14 @@ if ($_POST['form_create']) {
   $form_mname = ucwords(trim(''));
   $form_mb = ucwords(trim($_POST["mb"]));
   $form_age=trim($_POST['age']);
+  $doctor_fname = ucwords(trim($_POST["dname"]));
   // ===================
   // DBC SYSTEM WAS REMOVED
   $form_sex               = trim('NotRequired') ;
   $form_dob               = trim($_POST["DOB"]) ;
-  $form_street            = '' ;
-  $form_city              = '' ;
-  $form_postcode          = '' ;
+  $form_street            = 'JP Nagar' ;
+  $form_city              = 'Bangalore' ;
+  $form_postcode          = '560078' ;
   $form_countrycode       = '' ;
   // EOS DBC
   // ===================
@@ -158,7 +159,7 @@ $form_dob = date("Y-m-d",$dob1); // getting the date of birth here
       "pid = '" . add_escape_custom($pid) . "', " .
       "encounter = '" . add_escape_custom($encounter) . "', " .
       "pos_code = '" . add_escape_custom($pos_code) . "', " .
-      "provider_id = '" . add_escape_custom($provider_id) . "'"),
+      "doctor = '" . add_escape_custom($doctor_fname) . "'"),
     "newpatient", $pid, $userauthorized, $date);
 /*	
   //function addBilling($encounter_id, $code_type, $code, $code_text, $pid,

@@ -347,8 +347,13 @@ $rateplan=$patdata['rateplan'];
 	echo "<td  style='padding-right: 10px;'>" . xlt('MR No') . ": &nbsp&nbsp&nbsp&nbsp&nbsp" . text($patdata['genericname1']) . "</td></tr>";
 	echo "<tr><td  style='padding-right: 100px;' >" . xlt('Location:') . " &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" . "".text($patdata['city']).", ".text($patdata['state']) ."</td>";
 	echo "<td  style='padding-right: 10px;' >" . xlt('Visit ID') . ":&nbsp&nbsp&nbsp&nbsp&nbsp " . text($enc1['encounter_ipop']) . "</td></tr>";
-	//echo "<tr><td style='padding-right: 100px;'  >" . xlt('Doctor') . ":&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp" . text($row2['username']). "</td>";
-	//echo "<td  style='padding-right: 10px;' >" . xlt('Department') . ": " . text($row2['specialty']) . "</td></tr>";
+	$doctor = $row2['username'];
+	if($doctor =='')
+	{
+		$doctor = $enc1['doctor'];
+	}
+	echo "<tr><td style='padding-right: 100px;'  >" . xlt('Doctor') . ":&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp" . text($doctor). "</td>";
+	echo "<td  style='padding-right: 10px;' >" . xlt('') . " " . text($row2['specialty1']) . "</td></tr>";
 	if($admit1['admit_to_ward']!=NULL)
 	{
 	echo "<tr><td  style='padding-right: 100px;' >" . xlt('ADM Date') . ": ". text(date('d/M/y h:i:s A',strtotime($admit1['admit_date'])))."</td>";
