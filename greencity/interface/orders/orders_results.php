@@ -505,13 +505,11 @@ while ($row = sqlFetchArray($res)) {
   else {
     if ($review_status == "received") continue;
   }
-<<<<<<< HEAD
+
  
-  $selects = "pt2.procedure_type, pt2.procedure_code, pt2.units AS pt2_units, " .
-=======
 
  $selects = "pt2.procedure_type, pt2.procedure_code, pt2.units AS pt2_units,pt2.notes_test AS notes_test, " .
->>>>>>> origin/master
+
     "pt2.range AS pt2_range, pt2.procedure_type_id AS procedure_type_id, " .
     "pt2.name AS name, pt2.description, pt2.seq AS seq, " .
     "ps.procedure_result_id, ps.result_code AS result_code, ps.result_text, ps.abnormal, ps.result, " .

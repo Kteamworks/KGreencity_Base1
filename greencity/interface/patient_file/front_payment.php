@@ -748,14 +748,28 @@ if($age!=0)
   <td><?php echo xlt('Cheque/Ref Number'); ?>:</td>
   <td><?php echo text($payrow['source']) ?></td>
  </tr>
+ 
+ <?php 
+      $received_amt = $payrow['amount2'];
+      if($received_amt== 0 ){
+	  $received_amount = $payrow['amount1']; }
+	  else{
+		  $received_amount = $payrow['amount2'];
+	  }
+
+	  ?>
+ 
  <tr>
   <td><?php echo xlt('Received Amount'); ?>:</td>
-  <td align='right'><?php echo xlt('Rs')?>&nbsp;<?php echo text(oeFormatMoney($payrow['amount1'])) ?></td>
+  <td align='right'><?php echo xlt('Rs')?>&nbsp;<?php echo text(oeFormatMoney($received_amount)) ?></td>
  </tr>
- <tr>
-  <td><?php echo xlt('Amount for Past Balance'); ?>:</td>
-  <td align='right'><?php echo xlt('Rs')?>&nbsp;<?php echo text(oeFormatMoney($payrow['amount2'])) ?></td>
- </tr>
+ 
+ 
+ 
+<!-- <tr>
+  <td><?php // echo  xlt('Amount for Past Balance'); ?>:</td>
+  <td align='right'><?php  // echo xlt('Rs')?>&nbsp;<?php // echo text(oeFormatMoney($payrow['amount2'])) ?></td>
+ </tr>-->
  <tr>
   <td><?php echo xlt('Against the Bill No'); ?>:</td>
   <td><?php echo text($billid['bill_id']) ?></td>
