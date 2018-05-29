@@ -696,6 +696,10 @@ $enc1=sqlFetchArray($enc);
 $provider=$enc1['provider_id'];
 $row1 = sqlStatement("SELECT * from users where id='".$provider."'");
 $row2=  sqlFetchArray($row1);
+
+$billid=sqlQuery("SELECT * from billing where encounter='".$brow1112['encounter']."'");
+
+
 	  
 ?>
 <table border='0' style="width:100%">
@@ -760,7 +764,7 @@ if($age!=0)
  </tr>-->
  <tr>
   <td><?php echo xlt('Against the Bill No'); ?>:</td>
-  <td><?php echo text($brow1112['bill_id']) ?></td>
+  <td><?php echo text($billid['bill_id']) ?></td>
  </tr>
  <tr>
   <td><?php echo xlt('Received By'); ?>:</td>
