@@ -1253,7 +1253,7 @@ if ($GLOBALS['athletic_team']) {
       <?php if (acl_check('admin', 'users'    )) genMiscLink('RTop','adm','0',xl('Users'),'usergroup/usergroup_admin.php'); ?>
       <?php genTreeLink('RTop','pwd','Users Password Change'); ?>
       <?php //if (acl_check('admin', 'practice' )) genMiscLink('RTop','adm','0',xl('Practice'),'../controller.php?practice_settings'); ?>
-      <?php if (acl_check('admin', 'superbill')) genTreeLink('RTop','sup',xl('Codes')); ?>
+      <?php if (acl_check('admin', 'super')) genTreeLink('RTop','adm',xl('Codes')); ?>
       <?php if (acl_check('admin', 'super'    )) genMiscLink('RTop','adm','0',xl('Layouts'),'super/edit_layout.php'); ?>
       <?php if (acl_check('admin', 'super'    )) genMiscLink('RTop','adm','0',xl('Lists'),'super/edit_list.php'); ?>
       <?php //if (acl_check('admin', 'acl'      )) genMiscLink('RTop','adm','0',xl('ACL'),'usergroup/adminacl.php'); ?>
@@ -1299,26 +1299,23 @@ if ($GLOBALS['athletic_team']) {
 
  $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
 ?>
-<?php if($_SESSION['authUser']!='Shanthini') {
-if($newcrop_user_role['newcrop_user_role']!='erxmidlevelPrescriber'){ ?>
+<?php if($_SESSION['authUser']!='Shanthini') {?>
   <li><a class="collapsed" id="patimg" ><span><?php xl('Patient','e') ?></span></a>
     <ul>
 	<?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor'||$_SESSION['authUser']=='DR. NIRMALA.B.M') {?>
       <?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/dynamic_finder.php'); ?>
 	  <!--<?php genMiscLink('RTop','fin','0',xl('Camp Patients'),'main/finder/dynamic_finder_camp.php'); ?>-->
 	  <?php } ?>
+	   <?php if($newcrop_user_role['newcrop_user_role']=='erxdoctor') {?>
 	  <?php genMiscLink('RTop','fin','0',xl('My Patients'),'main/finder/p_dynamic_finder.php'); ?>
-	  <?php genMiscLink('RTop','fin','0',xl('In Patients'),'main/finder/p_dynamic_finder_ip.php'); ?>
-	  <?php genMiscLink('RTop','rep','0',xl('Doctor Note'),'reports/visit_note.php'); ?>
-	  
-	  
+	   <?php genMiscLink('RTop','rep','0',xl('IP Note'),'reports/visit_note.php'); ?>
+	    <?php } ?>
+		 <?php genMiscLink('RTop','fin','0',xl('In Patients'),'main/finder/p_dynamic_finder_ip.php'); ?>
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
 	  	  <?php genMiscLink('RTop','fin','0',xl('Referal Patients'),'main/finder/r_dynamic_finder.php'); ?>
-	  
-	  <?php //genMiscLink('RTop','rep','0',xl('Clinical History'),'reports/clinicalHistory.php'); ?>
-	  <?php genMiscLink('RTop','rep','0',xl('IP Schdule'),'reports/timeSchduler.php'); ?>
+		  <?php genMiscLink('RTop','rep','0',xl('IP Medication'),'reports/timeSchduler.php'); ?>
 	  <?php genMiscLink('RTop','rep','0',xl('Nurse Station'),'reports/nurseStation.php'); ?>
-	   
+	 
 	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/p_tp_dynamic_finder.php'); ?>
 	   <?php } elseif($newcrop_user_role['newcrop_user_role']=='erxdoctor') { ?>
 	  
@@ -1327,7 +1324,7 @@ if($newcrop_user_role['newcrop_user_role']!='erxmidlevelPrescriber'){ ?>
       <?php genTreeLink('RTop','new',($GLOBALS['full_new_patient_form'] ? xl('New/Search') : xl('New'))); ?>
       <?php genTreeLink('RTop','dem',xl('Summary')); ?>
 	  <?php genTreeLink('RTop','op',xl('OPD Card')); ?>
-      <li class="open"><a class="expanded_lv2"><span><?php xl('Visits','e') ?></span></a>
+      <!-- <li class="open"><a class="expanded_lv2"><span><?php xl('Visits','e') ?></span></a>
         <ul>
           <?php if ($GLOBALS['ippf_specific'] && !$GLOBALS['disable_calendar']) genTreeLink('RTop','cal',xl('Calendar')); ?>
           <?php genTreeLink('RBot','nen',xl('Create Visit')); ?>
@@ -1342,8 +1339,7 @@ if($newcrop_user_role['newcrop_user_role']!='erxmidlevelPrescriber'){ ?>
           <?php genTreeLink('RTop','prq',xl('Patient Record Request')); ?>
         </ul>
       </li>
-
-
+-->
 <?php if ($GLOBALS['gbl_nav_visit_forms']) { ?>
       <!-- <li><a class="collapsed_lv2"><span><?php xl('Visit Forms','e') ?></span></a>
         <ul> -->
@@ -1388,7 +1384,7 @@ if (!empty($reg)) {
 
     </ul>
   </li>
-<?php }} ?>
+<?php } ?>
   <!-- <li><a class="collapsed" id="bedimg" ><span><?php xl('Bed Management','e') ?></span></a>
     <ul>
       <?php // genTreeLink('RTop','dis',xl('Bed Management Form'));  ?>
@@ -1408,7 +1404,6 @@ if (!empty($reg)) {
 		<li><a class="collapsed" id="manageimg" ><span><?php xl('Manage','e') ?></span></a>
         <ul>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Vouchers'), 'reports/editvoucjers.php'); ?>
-		<?php genMiscLink('RTop','rop','0',xl('Doctors Share'), 'reports/doctors_share.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Receipts'), 'reports/editreceipts.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Discharge Clearance '), 'reports/discharge_clearence_copy.php'); ?>
 		<?php genMiscLink('RTop','rop','0',xl('Manage Voucher Copy '), 'reports/voucher_copy.php'); ?>
@@ -1431,7 +1426,6 @@ if (!empty($reg)) {
 		<?php genMiscLink('RTop','rep','0',xl('Patients By Sub Category'), 'reports/subCatstatistics.php'); ?>
 		<?php genMiscLink('RTop','rep','0',xl('Referral Patients'), 'reports/refPatient.php'); ?>
 		<?php genMiscLink('RTop','rep','0',xl('Registered Patients'), 'reports/RegPat.php'); ?>
-		
 		<?php genMiscLink('RTop','adm','0',xl('Visit'),'drugs/visit.php'); ?>
 		
 		
@@ -1451,14 +1445,17 @@ if (!empty($reg)) {
   <li><a class="collapsed" id="feeimg" ><span><?php xl('Fees','e') ?></span></a>
     <ul>
       <?php genMiscLink('RBot','cod','2',xl('Billing Sheet'),'patient_file/encounter/load_form.php?formname=fee_sheet'); ?>
-	  <?php //if ($GLOBALS['use_charges_panel']) genTreeLink('RBot','cod',xl('Charges')); ?>
+	  <?php genMiscLink('RBot','bil','2',xl('Discount'),'patient_file/pos_checkout.php?framed=1'); ?>
+	  <?php genMiscLink('RTop','rep','0',xl('Due Amount'), 'reports/collections_report.php'); ?>
+	   <?php genMiscLink('RTop','rep','0',xl('Provisional Bill'),'reports/custom_report_range_test.php'); ?>
+      <?php //if ($GLOBALS['use_charges_panel']) genTreeLink('RBot','cod',xl('Charges')); ?>
 	  <?php if($newcrop_user_role['newcrop_user_role']!='erxdoctor') {?>
 	  <?php genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher.php?framed=1'); ?> 
-	  <?php  genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher1.php?framed=1'); ?> 
+	  <?php // genMiscLink('RBot','voc','0',xl('Payment Voucher'),'reports/payment_voucher1.php?framed=1'); ?> 
 	  <?php genMiscLink('RTop','voc','0',xl('Expenditure Voucher'),'reports/General_Voucher.php?framed=1'); ?> 
       <?php genMiscLink('RBot','pay','2',xl('Payment'),'patient_file/front_payment.php'); ?>
 	  <?php genMiscLink('RBot','pay','2',xl('Payment IP'),'patient_file/front_payment_test.php'); ?>
-      <?php genMiscLink('RBot','bil','2',xl('Discount'),'patient_file/pos_checkout.php?framed=1'); ?> 
+       
 	  <?php genMiscLink('RBot','bil','2',xl('Refund'),'patient_file/pos_checkout1.php?framed=1'); ?> 
 	  <?php //genMiscLink('RBot','bil','0',xl('Final Handover'),'reports/ecash.php?framed=1'); ?> 
 	  <?php //genMiscLink('RBot','bil','0',xl('Cash Transfer'),'reports/cashtransfer.php?framed=1'); ?> 
@@ -1474,11 +1471,12 @@ if (!empty($reg)) {
       <?php //if ($GLOBALS['enable_edihistory_in_left_menu'] && acl_check('acct', 'eob')) genTreeLink('RTop','edi',xl('EDI History'),false,2);?>
 	  <?php genMiscLink('RTop','rep','0',xl('Insurance Bill'),'reports/custom_report_ins.php'); ?>
 	  <?php genMiscLink('RBot','rep','0',xl('Print Receipt'),'patient_file/receipt.php'); ?>
-	  <?php genMiscLink('RTop','rep','0',xl('Provisional Bill'),'reports/custom_report_range_test.php'); ?>
+	 
 	  <?php genMiscLink('RTop','rep','0',xl('Duplicate Bill'),'reports/finalbillcopy.php'); ?>
+	  <?php genMiscLink('RTop','rep','0',xl('Collection'),'reports/revenue.php'); ?>
 	  <!--<!--?php genMiscLink('RTop','rep','0',xl('Duplicate Bill 2'),'reports/finalbillcopy2.php'); ?>-->
 	    <?php genMiscLink('RTop','rep','0',xl('Generate Bills'),'reports/custom_report_range_bill.php'); ?>
-		<?php genMiscLink('RTop','rep','0',xl('Due Amount'), 'reports/collections_report.php'); ?>
+		
 		<?php }?>
     </ul>
   </li>
@@ -1525,26 +1523,28 @@ if (!empty($reg)) {
 
 <?php
 $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username='".$_SESSION['authUser']."'");
- if($newcrop_user_role['newcrop_user_role']=='erxmidlevelPrescriber'){ ?>
+ if($newcrop_user_role['newcrop_user_role']=='erxmidlevelPrescriber' ||$newcrop_user_role['newcrop_user_role']=='erxadmin'){ ?>
+ 
+ 
   <li><a class="collapsed" id="phrimg" ><span><?php xl('Pharmacy','e') ?></span></a>
     <ul>
 	 <?php genMiscLink('RBot','adm','0',xl('Pharmacy Patient'),'patient_file/pharmacy_patient.php'); ?>
-	 <?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/dynamic_finder_ph.php'); ?>
-	  <?php genTreeLink('RTop','neo',($GLOBALS['full_new_patient_form'] ? xl('OPD') : xl('OPD'))); ?>
+	 <!--<?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/dynamic_finder_ph.php'); ?>-->
+	  <?php genTreeLink('RTop','neo',($GLOBALS['full_new_patient_form'] ? xl('Create Patient') : xl('OPD'))); ?>
 	  <!--<?php genMiscLink('RTop','fin','0',xl('InPatients'),'main/finder/p_dynamic_finder_ip.php'); ?>-->
-	  <?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/ph_dynamic_finder.php'); ?>
-	 <!--<?php genMiscLink('RBot','cod','2',xl('Add Medicines'),'patient_file/encounter/load_form.php?formname=fee_sheet_ph'); ?>-->
-	<?php genMiscLink('RBot','adm','0',xl('Sale'),'forms/fee_sheet_ph/medSale.php'); ?>
-	 <?php genMiscLink('RBot','adm','0',xl('Summary'),'patient_file/pharmacy_billed_patients.php'); ?>
-	  <?php genMiscLink('RBot','adm','0',xl('Schedule H'),'patient_file/schedule_h.php'); ?>
+	  <!--<?php genMiscLink('RTop','fin','0',xl('Todays Patients'),'main/finder/ph_dynamic_finder.php'); ?>-->
+	  <!--<?php genMiscLink('RBot','cod','2',xl('Add Medicines'),'patient_file/encounter/load_form.php?formname=fee_sheet_ph'); ?>-->
+	  <!--<?php genMiscLink('RBot','adm','0',xl('Sale'),'forms/fee_sheet_ph/medSale.php'); ?>-->
+	  <!--<?php genMiscLink('RBot','adm','0',xl('billed Patients'),'patient_file/pharmacy_billed_patients.php'); ?>-->
 	  <!--<?php genMiscLink('RBot','pay','1',xl('Duplicate Bill'),'patient_file/pharmacy_duplicate_bill.php'); ?>-->
-	 <!-- <?php genMiscLink('RBot','pay','1',xl('Take Payment'),'patient_file/front_payment_pharmacy.php'); ?>-->
+	  <!--<?php genMiscLink('RBot','pay','1',xl('Take Payment'),'patient_file/front_payment_pharmacy.php'); ?>-->
 	   <!--<?php genMiscLink('RTop','rep','0',xl('Print Bill'),'reports/custom_report_pharmacy.php'); ?>-->
 	  <?php genMiscLink('RTop','adm','0',xl('Stock Purchase'),'drugs/drug_inventory.php'); ?>
-	   <?php genMiscLink('RTop','adm','0',xl('collection'),'drugs/pharmacy_collection.php'); ?>
+	  <!--<?php genMiscLink('RTop','rep','0',xl('Daily Reports'),'reports/inventory_transactions.php'); ?>-->
+	  <?php genMiscLink('RTop','adm','0',xl('collection'),'drugs/pharmacy_collection.php'); ?>
 	   <?php genMiscLink('RTop','adm','0',xl('Stock Report'),'drugs/stock_report.php'); ?>
-	  <?php genMiscLink('RTop','rep','0',xl('Daily Reports'),'reports/inventory_transactions.php'); ?>
-	   <?php genMiscLink('RTop','rop','0',xl('Bill Cancel'), 'reports/bill_cancel_pharm.php'); ?>
+	  <?php genMiscLink('RBot','adm','0',xl('Schedule H'),'patient_file/schedule_h.php'); ?>
+	   <!--<?php genMiscLink('RTop','rop','0',xl('Bill Cancel'), 'reports/bill_cancel_pharm.php'); ?>-->
       <?php // genMiscLink('RTop','adm','0',xl('Dispense Meds'),'patient_file/summary/rx_frameset.php'); ?>
 	 
       <?php //genPopLink(xl('Destroyed'),'destroyed_drugs_report.php'); ?>
@@ -1557,17 +1557,16 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
    <li><a class="collapsed" id="proimg" ><span><?php xl('Lab','e') ?></span></a>
     <ul>
 	 <?php genMiscLink('RTop','fin','0',xl('Patients'),'main/finder/p_dynamic_finder_lab.php'); ?>
-	<!-- <?php genMiscLink('RTop','fin','0',xl('Outside Lab'),'main/finder/p_dynamic_finder_outsidelab.php'); ?>-->
+	<?php genTreeLink('RTop','oro',xl('Outside Lab')); ?>
       <!--<?php genTreeLink('RTop','orl',xl('Providers')); ?>-->
 	  <!---------------------------------access control---------------------------------->
-	  <?php if (acl_check('admin', 'super')){?>
-      <?php genTreeLink('RTop','ort',xl('ADD Test')); ?>
-	  <?php }?>
+	  <?php// if (acl_check('admin', 'super')){?>
+      <?php genTreeLink('RTop','ort',xl('Add New Test')); ?>
+	  <?php// }?>
 <!--<!--?php genTreeLink('RTop','orc',xl('Load Compendium')); ?> -->
-      <?php genTreeLink('RTop','oro',xl('Sent Outside')); ?>
       <?php genTreeLink('RTop','orp',xl('Test Results')); ?>
       <?php genTreeLink('RTop','orr',xl('Patient Results')); ?>
-	   
+	  
       <?php genTreeLink('RTop','lda',xl('Reports')); ?>
 	  
       <?php genTreeLink('RTop','orb',xl('Batch Results')); ?>
@@ -1601,8 +1600,10 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
       <?php if (acl_check('admin', 'practice' )) genTreeLink('RTop','adb',xl('Addr Book')); ?>
       <?php
 	  // Changed the target URL from practice settings -> Practice Settings - Pharmacy... Dec 09,09 .. Visolve ... This replaces empty frame with Pharmacy window
+	
 	  if (acl_check('admin', 'practice' )) genMiscLink('RTop','adm','0',xl('Practice'),'../controller.php?practice_settings&pharmacy&action=list'); ?>
-      <?php if (acl_check('admin', 'super')) genTreeLink('RTop','sup',xl('Codes')); ?>
+	  <?php if($newcrop_user_role['newcrop_user_role']=='erxnurse'||$newcrop_user_role['newcrop_user_role']=='erxadmin') {
+      if (acl_check('admin', 'practice')) genTreeLink('RTop','sup',xl('Codes')); } ?>
       <?php if (acl_check('admin', 'super'    )) genMiscLink('RTop','adm','0',xl('Layouts'),'super/edit_layout.php'); ?>
       <?php if (acl_check('admin', 'super'    )) genMiscLink('RTop','adm','0',xl('Lists'),'super/edit_list.php'); ?>
       <?php if (acl_check('admin', 'acl'      )) genMiscLink('RTop','adm','0',xl('ACL'),'usergroup/adminacl.php'); ?>
@@ -1725,15 +1726,15 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
   ?>
       <li><a class="collapsed_lv2"><span><?php xl('Financial','e') ?></span></a>
         <ul>
-		
-		 <?php genMiscLink('RTop','adm','0',xl('Doctor Share'),'drugs/show.php'); ?>
+		<?php genMiscLink('RTop','rep','0',xl('Collection'),'reports/collected_amount.php'); ?>
+		<?php genMiscLink('RTop','adm','0',xl('Doctor Share OP'),'drugs/show.php'); ?>
+		<?php genMiscLink('RTop','adm','0',xl('Doctor Share IP'),'drugs/show_ip.php'); ?>
 		 <?php genMiscLink('RTop','rep','0',xl('Doctors By IP/OP'),'reports/salesdocipop.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Lab Report'),'reports/LabStatistics.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Sales'),'reports/sales_by_item.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Sales By Category'),'reports/sales_by_category.php'); ?>
 		 
 		   <?php genMiscLink('RTop','rep','0',xl('Main Report'),'reports/briefreport.php'); ?>
-		   <?php genMiscLink('RTop','rep','0',xl('Revenue_Admin'),'reports/collected_amount.php'); ?>
 		  <?php genMiscLink('RTop','rep','0',xl('Revenue'),'reports/revenue.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Cash Rec'), 'billing/sl_receipts_report.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Front Rec'), 'reports/front_receipts_report.php'); ?>

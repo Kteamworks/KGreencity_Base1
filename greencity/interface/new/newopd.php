@@ -87,13 +87,10 @@ $form_regdate   = $_POST['regdate'  ] ? date('Y-m-d') : date('Y-m-d');
 		
 		
 		function numbersOnly() {
-			var charCode = event.keyCode;
-			/*if ((event.keyCode >=65)&&(event.keyCode <=90)) {
-				event.returnValue = false;
-				return false;
-			} */
+			var numCode = event.keyCode;
 			
-			if (charCode => 48 && charCode <= 57) 
+			
+			if (numCode > 47 && numCode < 58) 
 
                 return true;
             else
