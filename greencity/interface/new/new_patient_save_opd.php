@@ -160,7 +160,7 @@ $form_dob = date("Y-m-d",$dob1); // getting the date of birth here
       "pid = '" . add_escape_custom($pid) . "', " .
       "encounter = '" . add_escape_custom($encounter) . "', " .
       "pos_code = '" . add_escape_custom($pos_code) . "', " .
-      "doctor = '" . add_escape_custom($doctor_fname) . "'"),
+     "doctor = '" . add_escape_custom($doctor_fname) . "'"),
     "newpatient", $pid, $userauthorized, $date);
 /*	
   //function addBilling($encounter_id, $code_type, $code, $code_text, $pid,

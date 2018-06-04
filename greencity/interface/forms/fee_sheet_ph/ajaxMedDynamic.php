@@ -71,24 +71,26 @@ if($_POST['id'] && $_POST['action']=='med')
 	 $exp = date('Y-m-d', strtotime('+1 month'));
      $id=$_POST['id'];
 	
-	echo "SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'";
-$sql=mysqli_query($conn,"SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'");
+//echo "SELECT * FROM drugs WHERE name = '$id' and expdate > '$exp'";
+$sql=mysqli_query($conn,"SELECT batch FROM drugs WHERE name = '$id' limit 1");
+
 //$sql=mysqli_query($con,"SELECT batch FROM drugs WHERE drug_id = '$id'");
 
 while($row=mysqli_fetch_array($sql))
 {
-$id=$row['batch'];
-$data=$row['PricePerUnit'];
+    $id=$row['batch'];
+
+    //[$data=$row['PricePerUnit'];
 //echo '<input type="text" value="'.$id.'">';
-echo '<option value="'.$id.'">'.$id.'</option>';
-//echo $data;
+//echo '<option value="'.$id.'">'.$id.'</option>';
+echo $id;
 
 }
 }
 if($_POST['id'] && $_POST['action']=='medPrice')
 {
 $id=$_POST['id'];
-$sql=mysqli_query($conn,"SELECT PricePerUnit FROM drugs WHERE drug_id = '$id' LIMIT 1");
+$sql=mysqli_query($conn,"SELECT PricePerUnit FROM drugs WHERE name = '$id' LIMIT 1");
 
 while($row=mysqli_fetch_array($sql))
 {
