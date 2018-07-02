@@ -8,6 +8,11 @@ $login	= 'root';
 $pass	= '';
 $dbase	= 'greencity';
 
+$sql = mysql_connect($host,$login,$pass);
+$con = $con = mysql_select_db($dbase);
+
+$conn=mysqli_connect($host,$login,$pass,$dbase);
+
 //Added ability to disable
 //utf8 encoding - bm 05-2009
 global $disable_utf8_flag;

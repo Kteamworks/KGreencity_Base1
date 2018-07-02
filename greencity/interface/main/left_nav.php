@@ -1756,6 +1756,10 @@ $newcrop_user_role=sqlQuery("select newcrop_user_role from users where username=
   <li><a class="collapsed_lv2" id="analyticsimg" ><span><?php xl('Analytics','e') ?></span></a>
  
         <ul>
+		  <?php genMiscLink('RTop','rep','0',xl('Patients'),'reports/charts/graph.php'); ?>
+		   <?php genMiscLink('RTop','rep','0',xl('Scans'),'reports/charts/scans.php'); ?>
+		   <?php genMiscLink('RTop','rep','0',xl('Scans Revenue'),'reports/charts/scans_revenue.php'); ?>
+		   <?php genMiscLink('RTop','rep','0',xl('visits Revenue'),'reports/charts/cat_rev.php'); ?>
           <?php genMiscLink('RTop','rep','0',xl('Advanced Analytics'),'reports/analytics.php'); ?>
 		  <?php // genMiscLink('RTop','rep','0',xl('test'),'reports/testcsvexp.php'); ?>
         </ul>

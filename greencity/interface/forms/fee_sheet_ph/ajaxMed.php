@@ -71,7 +71,7 @@ if($_POST['id'] && $_POST['action']=='med')
 	 $exp = date('Y-m-d', strtotime('+1 month'));
      $id=$_POST['id'];
 	
-	echo "SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'";
+echo "SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'";
 $sql=mysqli_query($conn,"SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'");
 //$sql=mysqli_query($con,"SELECT batch FROM drugs WHERE drug_id = '$id'");
 

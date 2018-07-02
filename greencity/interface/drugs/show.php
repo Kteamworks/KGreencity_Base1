@@ -180,10 +180,10 @@ if (isset($_POST['submit_form'])) {
 		<div class="col-md-10">
 		<table class="table table-bordered table-fixed" id="tab_logic">
 		<tr><th>From</th><th>To</th><th>Category</th><th></th><tr>
-		<tr><td><input type="text" style="text-align:left;" id="inputField1" name="FromDate"  value="<?php echo $_SESSION['from']; ?>" class="form-control"  />
+		<tr><td><input type="text" style="text-align:left;" id="inputField1" name="FromDate"  value="<?php echo $_SESSION['from']; ?>" class="form-control" autocomplete='off' />
 		
         </td>
-		<td><input type="text" id="inputField2"  name="toDate" value="<?php echo $_SESSION['to']; ?>" class="form-control"/></td>
+		<td><input type="text" id="inputField2"  name="toDate" value="<?php echo $_SESSION['to']; ?>" class="form-control" autocomplete='off'/></td>
 		
 		
 		<td><select name='category' class='form-control'>
