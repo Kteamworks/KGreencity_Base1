@@ -732,6 +732,7 @@ $dob =text($patdata['DOB']) ;
 $encounter=$_SESSION['encounter'];
 $enc=sqlStatement("select * from form_encounter where encounter='".$encounter."'");
 $enc1=sqlFetchArray($enc);
+
 $provider=$enc1['provider_id'];
 $row1 = sqlStatement("SELECT * from users where id='".$provider."'");
 $row2=  sqlFetchArray($row1);
@@ -1032,19 +1033,20 @@ $age_days=$age_days;
 			 
             echo "<table style='border-top: 1px solid #000;' width='100%'>";
             echo "<b><tr style='border-bottom: 1px solid #000;'>";
-            echo "<td class='bold'  width='20%'>".xlt('Payments')."</td>";
+            echo "<td class='bold'  width='20%'>".xlt('Payment Date')."</td>";
+			echo "<td class='bold'  width='20%'>".xlt('Transaction Date')."</td>";
             echo "<td class='bold' width='20%'>".xlt('Receipt No')."</td>";
 			echo "<td class='bold' width='20%'>".xlt('Mode')."</td>";
 			echo "<td class='bold' width='10%' nowrap>".xlt('Reference No.')."</td>";
 			echo "<td class='bold' width='10%'>".xlt('')."</td>";
             echo "<td class='bold' width='10%' align='right'>".xlt('Amount')."</td></b></tr>\n";
               if($form_towards==2){
-			  $inres = sqlStatement("SELECT dtime,amount1,amount2,receipt_id,method,source FROM payments WHERE " .
+			  $inres = sqlStatement("SELECT dtime,amount1,amount2,receipt_id,method,source,create_date FROM payments WHERE " .
           "pid = ? AND encounter = ? AND activity=1  " .
 			  "ORDER BY dtime", array($form_pid,$encounter) );
 			  }else
 			  {
-				  $inres = sqlStatement("SELECT dtime,amount1,amount2,receipt_id,method,source FROM payments WHERE " .
+				  $inres = sqlStatement("SELECT dtime,amount1,amount2,receipt_id,method,source,create_date FROM payments WHERE " .
           "pid = ? AND encounter = ? AND activity=1  " .
 			  "ORDER BY dtime desc limit 1", array($form_pid,$encounter) );
 			  }
@@ -1054,6 +1056,8 @@ $age_days=$age_days;
 		 $amount = sprintf('%01.2f', 0 - $amount); // make it negative
      echo " <tr>\n\n\n";
        echo "  <td style='font-size: 0.8em'>" .  text(date('d/M/y',strtotime($inrow['dtime']))) . "</td>\n";
+	    echo "  <td style='font-size: 0.8em'>" .  text(date('d/M/y',strtotime($inrow['create_date']))) . "</td>\n";
+	   
      echo "  <td class='text'>" .  text($inrow['receipt_id']) . "</td>\n";
      echo "  <td class='text'>"  .text($inrow['method'])."</td>\n";
      echo "  <td class='text'>".text($inrow['source'])."</td>\n";
@@ -1074,18 +1078,18 @@ $age_days=$age_days;
 
     }
 	// echo "<tr style='border-bottom: 1px solid #000;'><td class='bold' colspan=6 style='text-align:right'>".xlt('Net Payments :')."&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"."</td><td class='text'>" . oeFormatMoney($nettotal) . "</td></tr>";
-	echo "<tr style='border-top: 1px solid #000;' ><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;' style='text-align:right' nowrap>".xlt('Net Payments')."</td><td class='text' style='border-bottom: 1px solid #000;'align='right' >" ."". oeFormatMoney($nettotal) . "</td></tr>";
+	echo "<tr style='border-top: 1px solid #000;' ><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;' style='text-align:right' nowrap>".xlt('Net Payments')."</td><td class='text' style='border-bottom: 1px solid #000;'align='right' >" ."". oeFormatMoney($nettotal) . "</td></tr>";
 	if($form_towards==2){
-   echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 0px solid #000;'  style='text-align:right' nowrap>".xlt('Total Bill Amount')."</td><td class='text' style='border-bottom: 0px solid #000;' align='right'>" . oeFormatMoney($total) . "</td></tr>";
-   echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right'>".xlt('Discount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($totaldis) . "</td></tr>";
-   echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Net Amount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$totaldis) . "</td></tr>";
+   echo "<tr><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 0px solid #000;'  style='text-align:right' nowrap>".xlt('Total Bill Amount')."</td><td class='text' style='border-bottom: 0px solid #000;' align='right'>" . oeFormatMoney($total) . "</td></tr>";
+   echo "<tr><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right'>".xlt('Discount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($totaldis) . "</td></tr>";
+   echo "<tr><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Net Amount')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$totaldis) . "</td></tr>";
     if($approved_amt!=0)
 	{
-			echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 0px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Amount')."</td><td class='text' style='border-bottom: 0px solid #000;' align='right'>" . oeFormatMoney($approved_amt) . "</td></tr>";
-	echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Pay')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($approved_paid) . "</td></tr>";
-	echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Due')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($approved_amt-$approved_paid) . "</td></tr>";
+			echo "<tr><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 0px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Amount')."</td><td class='text' style='border-bottom: 0px solid #000;' align='right'>" . oeFormatMoney($approved_amt) . "</td></tr>";
+	echo "<tr><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Pay')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($approved_paid) . "</td></tr>";
+	echo "<tr><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;'  style='align:right' nowrap>".xlt('Pri. Sponsor Due')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($approved_amt-$approved_paid) . "</td></tr>";
 	}		
-  echo "<tr><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;' style='text-align:right' nowrap>".xlt('Balance Due')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$nettotal-$totaldis-$approved_amt) . "</td></tr>";
+  echo "<tr><td></td><td></td><td></td><td></td><td></td><td class='bold' style='border-bottom: 1px solid #000;' style='text-align:right' nowrap>".xlt('Balance Due')."</td><td class='text' style='border-bottom: 1px solid #000;' align='right'>" . oeFormatMoney($total-$nettotal-$totaldis-$approved_amt) . "</td></tr>";
 	}
 	echo "</table>";
 	   
@@ -1688,20 +1692,37 @@ function make_insurance()
  $today = date('Y-m-d H:i:s',strtotime("+0 days"));
  ?>
  
- <tr>
+ <!----------------------------------------------------------------test new date option ------------------------------->
+ <?php $enc_date = sqlQuery("select date from form_encounter where encounter='$encounter'"); 
+   //echo $enc_date['date'];
+   $date_enc = text(date('Y-m-d',strtotime($enc_date['date'])));
+ ?>
+  <tr>
   <td class='text' >
    <?php echo xla('Date of Payment'); ?>:
   </td>
   <td colspan='2' ><div id="ajax_div_patient" style="display:none;"></div>
-   <input type='text' size='10' name='dop' id='dop' <?php echo attr ($disabled)?>;
-       value='<?php echo attr($today); ?>' 
-       title='<?php echo xla('yyyy-mm-dd Date of Payment'); ?>'
+  <input type="date" name='dop' value="<?php echo date("Y-m-d");?>" min="<?php echo $date_enc;  ?>"   max="<?php echo date("Y-m-d");?>">
+  </td>
+ </tr>
+ <!---------------------------------------------------------------test complete ---------------------------------------->
+ 
+ 
+ 
+<!--<tr>
+  <td class='text' >
+   <?php //echo xla('Date of Payment'); ?>:
+  </td>
+  <td colspan='2' ><div id="ajax_div_patient" style="display:none;"></div>
+   <input type='text' size='10' name='dop' id='dop' <?php //echo attr ($disabled)?>;
+       value='<?php //echo attr($today); ?>' 
+       title='<?php //echo xla('yyyy-mm-dd Date of Payment'); ?>'
        onkeyup='datekeyup(this,mypcc)' onblur='dateblur(this,mypcc)' />
         <img src='../pic/show_calendar.gif' align='absbottom' width='24' height='22'
         id='img_end_date' border='0' alt='[?]' style='cursor:pointer;cursor:hand'
-        title='<?php echo xla('Click here to choose a date'); ?>'>
+        title='<?php //echo xla('Click here to choose a date'); ?>'>
   </td>
- </tr>
+ </tr>-->
  <tr height="5"><td colspan='3'></td></tr>
 <?php
 $ipq=sqlStatement("select provider from insurance_data where pid=?",array($_SESSION['pid']));
@@ -1958,8 +1979,9 @@ $discount=0;
 	  "pid = ? and encounter = ? ",array($pid,$enc));
 	 $iamount = sqlQuery("SELECT sum(approved_amt) approved_amt  FROM billing_activity_final WHERE " .
 	  "pid = ? and encounter = ? ",array($pid,$enc));
-	  $duept= $brow['amount'] + $srow['amount'] - $drow['payments'] - $drow['adjustments'];
+	  $duept = $brow['amount'] + $srow['amount'] - $drow['payments'] - $drow['adjustments'] - $iamount['approved_amt'];
 	 }
+	 
     echoLine("form_upay[$enc]",$dispdate, $value['charges'],
       $dpayment_pat, ($dpayment + $dadjustment),$discount, $duept, $enc,$inscopay,$patcopay);
   }
@@ -2084,7 +2106,7 @@ if($FP==1 && $ins1==0)
 <script language="javascript">
 /* required for popup calendar */
 //Calendar.setup({inputField:"admit_date", ifFormat:"%Y-%m-%d", button:"img_transfer_date"});
-Calendar.setup({inputField:"dop", ifFormat:"%Y-%m-%d %H:%M:%S", button:"img_end_date",showsTime:'true'});
+//Calendar.setup({inputField:"dop", ifFormat:"%Y-%m-%d %H:%M:%S", button:"img_end_date",showsTime:'true'});
 </script>
 <script language="JavaScript">
  calctotal();
