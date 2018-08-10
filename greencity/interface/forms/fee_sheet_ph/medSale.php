@@ -1,13 +1,4 @@
- <?php
- 
- 
-// Copyright (C) 2005-2011 Rod Roark <rod@sunsetsystems.com>
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-
+<?php   
 $fake_register_globals=false;
 $sanitize_all_escapes=true;
 
@@ -21,152 +12,129 @@ require_once("$srcdir/formatting.inc.php");
 require_once("$srcdir/options.inc.php");
 require_once("$srcdir/formdata.inc.php");
 
-$e=$_GET["encounter"] ? $_GET["encounter"] : $GLOBALS['encounter'];
-
-$returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_encounter.php';
- include_once("$srcdir/pid.inc");
- if ($GLOBALS['concurrent_layout'] && isset($_GET['set_pid'])) {
-  include_once("$srcdir/pid.inc");
-  setpid($_GET['set_pid']);
+ //setpid($_GET['set_pid']);
    $gchid = $_GET['set_pid']; 
+   $user=$_SESSION['authUser'];
   
- 
+   $inventory_id=111;
+   
+   
   $detail=sqlQuery("select fname,e.pid as ID,e.date, e.encounter as visit from patient_data p Join form_encounter e on p.pid=e.pid 
                     where genericname1='$gchid' order by e.date desc limit 1");
-					
-					
-
-
-  
-  
-  
-  
-  
- }
- $user=$_SESSION['authUser'];
-$prescription_id=$encounter;
-$inventory_id=111;
- $tmp1 = sqlQuery("SELECT id from users WHERE username='$user'");
- $user_id=$tmp1['id'];
- //$conn = mysqli_connect('localhost', 'root','','greencity');
- //include_once('dbconnect.php');
-
-//sqlQuery("UPDATE patient_data SET pricelevel='standard' where pid=$pid");  
- $tmpid=sqlQuery("select max(id) as id from billing "); 
- $tmpid1=sqlQuery("select max(sequence_no) as id1 from ar_activity "); 
- $_SESSION['maxId1']=$tmpid1['id1']; 
- $_SESSION['maxId']=$tmpid['id'];
-if (isset($_POST['submit_val'])) {
- $gch=$_POST['gch'];
- $mode = $_POST['mode'];
-  $rrn = $_POST['rrn'];
-  $subtotal= $_POST['old_price'];
- $discounts=$_SESSION['dcnt']=$_POST['discount'];
- $discount = ($discounts/100)*$subtotal;
- $total = $subtotal-$discount;
- $patient=$_POST['patname'];
- $encounter=$_SESSION['visit']=$_POST['visit'];
- $pid=$_SESSION['patId']=$_POST['pid'];
- $prescription_id=$encounter;
- 
- //echo "select bill from billing where pid = $pid and encounter='$encounter' order by id desc limit 1 "; exit;
-$bill = sqlQuery("select bill from billing where pid = $pid and encounter='$encounter' order by id desc limit 1");
- $checkBill = $bill['bill']; 
- $checkBill = $checkBill + 1; 
- 
-/*if ($_POST['name']) {
-
-foreach ( $_POST['name'] as $key=>$value ) {
-echo $value;
-$values = mysql_real_escape_string($value);
-
-//$query = mysql_query("INSERT INTO my_hobbies (hobbies) VALUES ('$values')", $connection );
-  
-}
-} */
-
-sqlQuery("UPDATE form_encounter SET provider_id='4',supervisor_id='0' where pid='$pid' and encounter='$ecnounter'"); 
-sqlQuery("insert into ar_activity(pid,encounter,code_type,post_time,adj_amount,memo)values('$pid','$encounter','Pharmacy Charge',NOW(),'$discount','Discount')"); 
-sqlQuery("insert into payments(pid,encounter,amount1,dtime,user,towards,method,source,stage,bill)
-            values('$pid','$encounter','$total',NOW(),'$user',2,'$mode','$rrn','pharm','$checkBill')"); 
-
-
-$j=0;
-foreach($_POST['name'] as $selected){
-		
-		
-		 $batch= $_POST['batch'][$j];
-		 $schedule_h= $_POST['schedule_h'][$j];
-		 if($schedule_h=='NO')
-		 { $schedule_h = 0; }
-	     else { $schedule_h = 1; }
-		 $qty = $_POST['qty'][$j];
-		$price = $_POST['price'][$j]; 
-		$a= $qty + 1; 
-		$ar_activity =  $a * $price ; 
-		 $expdate = $_POST['expdate'][$j];
-		  $fee = $price * $qty ;
-		
-		
-        if(empty($selected))
-			continue;
-		
-		
-		
-		
-		
-		
-        $res =sqlQuery("SELECT * FROM `codes` WHERE `code_type`=11 and code=(select name from drugs where drug_id=$selected)");
-  
-     $servicegrp_id = $res['code_type'];
-	 
-	 $cod = $res['code']; 
-	 $code=str_replace("'", "", $cod);
-     //$code=mysqli_real_escape_string($conn,$res['code']); 
-	 $service_id=$res['service_id'];
-	 $cod_text = $res['code_text'];
-	 $code_text=str_replace("'", "", $cod_text);
-    
-  
-		
-		
-   $expupdate = sqlInsert("update drugs set expdate='$expdate-28', PricePerUnit = '$price'  where drug_id=$selected ");		
-		
- sqlQuery("insert into ar_activity(pid,encounter,code_type,post_time,pay_amount)values('$pid','$encounter','Pharmacy Charge',NOW(),'$ar_activity')");
-		
- $bil = sqlInsert("insert into billing (date,encounter,servicegrp_id,service_id, code_type, code, code_text, pid, authorized, user, groupname,units,fee,activity,modifier,schedule_h,bill)
- values
- (NOW(),'$encounter', '$servicegrp_id', '$service_id', 'Pharmacy Charge', '$code' ,'$code_text', '$pid','1','$user_id','Default','$qty','$fee',1,1,'$schedule_h','$checkBill')");
- 
- 
-		
-	
- $drug_id = sqlInsert("INSERT INTO drug_sales(drug_id, inventory_id, prescription_id, pid, user, sale_date, quantity, fee,encounter)
- values
- ( '$selected', '$inventory_id', '$prescription_id', '$pid', '$user', Now(),'$qty', '$price','$encounter')");
+   //$encounter = $detail['visit'];
+   $prescription_id=$encounter;
+   $pid = $detail['ID'];
+   $_SESSION['patId']= $pid ; 
+   $encounter=$_SESSION['visit']=$detail['visit'];
+   $tmp1 = sqlQuery("SELECT id from users WHERE username='$user'");
+   $user_id=$tmp1['id'];
    
-      sqlQuery("Update drugs set totalStock= totalStock - ? where drug_id=?",array($qty,$selected));   
-	  sqlQuery("Update drug_templates set quantity= quantity - ? where drug_id=?",array($qty,$selected));   
-	  sqlQuery("Update drug_inventory set on_hand= on_hand - ? where drug_id=?",array($qty,$selected));  
+   
+   $bill = sqlQuery("select bill from billing where pid = $pid and encounter='$encounter' order by id desc limit 1");
+   $checkBill = $bill['bill']; 
+   $checkBill = $checkBill + 1; 
+   
+    $tmpid=sqlQuery("select max(id) as id from billing "); 
+    $tmpid1=sqlQuery("select max(sequence_no) as id1 from ar_activity "); 
+    $_SESSION['maxId1']=$tmpid1['id1']; 
+    $_SESSION['maxId']=$tmpid['id'];
+
+
+
+
+   if(isset($_POST['submit']))
+   {
+	  
+	   $sum_total  = $_POST['sum_total'];
+	  
+	   
+	sqlQuery("insert into payments(pid,encounter,amount1,dtime,user,towards,stage,bill)
+            values('$pid','$encounter','$sum_total',NOW(),'$user',2,'pharm','$checkBill')");    
+	   
+	   
+	   
+	$j=0;
+    foreach($_POST['list'] as $selected){
+		
+	$drugs = sqlQuery("SELECT drug_id FROM drugs WHERE name ='$selected'");
+	$drug_idd = $drugs['drug_id'];
+	
+	$batch = $_POST['batch'][$j];
+	 $qty = $_POST['qty'][$j];
+    $price = $_POST['price'][$j];
+	$a = $qty + 1; 
+	$ar_activity =  $a * $price ; 
+		
+   
+	$fee = $price * $qty ;
+	
+	 $res =sqlQuery("SELECT * FROM `codes` WHERE `code_type`=11 and code='$selected'");
+	  //echo "SELECT * FROM `codes` WHERE `code_type`=11 and code='$selected'"; 	
+	  $servicegrp_id = $res['code_type'];
+	  $cod = $res['code']; 
+	  $code=str_replace("'", "", $cod);
+     //$code=mysqli_real_escape_string($conn,$res['code']); 
+	  $service_id=$res['service_id'];
+	  $cod_text = $res['code_text'];
+	  $code_text=str_replace("'", "", $cod_text);
+	
+	 $bil = sqlInsert("insert into billing (date,encounter,servicegrp_id,service_id, code_type, code, code_text, pid, authorized, user, groupname,units,fee,activity,modifier,schedule_h,bill)
+     values
+    (NOW(),'$encounter', '$servicegrp_id', '$service_id', 'Pharmacy Charge', '$code' ,'$code_text', '$pid','1','$user_id','Default','$qty','$fee',1,1,'    	$schedule_h','$checkBill')");
+	
+	sqlQuery("insert into ar_activity(pid,encounter,code_type,post_time,pay_amount,code)values('$pid','$encounter','Pharmacy Charge',NOW(),'$ar_activity','$selected')");
+	
+	 $drug_id = sqlInsert("INSERT INTO drug_sales(drug_id, inventory_id, prescription_id, pid, user, sale_date, quantity, fee,encounter,billed)
+ values
+ ('$drug_idd', '$inventory_id', '$prescription_id', '$pid', '$user', Now(),'$qty', '$price','$encounter','1')");
+	
+	
+	 sqlQuery("Update drugs set totalStock= totalStock - ? where drug_id=?",array($qty,$drug_idd));   
+	  sqlQuery("Update drug_templates set quantity= quantity - ? where drug_id=?",array($qty,$drug_idd));   
+	  sqlQuery("Update drug_inventory set on_hand= on_hand - ? where drug_id=?",array($qty,$drug_idd));  
 	  sqlQuery("Update billing_main_copy set total_charges=total_charges + ? where encounter=?",array($price,$encounter));  
-  
-$j++;
+	
+   // $sql  = sqlInsert("INSERT INTO dynamicrow (list, name, email) VALUES ('$selected', '$batch', '$price')");
+	
+	
+    $j++ ; 
+   }
+	
+	header('location:../../patient_file/front_payment_pharmacy.php');
+	
+   }
 
-}
-header('location:../../patient_file/front_payment_pharmacy.php');
 
-}
 
-  ?>
-  
- <!DOCTYPE html>
+?>
 
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>Selectize.js Demo</title>
-		<meta name="description" content="">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery Add / Remove Table Rows Dynamically</title>
+<style type="text/css">
+    form{
+        margin: 20px 0;
+    }
+    form input, button{
+        padding: 5px;
+    }
+    table{
+        width: 100%;
+        margin-bottom: 20px;
+		border-collapse: collapse;
+    }
+    table, th, td{
+        border: 1px solid #cdcdcd;
+    }
+    table th, table td{
+        padding: 10px;
+        text-align: left;
+    }
+</style>
+<meta name="description" content="">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/stylesheet.css">
@@ -175,353 +143,66 @@ header('location:../../patient_file/front_payment_pharmacy.php');
 		<script src="../dist/js/standalone/selectize.js"></script>
 		<script src="js/index.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		
-		
-		
-		
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-	</head>
-  
-
-  
-<script>
-
- $(document).ready(function(){
-	 
-/*	 $("#pname").focus(function()
-{
-	
-var id=$("#gchid").val();
-var dataString = 'id='+ id;
-
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=detail",
-cache: false,
-success: function(html)
-{
-$("#visitid").val(html);
-
-} 
-});
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=detail1",
-cache: false,
-success: function(html)
-{
-$("#pname").val(html);
-
-} 
-});
-
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=pid",
-cache: false,
-success: function(html)
-{
-$("#pid").val(html);
-
-} 
-});
-
-
-
-});	
-*/
-	 
-	 
-	 
-	 
-	 <?php  $a=1;
-	 while($a<=20) { ?>
- $("#<?php echo 'select-tools'.$a ?>").change(function()
-{
-	
-var id=$(this).val();
-var dataString = 'id='+ id;
-var tmp = 1;
-$("#<?php echo 'qty'.$a ?>").val(tmp);
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=med",
-cache: false,
-success: function(html)
-{
-$("#<?php echo 'batch'.$a ?>").html(html);
-
-} 
-});
-
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=medPrice",
-cache: false,
-success: function(html)
-{
-$("#<?php echo 'price'.$a ?>").val(html);
-
-} 
-});
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=expdate",
-cache: false,
-success: function(html)
-{
-$("#<?php echo 'expdate'.$a ?>").val(html);
-
-} 
-});
-
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=schedule_h",
-cache: false,
-success: function(html)
-{
-$("#<?php echo 'schedule_h'.$a ?>").val(html);
-
-} 
-});
-
-
-});
-
-
-$("#<?php echo 'batch'.$a ?>").change(function()
-{
-	
-var id=$(this).val();
-var dataString = 'id='+ id;
-
-$.ajax
-({
-type: "POST",
-
-url: "ajaxMed.php",
-data: dataString+"&action=medRate",
-cache: false,
-success: function(html)
-{
-$("#<?php echo 'price'.$a ?>").val(html);
-
-} 
-});
-
-
-});
-
-
-$(document).on("blur", "#<?php echo 'qty'.$a ?>", function() {
-   // var d = 0;
-   
-    var p = $("#<?php echo 'price'.$a ?>").val();
-	var q = $("#<?php echo 'qty'.$a ?>").val();
-	var sum = (+p)*(+q);
-	$("#<?php echo 'sum'.$a ?>").val(sum.toFixed(2));
-	
-	
-	var summ = 0;
-    $(".sum").each(function(){
-        summ += +$(this).val();
 		
-    });
-    $(".total").val(summ.toFixed(2));
-	
-	
-	
-});
-
-
-
-$(document).on("focus", "#<?php echo 'sum'.$a ?>", function() {
-   // var d = 0;
-   
-    var p = $("#<?php echo 'price'.$a ?>").val();
-	var q = $("#<?php echo 'qty'.$a ?>").val();
-	var sum = (+p)*(+q);
-	$("#<?php echo 'sum'.$a ?>").val(sum.toFixed(2));
-	
-});
-
-
-	 
-	 <?php $a++; } ?>		 
-		 
-		 
-      var i=1;
-     $("#add_row").click(function(){
-      $('#addr'+i).html("<td>"+ (i+1) +"</td><td><div class='demo'><div class='control-group'><select class='select-tools' placeholder='Select Madicine' name='name[]'></select></div></div></td><td><input  name='mail"+i+"' type='text' placeholder='Mail'  class='form-control input-md'></td><td><input  name='mobile"+i+"' type='text' placeholder='Mobile'  class='form-control input-md'></td>");
-
-      $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
-      i++; 
-  });
-     $("#delete_row").click(function(){
-    	 if(i>1){
-		 $("#addr"+(i-1)).html('');
-		 i--;
-		 }
-	 });
-
-});
-
-
-$(document).on('keypress', 'input', function(e) {
-
-  if(e.keyCode == 13 && e.target.type !== 'submit') {
-    e.preventDefault();
-    return $(e.target).blur().focus();
-  }
-
-});
-
-
-$(document).on("focus", ".sum", function() {
-    var summ = 0;
-    $(".sum").each(function(){
-        summ += +$(this).val();
 		
-    });
-    $(".total").val(summ.toFixed(2));
-}); 
-
-
-$(document).on("focus", ".total", function() {
-    var sum = 0;
-    $(".sum").each(function(){
-        sum += +$(this).val();
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".add-row").click(function(){
+            var price = $("#price").val();
+            var batch = $("#batch").val();
+			var list = $("#select-tools").val();
+			var qty = $("#qty").val();
+			var amt = $("#sum").val();
+			$("#t").css("display",'');
+			
+			 
+			 var sum = +amt;
+              $(".sum").each(function(){
+              sum += +$(this).val();
 		
-    });
-    $(".total").val(sum.toFixed(2));
-});
-
-$(document).on("focus", ".net", function() {
-//    var sum = $(".total").val();
-//	var dis= $(".discount").val();
-//	var net =  (+sum)-(+dis)
-//    $(".net").val(net);
-				var oldPrice = document.getElementsByName("old_price")[0].value;
-			var discountPrct = document.getElementsByName("discount")[0].value;	
-			if (!isNaN(oldPrice) && !isNaN(discountPrct)) {
-				//var discount = (oldPrice / 100) * discountPrct;
-				var count = (discountPrct / 100) * oldPrice;
-				var discount = oldPrice - count;
-				if (discount > 0)
-					document.getElementsByName("new_price")[0].value = discount.toFixed(2);
-			}
-});
-
-
-function set_rrn() {
-	var mode = $('#payment_mode').val();
-	if(mode=='card_payment'){
-		$("#rrn").css("display",'');
-	}
-	else{
-		 $("#rrn").css("display","none");
-	}
-	
-	
-}
-
-
-function myFunction() {
-    //submit_val.style.visibility='hidden';
-	//document.getElementById("submit").style.display='none';
-	document.getElementById("submit").style.visibility='hidden';
-	document.getElementById("loading").style.visibility='visible';
-	
-}
-
-
-
+               });
+               $(".total").val(sum.toFixed(2));
+			 
+             
+			 
+            //var markup = "<tr><td><input type='checkbox' name='record[]'></td><td>" + name + "</td><td>" + email + "</td><td>" + list + "</td></tr>";
+			
+			var markup = "<tr><td><input type='checkbox' name='record[]'></td>  <td><input type='text' name='list[]' style='border:1px solid white;' value='"+ list +"' readonly ></td><td><input type='text' name='batch[]' value='"+ batch +"' style='border:1px solid white;'></td>  <td><input type='text' name='price[]' value='"+ price +"' readonly style='border:1px solid white;text-align:right;'></td><td><input type='text' name='qty[]'style='border:1px solid white;text-align:right'  value="+qty+"  ></td><td><input type='text' name='amt[]' class='sum'  style='border:1px solid white;text-align:right;' value="+amt+"></></tr>";
+            $("#t").append(markup);
+        });
+        
+        // Find and remove selected table rows
+        $(".delete-row").click(function(){
+            $("table tbody").find('input[name="record[]"]').each(function(){
+            	if($(this).is(":checked")){
+                    $(this).parents("tr").remove();
+                }
+			
+            });
+			
+		
+			var sum = 0;
+			 $(".sum").each(function(){
+              sum += +$(this).val();
+		
+               });
+               $(".total").val(sum.toFixed(2));
+			
+			
+			
+        });
+    });    
 </script>
+</head>
 
 
 <body>
-<form method="post" action="" onsubmit="myFunction()">
-
-
-
-       <!-- <button type="button" class="btn affix">Basic</button>-->
+    
+	
+	  <?php $result =  sqlStatement("SELECT name, drug_id, expdate  FROM drugs where expdate > '$exp' and totalStock > 1");    
 	  
-     
-
-<div class="container-fluid" style=" margin-top: 20px;">
-    <div class="row">
-		<div class="col-md-9">
-		<table class="table table-bordered table-fixed" id="tab_logic">
-		<tr><th>ID</th><th>Patient Name</th><th>Visit ID</th><th>Pid</th><tr>
-		<tr><td><input type="text" style="text-align:left;" id='gchid' name='gch'  value="<?php echo $gchid ?>" class="form-control" readonly required/></td>
-		<td><input type="text" style="text-align:left;" id='pname' name='patname'  value="<?php echo $detail['fname']; ?>" class="form-control" readonly required/></td>
-		<td><input type="text" style="text-align:left;" id='visitid' name='visit'  value="<?php echo $detail['visit']; ?>" class="form-control" readonly required/></td>
-		<td><input type="text" style="text-align:left;" id='pid' name='pid'  value="<?php echo $detail['ID']; ?>" class="form-control" readonly required/></td>
-		
-		</tr>
-		</table>
-			<table class="table table-bordered table-fixed" id="tab_logic">
-				<thead>
-					<tr class="danger">
-						
-						<th class="text-left col-sm-3">
-							Medicine
-						</th>
-						<th class="text-left col-sm-2">
-							Batch
-						</th>
-						<th class="text-left col-sm-2">
-							Expiry Date
-						</th>
-						<th class="text-left col-sm-2">
-							Schedule H
-						</th>
-						<th class="text-right col-sm-2">
-							Price
-						</th>
-						<th class="text-right col-sm-1">
-							Qty
-						</th>
-						<th class="text-right col-sm-2">
-							Amount
-						</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-
-			<?php 
-			//include_once('dbconnect.php');
-			$exp = date('Y-m-d', strtotime('+1 month'));
-			 //$qry = "SELECT name, drug_id, expdate  FROM drugs where expdate > '$exp' and totalStock > 1"; 
-			 
-			  //$result = mysqli_query($conn, $qry);
-			  $result =  sqlStatement("SELECT name, drug_id, expdate  FROM drugs where expdate > '$exp' and totalStock > 1");
-			  
-			$i=1;
+	  $i=1;
 			while ($jarray = sqlFetchArray($result))
              {
               $rows[] = $jarray;
@@ -537,36 +218,43 @@ function myFunction() {
 						    $title1=str_replace("'", "", $title);
 			
                       }
-			
-			
-			while($i<=20){ ?>
-					<tr id='addr0'>
-						
-						<td>
-						<div>
-				<div>
-					
+	  
+				?>	
+		<div class="row">
+		<div class="col-md-9">		
 				
-			     
-               
-
-			
-					<select id="<?php echo 'select-tools'.$i ?>" placeholder="Select Medicine" name='name[]' ></select>
+				<table class="table table-bordered table-fixed" id="tab_logic">
+		<tr><th>ID</th><th>Patient Name</th><th>Visit ID</th><th>Pid</th><tr>
+		<tr><td><input type="text" style="text-align:left;" id='gchid' name='gch'  value="<?php echo $gchid ?>" class="form-control" readonly required/></td>
+		<td><input type="text" style="text-align:left;" id='pname' name='patname'  value="<?php echo $detail['fname']; ?>" class="form-control" readonly required/></td>
+		<td><input type="text" style="text-align:left;" id='visitid' name='visit'  value="<?php echo $detail['visit']; ?>" class="form-control" readonly required/></td>
+		<td><input type="text" style="text-align:left;" id='pid' name='pid'  value="<?php echo $detail['ID']; ?>" class="form-control" readonly required/></td>
+		
+		</tr>
+		</table>
+				
+				
+				<table class="table table-bordered table-fixed"  id="tab_logic">
+				<tr class="danger"><th class="col-md-3">Medicine</th><th>Batch</th><th>Price</th><th>Quantity</th><th>Amount</th><th>#</th><tr>
+				<tr>
+				<td><select id="select-tools" name='list' placeholder="Pick a medicine..."></select></td>
+				<td><input type="text" id="batch" name='batch' placeholder="" class="form-control"></td>
+				<td><input type="text" name='price' id="price" value='' placeholder="" class="form-control" readonly style="background-color:white"></td>
+				<td><input type="text" name='qty' id="qty" placeholder="" class="form-control "></td>
+				<td><input type="text" name='amt' id="sum" placeholder="" class="form-control text-right"></td>
+				<td><input type="button" class="add-row" value="Add Row"></td></tr>
+				
+				</table>
+		    </div>
 				</div>
-				
 				<script>
-				
-				// <select id="select-tools"></select>
-
-				$('#<?php echo 'select-tools'.$i ?>').selectize({
+				$('#select-tools').selectize({
 					maxItems: 1,
 					valueField: 'id',
 					labelField: 'title',
 					searchField: 'title',
-					options: 
-                      [
-					  
-					   <?php
+					options: [
+						 <?php
         
                             for($k=0;$k<$rowCount;$k++){
                             $id=$rows[$k]['drug_id'];
@@ -575,111 +263,125 @@ function myFunction() {
 						    $title1=str_replace("'", "", $title);
 				  
                         ?>  
-						{id: '<?php echo $id1; ?>', title: '<?php echo $title1; ?>'},
+						{id: '<?php echo $title1; ?>', title: '<?php echo $title1; ?>'},
 					<?php } ?>
 					],
 					create: false
 				});
+				
+				
+				
+				
 				</script>
-			</div>
-					</td>
-                        
-						    <td>
-                       <select class="form-control" name="batch[]"  id="<?php echo 'batch'.$i?>">
-    
-       
-                           </select>
+		
+	<form action='' method='POST'>
+	
+	<div class='row'>
+    <div class='col-md-9'>
+	
+    <table id='t' class="table table-bordered table-fixed" style='display:none'>
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Batch</th>
+				<th class="text-right">Price</th>
+				<th class="text-right">Quantity</th>
+				<th class='text-right'>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+		<tfoot>
+  <tr>
+     <th colspan='6'>Total:<input type='text' name='sum_total' style="float:right;width:18%;text-align:right" class='total'></th>
+     
+  </tr>
+ </tfoot>
+    </table>
+	
+	
+	
+    <button type="button" class="delete-row">Delete Row</button>
+	<input type='submit' name='submit' value='Take Payment'>
+	<!--<input type='text' name='subtotal' value='' style="float:right;">-->
+	
+	</div>
+
+	</div>
+	
+	</form>
+	
+	
+	
+</body> 
+
+<script>
+
+ $("#select-tools").change(function()
+{	
+var id=$(this).val();
+
+var dataString = 'id='+ id;
+var tmp = 1;
+$("#qty").val(tmp);
+$("#sum").val('0');
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMedDynamic.php",
+data: dataString+"&action=med",
+cache: false,
+success: function(html)
+{
+$("#batch").val(html);
+
+} 
+});
+
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMedDynamic.php",
+data: dataString+"&action=medPrice",
+cache: false,
+success: function(html)
+{
+$("#price").val(html);
+
+} 
+});
+$.ajax
+({
+type: "POST",
+
+url: "ajaxMedDynamic.php",
+data: dataString+"&action=expdate",
+cache: false,
+success: function(html)
+{
+$("#expdate").val(html);
+
+} 
+});
+
+});
+
+$(document).on("focus", "#sum", function() {
  
-                          </td>
-						  
-						  <td>
-						<input type="text"  id='<?php echo 'expdate'.$i ?>' name='expdate[]' pattern='[0-9]{4}-(0[1-9]|1[012])' placeholder='YYYY-MM' value="" class="form-control"/>
-						</td>
-						
-						<td>
-						<input type="text" id='<?php echo 'schedule_h'.$i ?>' name='schedule_h[]'  value="" class="form-control" readonly />
-						</td>
-						  
-						  
-                          						
- 					       <td>
-						<input type="text" style="text-align:right;" id='<?php echo 'price'.$i ?>' name='price[]'  value="" class="form-control"/>
-						</td>
-						<td>
-						<input type="text" name='qty[]' style="text-align:right;" id="<?php echo 'qty'.$i ?>" class="form-control qty"/>
-						</td>
-						
-						<td>
-						<input type="text" name='sum[]' style="text-align:right;" class="form-control sum" id="<?php echo 'sum'.$i ?>" />
-						</td>
-						
-					</tr>
-					<?php $i++; }  ?>
-                  
-				</tbody>
-			</table>
-		</div>
+   
+    var p = $("#price").val();
+	var q = $("#qty").val();
+	var sum = (+p)*(+q);
+	$("#sum").val(sum.toFixed(2));
 	
-	
-	
-	
+});
 
-<div class="col-sm-2">
+</script>
 
 
- <table class="affix">
- <tbody>
- <tr>
- <th class="danger">Subtotal:</th>
- <td>
- <input type="number" style="text-align:right;" class="form-control total" onkeydown="updateNewPrice()" step='0.01'  name="old_price" value="" readonly required/ /></td>
- </tr>
- <tr>
- <th class="danger">Discount:</th>
- <td>
-<input type="number" style="text-align:right;" class="form-control discount" onkeydown="updateNewPrice()" name="discount" value="" placeholder="%" required//></td>
- </tr>
- <tr>
- <th class="danger">Total:</th>
- <td>
-<input type="number" style="text-align:right;" class="form-control net" step='0.01'   name="new_price" value="" readonly required/  />
- </td>
- </tr>
- <tr>
- <th class="danger">Mode:</th>
- <td>
-<select class="form-control" name='mode' id='payment_mode' onchange='set_rrn()'>
-  <option value="cash">Cash Payment</option>
-  <option value="card_payment">Card Payment</option>
 
-  
-</select>
- </td>
- </tr>
- <tr style="display:none" id='rrn'>
- <th class="danger">RRN :</th>
- <td>
-<input type="Text" style="text-align:right;" class="form-control net" name="rrn" value=""  />
- </td>
- </tr>
-</tbody>
- </table>
-  <input type="submit"  class="btn btn-primary affix" name="submit_val" id = 'submit' value="Take Payment" style="margin: 20% 6%;"/>
-  
-  <img src="InternetSlowdown_Day.gif" alt="" border="0" name = "loading" id = 'loading' style="display: block; margin-top: 150px; width: 250px;visibility:hidden;">
- 
-</div>
- </div></div>
- </form>
-  <script>
-$('input,select').keydown( function(e) {
-        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
-        if(key == 13) {
-            e.preventDefault();
-            var inputs = $(this).closest('form').find(':input:visible');
-            inputs.eq( inputs.index(this)+ 1 ).focus();
-        }
-    });
- </script>
- </body>
- </html>
+</html>                            

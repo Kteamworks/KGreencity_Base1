@@ -1,3 +1,18 @@
+<?php
+include_once("../../globals.php");
+include_once("$srcdir/api.inc");
+include_once("$srcdir/forms.inc");
+require_once("$srcdir/formdata.inc.php");
+require_once("$srcdir/patient.inc");
+
+// when the Cancel button is pressed, where do we go?
+$returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_encounter.php';
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,21 +23,21 @@
 <?php
 $q = $_GET['q'];
 
-$con = mysqli_connect('localhost','root','admin123','greencity');
+/*$con = mysqli_connect('localhost','root','admin123','greencity');
 if (!$con) {
     die('Could not connect: ' . mysqli_error($con));
 }
-mysqli_select_db($con,"greencity");
+mysqli_select_db($con,"greencity"); */
 //$sql="SELECT * FROM list_options WHERE list_id='".General."' AND is_default = 0";
 //$result = mysqli_query($con,$sql);
 
 echo "<table>";
 
 
-    $sql="SELECT * FROM list_options WHERE list_id ='".$q."' AND is_default IN(0,3)";
-	$result = mysqli_query($con,$sql);
+   $result=sqlStatement("SELECT * FROM list_options WHERE list_id ='".$q."' AND is_default IN(0,3)");
+	
 	$i=0;
-	while($row=mysqli_fetch_array($result))
+	while($row=sqlFetchArray($result))
 	{
     echo "<tr>";
 	$a=$row['title'];

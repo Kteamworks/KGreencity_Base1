@@ -63,7 +63,7 @@ if ($_POST['form_create']) {
   $doctor_fname = ucwords(trim($_POST["dname"]));
   // ===================
   // DBC SYSTEM WAS REMOVED
-  $form_sex               = trim('NotRequired') ;
+  $form_sex               = trim($_POST["sex"]);
   $form_dob               = trim($_POST["DOB"]) ;
   $form_street            = 'JP Nagar' ;
   $form_city              = 'Bangalore' ;
@@ -139,6 +139,7 @@ $form_dob = date("Y-m-d",$dob1); // getting the date of birth here
   }
  sqlQuery("UPDATE patient_data SET opd = 1 where pid='$pid'");
  $generic = sqlQuery("select genericname1 from patient_data where pid='$pid'");
+  
   $gch_id = $generic['genericname1'];
    $provider_id = $_SESSION['authUserID'] ;
   $encounter = generate_id();
@@ -159,7 +160,7 @@ $form_dob = date("Y-m-d",$dob1); // getting the date of birth here
       "pid = '" . add_escape_custom($pid) . "', " .
       "encounter = '" . add_escape_custom($encounter) . "', " .
       "pos_code = '" . add_escape_custom($pos_code) . "', " .
-      "doctor = '" . add_escape_custom($doctor_fname) . "'"),
+     "doctor = '" . add_escape_custom($doctor_fname) . "'"),
     "newpatient", $pid, $userauthorized, $date);
 /*	
   //function addBilling($encounter_id, $code_type, $code, $code_text, $pid,

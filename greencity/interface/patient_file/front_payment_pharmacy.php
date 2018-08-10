@@ -48,8 +48,9 @@ $tmpid1=$_SESSION['maxId1'];
 if ($_POST["form_patient"])
 $form_patient = isset($_POST['form_patient']) ? $_POST['form_patient'] : '';
 //$form_pid = isset($_POST['form_pid']) ? $_POST['form_pid'] : '';
-$form_pid= $_SESSION["pid"];
+  $form_pid= $_SESSION["pid"];
 if ($form_patient == '' ) $form_pid =  $_SESSION['patId'];
+
 //if ($form_patient == '' ) $form_pid = '';
 
 ?>

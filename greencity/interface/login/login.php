@@ -24,13 +24,80 @@
  * @author  markleeds
  * @link    http://www.open-emr.org
  */
+ 
+ 
 
+ 
+ 
 $fake_register_globals=false;
 $sanitize_all_escapes=true;
 
 $ignoreAuth=true;
 include_once("../globals.php");
 include_once("$srcdir/sql.inc");
+
+ 
+$exp = sqlQuery("select * from licence where ID = 1");
+$mac_address = $exp['mac_address'];
+
+ob_start(); // Turn on output buffering
+system('ipconfig /all'); //Execute external program to display output
+$mycom=ob_get_contents(); // Capture the output into a variable
+ob_clean(); // Clean (erase) the output buffer
+$findme = "Physical";
+$pmac = strpos($mycom, $findme); // Find the position of Physical text
+$mac=substr($mycom,($pmac+36),17); // Get Physical Address
+if($mac_address!= $mac)
+{   ?>
+	<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+<title>Expired…</title>
+</head>
+<body>
+<div style="background-color:lightgrey">
+<p align='center'><img src="warning.png" alt="Smiley face" width="70" height="70"></p>
+<h1 align='center'><font color="red">Your Computer is not presently configured to run this application</font></h1>
+
+</div>
+<hr>
+<address>Please contact KAVAII..</address>
+
+</body>
+</html> <?php
+exit;
+}
+
+
+$exp_date = $exp['date']; 
+$todays_date = date("Y-m-d");
+$today = strtotime($todays_date);
+$expiration_date = strtotime($exp_date);
+if ($expiration_date <= $today)
+	{  ?>
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+<title>Expired…</title>
+</head>
+<body>
+<div style="background-color:lightgrey">
+<p align='center'><img src="warning.png" alt="Smiley face" width="70" height="70"></p>
+<h1 align='center'><font color="red">Your subscription has expired</font></h1>
+
+</div>
+<hr>
+<address>Please make the payment to continue..</address>
+
+</body>
+</html> <?php
+exit;
+}
+
+
+
+
+
 ?>
 <html>
 <head>

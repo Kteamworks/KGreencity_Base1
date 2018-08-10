@@ -656,7 +656,7 @@ body
 </head>
 <!--<p style="margin-top:110px"></p>-->
 <body class="body_top"  bgcolor='#ffffff'>
-<img src=" <?php echo $GLOBALS['webroot']?>/interface/pic/medii_e.jpg" />
+<img src=" <?php echo $GLOBALS['webroot']?>/interface/pic/medii.jpg" />
 <hr>
 <center>
 <p><h4><?php echo xlt('Receipt for Payment'); ?></h4>
@@ -696,6 +696,10 @@ $enc1=sqlFetchArray($enc);
 $provider=$enc1['provider_id'];
 $row1 = sqlStatement("SELECT * from users where id='".$provider."'");
 $row2=  sqlFetchArray($row1);
+
+$billid=sqlQuery("SELECT * from billing where encounter='".$brow1112['encounter']."'");
+
+
 	  
 ?>
 <table border='0' style="width:100%">
@@ -742,16 +746,25 @@ if($age!=0)
   <td><?php echo text($brow1112['source']) ?></td>
  </tr>
  <tr>
+ <?php 
+      $received_amt = $brow1112['amount1'];
+      if($received_amt== 0 ){
+	  $received_amount = $brow1112['amount2']; }
+	  else{
+		  $received_amount = $brow1112['amount1'];
+	  }
+
+	  ?>
   <td><?php echo xlt('Received Amount'); ?>:</td>
-  <td align='right'><?php echo xlt('Rs')?>&nbsp;<?php echo text(oeFormatMoney($brow1112['amount1'])) ?></td>
+  <td align='right'><?php echo xlt('Rs')?>&nbsp;<?php echo text(oeFormatMoney($received_amount)) ?></td>
  </tr>
- <tr>
-  <td><?php echo xlt('Amount for Past Balance'); ?>:</td>
-  <td align='right'><?php echo xlt('Rs')?>&nbsp;<?php echo text(oeFormatMoney($brow1112['amount2'])) ?></td>
- </tr>
+ <!--<tr>
+  <td><?php // echo xlt('Amount for Past Balance'); ?>:</td>
+  <td align='right'><?php  // echo xlt('Rs')?>&nbsp;<?php // echo text(oeFormatMoney($brow1112['amount2'])) ?></td>
+ </tr>-->
  <tr>
   <td><?php echo xlt('Against the Bill No'); ?>:</td>
-  <td><?php echo text($brow1112['bill_id']) ?></td>
+  <td><?php echo text($billid['bill_id']) ?></td>
  </tr>
  <tr>
   <td><?php echo xlt('Received By'); ?>:</td>
@@ -1252,17 +1265,17 @@ $r=sqlStatement("Select * from billing_main_copy where pc_catid=12 and  encounte
 $sbd=sqlFetchArray($r);
 $ins=sqlStatement("SELECT * from billing_activity_final where encounter='".$encounter."'"); 
 $ins1 = sqlFetchArray($ins);
-$FP=$sbd['PFYN_Flag'];
+//$FP=$sbd['PFYN_Flag'];
 
-if($FP==1 && $ins1==0)
+//if($FP==1 && $ins1==0)
 	
-	{
+//	{
 	
 	//echo "Bill has been Settled";
 		
-	}
-	else
-	{
+//	}
+//	else
+//	{
 		
 	
 ?>  
@@ -1270,7 +1283,7 @@ if($FP==1 && $ins1==0)
 
 <input type='submit' name='form_save' value='<?php echo htmlspecialchars( xl('Print Receipt'), ENT_QUOTES);?>' /> &nbsp;
 <input type='button' value='<?php echo xla('Cancel'); ?>' onclick='window.close()' />
-<?php  } ?>
+<?php // } ?>
 <input type="hidden" name="hidden_patient_code" id="hidden_patient_code" value="<?php echo attr($pid);?>"/>
 <input type='hidden' name='ajax_mode' id='ajax_mode' value='' />
 <input type='hidden' name='mode' id='mode' value='' />

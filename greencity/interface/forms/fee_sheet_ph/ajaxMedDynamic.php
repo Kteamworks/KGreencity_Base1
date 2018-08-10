@@ -1,9 +1,8 @@
 <?php
 
  
-  include_once('dbconnect.php');
- //$con=mysqli_connect("localhost","root","","greencity");
-
+  include_once('../../../sites/default/sqlconf.php');
+ 
  if($_POST['id'] && $_POST['action']=='detail')
 {
 $id=$_POST['id'];
@@ -71,34 +70,21 @@ if($_POST['id'] && $_POST['action']=='med')
 	 $exp = date('Y-m-d', strtotime('+1 month'));
      $id=$_POST['id'];
 	
-echo "SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'";
-$sql=mysqli_query($conn,"SELECT batch FROM drugs WHERE name = (select name from drugs where drug_id = '$id') and expdate > '$exp'");
-//$sql=mysqli_query($con,"SELECT batch FROM drugs WHERE drug_id = '$id'");
+//echo "SELECT * FROM drugs WHERE name = '$id' and expdate > '$exp'";
+$sql=mysqli_query($conn,"SELECT batch FROM drugs WHERE name = '$id' limit 1");
 
-while($row=mysqli_fetch_array($sql))
-{
-$id=$row['batch'];
-$data=$row['PricePerUnit'];
-//echo '<input type="text" value="'.$id.'">';
-echo '<option value="'.$id.'">'.$id.'</option>';
-//echo $data;
-
-}
+$idd= mysqli_fetch_assoc($sql);
+$id = $idd['batch'];
+echo $id;
 }
 if($_POST['id'] && $_POST['action']=='medPrice')
 {
 $id=$_POST['id'];
-$sql=mysqli_query($conn,"SELECT PricePerUnit FROM drugs WHERE drug_id = '$id' LIMIT 1");
+$sql=mysqli_query($conn,"SELECT PricePerUnit FROM drugs WHERE name = '$id' LIMIT 1");
 
-while($row=mysqli_fetch_array($sql))
-{
-//$id=$row['batch'];
-$data=$row['PricePerUnit'];
-//echo '<input type="text" value="'.$id.'">';
-//echo '<option value="'.$data.'">'.$data.'</option>';
-echo $data;
-
-}
+$roww = mysqli_fetch_assoc($sql);
+$row  = $roww['PricePerUnit'];
+echo $row;
 }
 
 if($_POST['id'] && $_POST['action']=='expdate')
