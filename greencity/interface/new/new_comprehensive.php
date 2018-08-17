@@ -377,7 +377,7 @@ jQuery('#form_postal_code').blur(function(){ //.postcode class of zipcode text f
 var s = jQuery(this).val();
 jQuery.ajax({
 type: 'POST',
-url: "http://greencity.medsmart.co.in/greencity/interface/new/insertzip.php", //file which read zip code excel file
+url: "<?php echo $GLOBALS['webroot'] ?>/interface/new/insertzip.php",//file which read zip code excel file//file which read zip code excel file
 dataType: "json", //is used for return multiple values
 data: { 's' : s },
 success: function(data){
@@ -924,6 +924,59 @@ while ($lrow = sqlFetchArray($lres)) {
 }); // end document.ready
 
 </script>
+ <script type="text/javascript">
 
+ $( "#form_DOB" ).blur(function () { // birthday is a date
+
+   var today = new Date();
+
+   var dateString = $( "#form_DOB" ).val();
+    if(dateString !== "") {
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+if(age !== null) {
+     document.getElementById('form_age').value = age;
+	 	document.getElementById('form_age').readOnly = true;
+//document.getElementById('form_age').setAttribute("disabled","true");
+}
+	}
+});
+ $( "#form_age" ).blur(function () {
+	 if($( "#form_age" ).is('[readonly]')) {
+		 $(this).blur();
+	 } else {
+    var today = new Date();
+    var currentYear = today.getFullYear() ;
+    var age = parseInt(document.getElementById('form_age').value, 10);
+
+	    if(document.getElementById('form_age').value !== '') {
+    var birthdayPast = 0;
+    document.getElementById('form_DOB').value =  (currentYear - age - (birthdayPast?0:1) )+"-1-1";  
+	document.getElementById('form_DOB').readOnly = true;
+		}
+	 }
+});
+$('#form_phone_cell').blur(function() {
+    if (!$.isNumeric(this.value))
+        this.value = 0;
+	var email=$("#form_phone_cell").val();// value in field email
+$.ajax({
+    type:'post',
+        url:'checkNumber.php',// put your real file name 
+        data:{email: email},
+        success:function(msg){
+			if(msg == 1) {
+				      alert("Number already exists");   
+        }
+ }
+
+});
+});
+		
+        </script>
 </html>
 

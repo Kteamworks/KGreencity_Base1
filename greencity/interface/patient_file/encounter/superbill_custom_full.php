@@ -696,7 +696,7 @@ if (!empty($all)) {
       echo "  <td align='right'><a class='link' href='javascript:submitModify(\"" . attr($iter['code_type_name']) . "\",\"" . attr($iter['code']) . "\",\"" . attr($iter['id']) . "\")'>[" . xlt('Modify') . "]</a></td>\n";
     }
     else {
-      echo "  <td align='right'><a class='link' href='javascript:submitDelete(" . attr($iter['id']) . ")'>[" . xlt('Delete') . "]</a></td>\n";
+    //  echo "  <td align='right'><a class='link' href='javascript:submitDelete(" . attr($iter['id']) . ")'>[" . xlt('Delete') . "]</a></td>\n";
       echo "  <td align='right'><a class='link' href='javascript:submitEdit("   . attr($iter['id']) . ")'>[" . xlt('Edit') . "]</a></td>\n";
     }
 
