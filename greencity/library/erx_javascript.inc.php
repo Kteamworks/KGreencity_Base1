@@ -55,6 +55,16 @@ function checkFacilityName(eleName,eleVal)
     return m;
 }
 
+function checkPin(eleName,eleVal)
+{
+    var regE = /^[1-9][0-9]{5}$/;
+    var m='';
+    eleName=eleName.replace('form_','');
+    if(regE.test(eleVal)==false)
+        m += '<?php echo xl("Invalid character in")." "?>'+eleName.toUpperCase()+"\n";
+    return m;
+}
+
 function checkPhone(eleName,eleVal)
 {
     var regE = /[^0-9']/;

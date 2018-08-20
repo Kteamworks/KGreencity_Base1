@@ -274,7 +274,12 @@ function validate(f) {
       {
        alertMsg += checkPhone(f[i].name,f[i].value);
       }
+	  else if(f[i].name == 'form_postal_code')
+      {
+       alertMsg += checkPin(f[i].name,f[i].value);
+      }
     }
+	
   }
   if(alertMsg)
   {
